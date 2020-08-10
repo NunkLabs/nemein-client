@@ -1,7 +1,7 @@
-const React = require('react');
-const Tetris = require('react-tetris');
-require('materialize-css/dist/css/materialize.min.css');
-require('./App.css');
+import React from 'react';
+import Tetris from 'react-tetris';
+import 'materialize-css/dist/css/materialize.min.css';
+import './App.css';
 
 const App = () => (
   <div class='app container'>
