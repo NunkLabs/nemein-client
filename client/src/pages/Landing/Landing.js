@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Game from '../../components/Game';
-import 'materialize-css/dist/css/materialize.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './Landing.css';
 
 class Landing extends Component {
