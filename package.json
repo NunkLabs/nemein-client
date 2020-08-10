@@ -1,0 +1,21 @@
+{
+  "name": "TetriBASS",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "preinstall": "cd client && npm install && npm run build",
+    "clean": "rm -rf node_modules && rm -rf client/node_modules",
+    "server": "node index.js",
+    "client": "node scripts/client.js",
+    "start": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": "https://github.com/NunkuGemu/TetriBASS.git",
+  "author": "Junwei Chen <jwchen1259@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "concurrently": "^5.3.0",
+    "express": "^4.17.1"
+  }
+}
