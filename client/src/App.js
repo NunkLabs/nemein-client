@@ -5,11 +5,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => (
   <Router>
-    <div>
-      <Switch>
-        <Route exact path='/' component={Landing} />;
-      </Switch>
-    </div>
+    <Switch>
+      <Route exact path='/' component={Landing} />;
+    </Switch>
   </Router>
 );
 
