@@ -15,7 +15,11 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "bson-ext": "^2.0.5",
     "concurrently": "^5.3.0",
-    "express": "^4.17.1"
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.0",
+    "mongoose": "^5.9.28"
   }
 }
