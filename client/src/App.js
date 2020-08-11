@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Landing from './pages/Landing'
+import Main from './pages/Main'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => (
   <Router>
     <Switch>
-      <Route exact path='/' component={Landing} />;
+      <Route exact path='/' component={Main} />;
     </Switch>
   </Router>
 );
