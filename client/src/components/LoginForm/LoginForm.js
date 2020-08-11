@@ -11,7 +11,8 @@ const LoginForm = () => (
         <label>Password</label>
         <input type="password" class="form-control"></input>
       </div>
-      <button type="submit" class="btn-custom btn-outline-nord-dark btn-block">Sign In</button>
+      <button type="submit" class="btn-custom btn-outline-nord-dark btn-block">Log In</button>
+      <button type="submit" class="btn-custom btn-outline-nord-dark btn-block">Register Now</button>
     </form>
   </div>
 )
