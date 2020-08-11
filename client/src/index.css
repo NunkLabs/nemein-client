@@ -5,6 +5,7 @@ body, html, #root {
   height: 100%;
   margin: 0;
   min-width: 750px;
+  overflow: hidden;
 }
 
 h1 {
@@ -55,11 +56,11 @@ label {
 }
 
 .form {
-  padding-top: 350px;
+  padding-top: 250px;
 }
 
 .game {
-  padding-top: 150px;
+  padding-top: 100px;
   width: 800px;
 }
 
