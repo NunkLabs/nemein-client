@@ -4,7 +4,7 @@ import Tetris from 'react-tetris';
 const Game = () => (
   <Tetris>
     {({ HeldPiece, Gameboard, PieceQueue, points, linesCleared }) => (
-          <div class='full-height game'>
+          <div class='game full-height'>
             <h1>TetriBASS</h1>
             <div class='row'>
               <div class='col top-panel'>

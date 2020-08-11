@@ -5,14 +5,14 @@ const LoginForm = () => (
     <form>
       <div class="form-group">
         <label>Username</label>
-        <input type="email" class="form-control"></input>
+        <input type="email" class="form-control-custom"></input>
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" class="form-control"></input>
+        <input type="password" class="form-control-custom"></input>
       </div>
-      <button type="submit" class="btn-custom btn-outline-nord-dark btn-block">Log In</button>
-      <button type="submit" class="btn-custom btn-outline-nord-dark btn-block">Register Now</button>
+      <button type="submit" class="btn-custom btn-custom-dark btn-block">Log In</button>
+      <button type="submit" class="btn-custom btn-custom-dark btn-block">Register Now</button>
     </form>
   </div>
 )

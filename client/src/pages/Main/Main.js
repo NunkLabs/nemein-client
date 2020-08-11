@@ -5,8 +5,8 @@ import Game from '../../components/Game';
 class Landing extends Component {
   render() {
     return (
-      <div class='full-height app'>
-        <div class='full-height row'>
+      <div class='app full-height'>
+        <div class='row full-height'>
           <div class='col form-bg'>
             <LoginForm />
           </div>
