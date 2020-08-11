@@ -5,20 +5,16 @@ import Game from '../../components/Game';
 class Landing extends Component {
   render() {
     return (
-      <div class='full-height bg'>
-        <div class='full-height app'>
-          <div class='full-height row'>
-            <div class='col-4 form-bg'>
-              <div class='form'>
-                <h1>TetriBASS</h1>
-                <LoginForm />
-              </div>
+      <div class='full-height app'>
+        <div class='full-height row'>
+          <div class='col form-bg'>
+            <div class='form'>
+              <h1>TetriBASS</h1>
+              <LoginForm />
             </div>
-            <div class='col-8'>
-              <div class='game'>
-                <Game />
-              </div>
-            </div>
+          </div>
+          <div class='col game-bg'>
+            <Game />
           </div>
         </div>
       </div>

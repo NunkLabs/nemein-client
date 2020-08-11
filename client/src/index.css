@@ -4,12 +4,13 @@ body, html, #root {
   font-size: 15px;
   height: 100%;
   margin: 0;
+  min-width: 750px;
 }
 
 h1 {
   color: #2E3440;
   font-family: 'Rubik Mono One', sans-serif;
-  font-size: 3em;
+  font-size: 2.5em;
   text-align: center;
 }
 
@@ -37,10 +38,6 @@ label {
   height: 100%;
 }
 
-.bg {
-  background-color: #2E3440;
-}
-
 .app {
   position: relative;
 }
@@ -49,26 +46,45 @@ label {
   background-color: #ECEFF4;
 }
 
-.form, .game {
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
+.game-bg {
+  background-color: #2E3440;
 }
 
-.form {
-  padding-top: 50%;
-  width: 60%;
+.form, .game {
+  margin: auto;
+  padding-top: 200px;
+  padding-right: 100px;
+  padding-left: 100px;
+  padding-bottom: 200px;
 }
 
 .game {
-  padding-top: 200px;
-  width: 40%;
+  width: 800px;
 }
 
-/* 
+/*  
   Tetris Component
 */
+
+.top-panel {
+  flex: 0 0 300px;
+  -ms-flex: 0 0 300px;
+}
+
+.left-panel {
+  flex: 0 0 150px;
+  -ms-flex: 0 0 150px;
+}
+
+.right-panel {
+  flex: 0 0 150px;
+  -ms-flex: 0 0 150px;
+}
+
+.main-panel {
+  flex: 0 0 300px;
+  -ms-flex: 0 0 300px;
+}
 
 .game-block {
   margin: 0px;
