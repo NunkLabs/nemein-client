@@ -8,9 +8,10 @@ body, html, #root {
 }
 
 h1 {
-  color: #2E3440;
+  padding: 25px;
+  color: #ECEFF4;
   font-family: 'Rubik Mono One', sans-serif;
-  font-size: 2.5em;
+  font-size: 3em;
   text-align: center;
 }
 
@@ -24,7 +25,7 @@ h2 {
 }
 
 p {
-  color: #ECEFF4;
+  color: #D8DEE9;
   font-size: 2.5em;
 }
 
@@ -52,13 +53,17 @@ label {
 
 .form, .game {
   margin: auto;
-  padding-top: 200px;
   padding-right: 100px;
   padding-left: 100px;
-  padding-bottom: 200px;
+  padding-bottom: 150px;
+}
+
+.form {
+  padding-top: 350px;
 }
 
 .game {
+  padding-top: 150px;
   width: 800px;
 }
 

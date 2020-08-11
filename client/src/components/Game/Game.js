@@ -5,6 +5,7 @@ const Game = () => (
   <Tetris>
     {({ HeldPiece, Gameboard, PieceQueue, points, linesCleared }) => (
           <div class='full-height game'>
+            <h1>TetriBASS</h1>
             <div class='row'>
               <div class='col top-panel'>
                 <h2>Points</h2>

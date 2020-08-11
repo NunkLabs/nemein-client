@@ -8,10 +8,7 @@ class Landing extends Component {
       <div class='full-height app'>
         <div class='full-height row'>
           <div class='col form-bg'>
-            <div class='form'>
-              <h1>TetriBASS</h1>
-              <LoginForm />
-            </div>
+            <LoginForm />
           </div>
           <div class='col game-bg'>
             <Game />

@@ -1,7 +1,7 @@
 import React from 'react';
 
 const LoginForm = () => (
-  <div>
+  <div class='form'>
     <form>
       <div class="form-group">
         <label>Username</label>
