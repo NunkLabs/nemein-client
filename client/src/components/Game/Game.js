@@ -7,28 +7,20 @@ const Game = () => (
     <Tetris>
       {({ HeldPiece, Gameboard, PieceQueue, points, linesCleared }) => (
         <div className='game'>
-          <div className='row'>
+          <div className='row justify-content-center'>
             <h1>TetriBASS</h1>
           </div>
-          <div className='row'>
-            <div className='col-5 top-panel'>
+          <div className='row justify-content-center'>
+            <div className='col-5'>
               <p>Points</p>
-            </div>
-            <div className='col-1 top-panel'></div>
-            <div className='col-5 top-panel'>
-              <p>Lines</p>
-            </div>
-          </div>
-          <div className='row'>
-            <div className='col-5 top-panel'>
               <p>{points}</p>
             </div>
-            <div className='col-1 top-panel'></div>
-            <div className='col-5 top-panel'>
+            <div className='col-5'>
+              <p>Lines</p>
               <p>{linesCleared}</p>
             </div>
           </div>
-          <div className='row'>
+          <div className='row justify-content-center'>
             <div className='left-panel'>
               <HeldPiece />
             </div>
