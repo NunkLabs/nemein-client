@@ -25,14 +25,10 @@
 
 .left-panel, .right-panel {
   width: 150px;
-  max-width: 100%;
-  display: inline-block;
 }
 
 .main-panel {
   width: 332px;
-  max-width: 100%;
-  display: inline-block;
 }
 
 .game-board, .piece-view {
@@ -41,13 +37,11 @@
 
 .game-board {
   width: 293.2px;
-  max-width: 293.2px;
   height: 566.8px;
 }
 
 .piece-view {
   width: 109.2px;
-  max-width: 109.2px;
   display: flex;
 }
 
