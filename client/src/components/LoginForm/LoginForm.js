@@ -1,7 +1,8 @@
 import React from 'react';
+import './LoginForm.css';
 
 const LoginForm = () => (
-  <div class='form'>
+  <div class='form form-bg'>
     <form>
       <div class="form-group">
         <label>Username</label>

@@ -1,0 +1,12 @@
+.form-bg {
+  background-color: #ECEFF4;
+}
+
+.form {
+  height: 100%;
+  margin: auto;
+  padding-top: 250px;
+  padding-right: 100px;
+  padding-left: 100px;
+  padding-bottom: 150px;
+}
