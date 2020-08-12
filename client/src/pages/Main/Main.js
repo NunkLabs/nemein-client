@@ -6,14 +6,10 @@ import './Main.css';
 class Main extends Component {
   render() {
     return (
-      <div class='main'>
-        <div class='row'>
-          <div class='col'>
-            <LoginForm />
-          </div>
-          <div class='col'>
-            <Game />
-          </div>
+      <div class='app'>
+        <div class='main'>
+          <LoginForm />
+          <Game />
         </div>
       </div>
     )

@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap');
 
 body, html, #root {
+  background-color: #ECEFF4;
   font-size: 15px;
   height: 100%;
   margin: 0;
@@ -9,21 +10,18 @@ body, html, #root {
 }
 
 h1 {
-  padding: 25px;
+  padding: 15px;
   color: #ECEFF4;
   font-family: 'Rubik Mono One', sans-serif;
   font-size: 5em;
   text-align: center;
 }
 
-h2, p {
+p {
   color: #D8DEE9;
   font-family: 'Rubik Mono One', sans-serif;
+  font-size: 2em;
   text-align: center;
-}
-
-p {
-  font-size: 2.5em;
 }
 
 label {
@@ -65,7 +63,6 @@ label {
 }
 
 .game-board, .piece-view {
-  margin: 5px;
   border: 5px solid #D8DEE9;
 }
 

@@ -1,9 +1,11 @@
-.form-bg {
-  background-color: #ECEFF4;
-}
-
 .form {
   height: 100%;
+  width: 500px;
+  max-width: 500px;
+  -ms-flex-preferred-size: 0;
+  flex-basis: 0;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
   margin: auto;
   padding-top: 250px;
   padding-right: 100px;
