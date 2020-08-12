@@ -6,8 +6,8 @@ import './Main.css';
 class Main extends Component {
   render() {
     return (
-      <div class='app'>
-        <div class='main'>
+      <div className='app'>
+        <div className='main'>
           <LoginForm />
           <Game />
         </div>

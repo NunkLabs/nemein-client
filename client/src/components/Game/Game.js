@@ -3,39 +3,39 @@ import Tetris from 'react-tetris';
 import './Game.css';
 
 const Game = () => (
-  <div class='game-outer-frame'>
+  <div className='game-outer-frame'>
     <Tetris>
       {({ HeldPiece, Gameboard, PieceQueue, points, linesCleared }) => (
-        <div class='game'>
-          <div class='row'>
+        <div className='game'>
+          <div className='row'>
             <h1>TetriBASS</h1>
           </div>
-          <div class='row'>
-            <div class='col-5 top-panel'>
+          <div className='row'>
+            <div className='col-5 top-panel'>
               <p>Points</p>
             </div>
-            <div class='col-1 top-panel'></div>
-            <div class='col-5 top-panel'>
+            <div className='col-1 top-panel'></div>
+            <div className='col-5 top-panel'>
               <p>Lines</p>
             </div>
           </div>
-          <div class='row'>
-            <div class='col-5 top-panel'>
+          <div className='row'>
+            <div className='col-5 top-panel'>
               <p>{points}</p>
             </div>
-            <div class='col-1 top-panel'></div>
-            <div class='col-5 top-panel'>
+            <div className='col-1 top-panel'></div>
+            <div className='col-5 top-panel'>
               <p>{linesCleared}</p>
             </div>
           </div>
-          <div class='row'>
-            <div class='left-panel'>
+          <div className='row'>
+            <div className='left-panel'>
               <HeldPiece />
             </div>
-            <div class='main-panel'>
+            <div className='main-panel'>
               <Gameboard />
             </div>
-            <div class='right-panel'>
+            <div className='right-panel'>
               <PieceQueue />
             </div>
           </div>
