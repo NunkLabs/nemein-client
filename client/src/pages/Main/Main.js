@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import LoginForm from '../../components/LoginForm';
 import Game from '../../components/Game';
 
-class Landing extends Component {
+class Main extends Component {
   render() {
     return (
       <div class='app full-height'>
@@ -19,4 +19,4 @@ class Landing extends Component {
   }
 }
 
-export default Landing;
+export default Main;
