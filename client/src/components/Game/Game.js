@@ -3,7 +3,7 @@ import Tetris from 'react-tetris';
 import './Game.css';
 
 const Game = () => (
-  <div className='game-outer-frame'>
+  <div id='game-wrap'>
     <Tetris>
       {({ HeldPiece, Gameboard, PieceQueue, points, linesCleared }) => (
         <div className='game'>

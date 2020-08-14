@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import LoginForm from '../../components/LoginForm';
+import LoginMenu from '../../components/LoginMenu';
 import Game from '../../components/Game';
 import './Main.css';
 
-class Main extends Component {
-  render() {
+class Main extends Component 
+{
+  render() 
+  {
     return (
-      <div className='app'>
-        <div className='main'>
-          <LoginForm />
-          <Game />
-        </div>
+      <div id='outer-container'>
+        <LoginMenu />
+        <Game />
       </div>
     )
   }
