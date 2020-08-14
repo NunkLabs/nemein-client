@@ -8,7 +8,7 @@
     "@testing-library/user-event": "^12.1.1",
     "bootstrap": "^4.5.2",
     "react": "^16.13.1",
-    "react-burger-menu": "^2.7.1",
+    "react-burger-menu": "github:schwei23/react-burger-menu",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
