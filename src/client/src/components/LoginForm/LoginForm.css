@@ -1,0 +1,60 @@
+.form {
+  height: 100%;
+  width: 500px;
+  max-width: 500px;
+  margin: auto;
+  padding-top: 250px;
+  padding-right: 50px;
+  padding-left: 50px;
+  padding-bottom: 250px;
+}
+
+/*
+  Custom react-burget-menu stylings
+*/
+
+.bm-burger-button {
+  position: fixed;
+  width: 48px;
+  height: 36px;
+  left: 36px;
+  top: 36px;
+}
+
+.bm-burger-bars {
+  background: #D8DEE9;
+}
+
+.bm-burger-bars-hover {
+  background: #ECEFF4;
+}
+
+
+.bm-cross {
+  background: #2E3440;
+}
+
+.bm-menu-wrap {
+  position: fixed;
+  height: 100%;
+}
+
+.bm-menu {
+  background: #ECEFF4;
+  padding: 2.5em 1.5em 0;
+  font-size: 1.15em;
+}
+
+.bm-item-list {
+  color: #b8b7ad;
+  padding: 0.8em;
+}
+
+.bm-item {
+  display: inline-block;
+  outline: none;
+}
+
+.bm-overlay {
+  background: rgba(0, 0, 0, 0) !important;
+}
