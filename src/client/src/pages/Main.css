@@ -2,3 +2,9 @@
   height: 100%;
   position: relative;
 }
+
+#game-wrap {
+  height: 100%;
+  position: relative;
+  padding: 150px;
+}

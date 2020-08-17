@@ -532,7 +532,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState>
   render()
   {
     return(
-      <div className="tetris">
+      <div className="tetris-wrap">
         <TetrisBoard
           field={this.state.field}
           gameOver={this.state.gameOver}
@@ -541,11 +541,11 @@ class Tetris extends React.Component<TetrisProps, TetrisState>
           rotate={this.state.tileRotate}
         />
         <div className="tetris__game-controls">
-          <button className="btn" onClick={() => {
+          <button className="btn-custom btn-custom-light btn-block" onClick={() => {
             return this.handleNewGameClick();}}>
               New Game
           </button>
-          <button className="btn" onClick={() => {
+          <button className="btn-custom btn-custom-light btn-block" onClick={() => {
             return this.handlePauseClick();}}>
               {this.state.isPaused ? "Resume" : "Pause"}
           </button>

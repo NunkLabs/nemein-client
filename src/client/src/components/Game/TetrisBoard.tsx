@@ -13,24 +13,23 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props) => {
   const rows: any[] = [];
   props.field.forEach((row, index) => {
     const cols = row.map((column: any, index: number) => <div className={`col-${column}`} key={index} />);
-    rows.push(<div className="tetris-board__row" key={index}>{cols}</div>);
+    rows.push(<div className="tetris-row" key={index}>{cols}</div>);
   });
 
   return (
-    <div className="tetris-board">
-      <div className="tetris-board__info">
-        <p className="tetris-board__text">
+    <div className="tetris-main">
+      <div className="tetris-info">
+        <p className="tetris-text">
           Level:
           {props.level}
         </p>
-        <p className="tetris-board__text">
+        <p className="tetris-text">
           Score:
           {props.score}
         </p>
-        {props.gameOver && <p className="tetris-board__text"><strong>Game Over</strong></p>}
+        {props.gameOver && <p className="tetris-text">Game Over</p>}
       </div>
-
-      <div className="tetris-board__board">{rows}</div>
+      <div className="tetris-board">{rows}</div>
     </div>
   );
 };
