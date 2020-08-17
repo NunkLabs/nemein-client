@@ -23,8 +23,8 @@
     "clean": "rm -rf node_modules && rm -rf src/client/node_modules && src/client/build",
     "client": "node scripts/client.js",
     "lint": "concurrently \"yarn run lint-server\" \"yarn run lint-client\"",
-    "lint-client": "cd src/client && eslint . --ext .ts,.tsx",
-    "lint-server": "cd src/server && eslint . --ext .js",
+    "lint-client": "cd src/client && eslint . --fix --ext .ts,.tsx",
+    "lint-server": "cd src/server && eslint . --fix --ext .js",
     "preinstall": "cd src/client && yarn install && yarn run build",
     "server": "node src/server/index.js",
     "start": "concurrently \"yarn run server\" \"yarn run client\""
