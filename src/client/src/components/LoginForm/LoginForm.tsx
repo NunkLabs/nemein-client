@@ -2,10 +2,6 @@ import React from 'react';
 import { scaleDown as Menu } from 'react-burger-menu';
 import './LoginForm.css';
 
-type LoginMenu = {
-
-};
-
 const LoginMenu = (): JSX.Element => (
   <Menu isOpen outerContainerId="outer-container" pageWrapId="game-wrap" width="600px">
     <div className="form">
