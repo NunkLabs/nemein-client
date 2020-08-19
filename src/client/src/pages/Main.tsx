@@ -7,7 +7,7 @@ const Main = (): JSX.Element => (
   <div id="outer-container">
     <LoginForm />
     <div id="game-wrap">
-      <Tetris boardWidth="14" boardHeight="20" />
+      <Tetris boardWidth={14} boardHeight={20} />
     </div>
   </div>
 );
