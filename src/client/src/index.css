@@ -24,6 +24,7 @@ p {
 }
 
 label {
+  width: 100%;
   color: #4C566A;
   font-family: 'Rubik Mono One', sans-serif;
   font-size: 1em;
