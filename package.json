@@ -20,7 +20,10 @@
   },
   "scripts": {
     "build": "node scripts/build.js",
-    "clean": "rm -rf node_modules && rm -rf src/client/node_modules && src/client/build",
+    "clean": "concurrently \"yarn run clean-build\" \"yarn run clean-deps\" \"yarn run clean-logs\"",
+    "clean-build": "rm -rf src/client/build",
+    "clean-deps": "rm -rf node_modules && rm -rf yarn.lock && rm -rf src/client/node_modules && rm -rf src/client/yarn.lock",
+    "clean-logs": "find . -name \"*.log\" -type f -delete",
     "client": "node scripts/client.js",
     "lint": "concurrently \"yarn run lint-server\" \"yarn run lint-client\"",
     "lint-client": "cd src/client && eslint . --fix --ext .ts,.tsx",
