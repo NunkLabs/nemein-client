@@ -3,8 +3,8 @@
   position: relative;
 }
 
-#game-wrap {
+#game-container {
   height: 100%;
   position: relative;
-  padding: 150px;
+  padding: 100px;
 }
