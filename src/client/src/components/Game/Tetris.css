@@ -1,11 +1,16 @@
-.tetris-wrap {
+.game-wrap {
   width: 458px;
   margin: auto;
   position: relative;
 }
 
+.board-wrap, .control-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .tetris-main {
-  margin: auto;
   padding-top: 10px;
   padding-bottom: 10px;
 }

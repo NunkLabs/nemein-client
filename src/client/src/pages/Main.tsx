@@ -6,7 +6,7 @@ import './Main.css';
 const Main = (): JSX.Element => (
   <div id="outer-container">
     <LoginForm />
-    <div id="game-wrap">
+    <div id="game-container">
       <Tetris boardWidth={14} boardHeight={20} />
     </div>
   </div>

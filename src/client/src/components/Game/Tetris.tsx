@@ -434,15 +434,17 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       field, gameOver, score, level, activeTileRotate, isPaused,
     } = this.state;
     return (
-      <div className="tetris-wrap">
-        <TetrisBoard
-          field={field}
-          gameOver={gameOver}
-          score={score}
-          level={level}
-          rotate={activeTileRotate}
-        />
-        <div className="tetris-game-controls">
+      <div className="game-wrap">
+        <div className="board-wrap">
+          <TetrisBoard
+            field={field}
+            gameOver={gameOver}
+            score={score}
+            level={level}
+            rotate={activeTileRotate}
+          />
+        </div>
+        <div className="controls-wrap">
           <button
             type="button"
             className="btn-custom btn-custom-light btn-block"
