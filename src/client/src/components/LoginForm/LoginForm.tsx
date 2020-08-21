@@ -3,7 +3,7 @@ import { scaleDown as Menu } from 'react-burger-menu';
 import './LoginForm.css';
 
 const LoginMenu = (): JSX.Element => (
-  <Menu isOpen outerContainerId="outer-container" pageWrapId="game-wrap" width="600px">
+  <Menu isOpen outerContainerId="outer-container" pageWrapId="game-container" width="600px">
     <div className="form">
       <form>
         <div className="mb-2">
