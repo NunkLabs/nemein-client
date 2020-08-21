@@ -45,7 +45,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       score: 0,
       level: 1,
       tileCount: 0,
-      timerId: TetrisConsts.DEFAULT_TIME_INTERVAL_MS,
+      timerId: 0,
       field: initStates.fieldStart,
     };
   }
@@ -75,7 +75,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
   setGameInterval(interval: number): void {
     const { timerId, level } = this.state;
 
-    clearInterval(timerId);
+    window.clearInterval(timerId);
 
     const newTimerId = window.setInterval(
       () => this.handleBoardUpdate(TetrisConsts.Command.Down),
@@ -115,9 +115,11 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       score: 0,
       level: 1,
       tileCount: 0,
-      timerId: TetrisConsts.DEFAULT_TIME_INTERVAL_MS,
       field: newStates.fieldStart,
     }));
+
+    /* Reset timer */
+    this.setGameInterval(TetrisConsts.DEFAULT_TIME_INTERVAL_MS);
   }
 
   /**
