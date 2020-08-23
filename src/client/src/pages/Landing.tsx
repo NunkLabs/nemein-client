@@ -54,10 +54,14 @@ class Landing extends React.Component<{}, LandingState> {
           <GameControl
             openForm={(): void => this.setState({ formIsOpened: true })}
             toggleGame={(): void => this.setState({ gameIsPaused: !gameIsPaused })}
-            restartGame={(): void => this.setState({
-              gameIsPaused: false,
-              gameWillRestart: !gameWillRestart,
-            })}
+            restartGame={(): void => this.setState(
+              { gameIsPaused: false, gameWillRestart: true },
+              /**
+               * HACK - we use a setTimeout for now to set the state back to false
+               * in order to start after resetting the game
+               */
+              () => setTimeout(() => this.setState({ gameWillRestart: false }), 1000),
+            )}
           />
           <Tetris
             boardWidth={14}
