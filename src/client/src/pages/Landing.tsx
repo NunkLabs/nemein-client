@@ -56,7 +56,7 @@ class Landing extends React.Component<{}, LandingState> {
             toggleGame={(): void => this.setState({ gameIsPaused: !gameIsPaused })}
             restartGame={(): void => this.setState({
               gameIsPaused: false,
-              gameWillRestart: !gameWillRestart
+              gameWillRestart: !gameWillRestart,
             })}
           />
           <Tetris

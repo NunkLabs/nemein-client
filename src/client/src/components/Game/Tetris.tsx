@@ -96,7 +96,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    */
   handleNewGameClick(): void {
     const { newGame } = this.props;
-    
+
     const newStates = this.initNewGame();
 
     this.setState(() => ({
@@ -131,7 +131,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       init, gameOver, newGameSwitch, activeTileX, activeTileY, activeTile, activeTileRotate, field,
     } = this.state;
 
-    if (newGameSwitch != newGame) {
+    if (newGameSwitch !== newGame) {
       this.handleNewGameClick();
       return;
     }
