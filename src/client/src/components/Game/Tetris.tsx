@@ -133,21 +133,25 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       gameOver, isPaused, init, field, activeTileX, activeTileY, activeTileRotate, activeTile,
     } = this.state;
 
+    let newInit = init;
     let newField = field;
     let newX = activeTileX;
     let newY = activeTileY;
-    let newRotate = activeTileRotate;
     let newTile = activeTile;
+    let newRotate = activeTileRotate;
+
     let xAdd = 0;
     let yAdd = 0;
     let rotateAdd = 0;
+    let yAddValid = true;
 
     /* Return if game is over or paused */
     if (gameOver || isPaused) {
       return;
     }
 
-    /* Handling init */
+    /* Handling init - We only render the newly
+    spawned tile */
     if (init) {
       this.renderTile(activeTileX, activeTileY, activeTile, activeTileRotate, activeTile);
       this.setState(() => ({
@@ -157,45 +161,42 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       return;
     }
 
+    /* Remove current tile from field for next logic */
+    this.renderTile(activeTileX, activeTileY, activeTile, activeTileRotate, 0);
+
     /* Determine which value to be modified (x - y - rotate ?) */
     switch (command) {
       case TetrisConsts.Command.Left:
         xAdd = -1;
+        if (this.isMoveValid(newX, xAdd, newY, 0, newTile, newRotate, 0)) {
+          newX += xAdd;
+        }
         break;
       case TetrisConsts.Command.Right:
         xAdd = 1;
+        if (this.isMoveValid(newX, xAdd, newY, 0, newTile, newRotate, 0)) {
+          newX += xAdd;
+        }
         break;
       case TetrisConsts.Command.Rotate:
         rotateAdd = 1;
+        if (this.isMoveValid(newX, 0, newY, 0, newTile, newRotate, rotateAdd)) {
+          newRotate = newRotate + rotateAdd === TetrisConsts.MAX_ROTATE
+            ? TetrisConsts.Rotation.Up : (newRotate + rotateAdd);
+        }
         break;
       case TetrisConsts.Command.Down:
         yAdd = 1;
+        yAddValid = this.isMoveValid(newX, 0, newY, yAdd, newTile, newRotate, 0);
+        if (yAddValid) {
+          newY += yAdd;
+        }
         break;
       default:
         return;
     }
 
-    /* Remove current tile from field for next logic */
-    this.renderTile(newX, newY, newTile, newRotate, 0);
-
-    /* Determine horizontal movement */
-    if (this.isMoveValid(newX, xAdd, newY, 0, newTile, newRotate, 0)) {
-      newX += xAdd;
-    }
-
-    /* Determine rotation */
-    if (this.isMoveValid(newX, 0, newY, 0, newTile, newRotate, rotateAdd)) {
-      newRotate = newRotate + rotateAdd === TetrisConsts.MAX_ROTATE
-        ? TetrisConsts.Rotation.Up : (newRotate + rotateAdd);
-    }
-
-    /* Determine vertical movement */
-    const yAddValid = this.isMoveValid(newX, 0, newY, yAdd, newTile, newRotate, 0);
-    if (yAddValid) {
-      newY += yAdd;
-    }
-
-    /* Rerender tile */
+    /* Render new tile after the new coords are updated */
     this.renderTile(newX, newY, newTile, newRotate, newTile);
 
     /* Handling blocked movement */
@@ -206,6 +207,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
         return;
       }
 
+      newInit = newStates.init;
       newX = newStates.activeTileX;
       newY = newStates.activeTileY;
       newTile = newStates.activeTile;
@@ -215,6 +217,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
     /* Update new states */
     this.setState(() => ({
+      init: newInit,
       activeTileX: newX,
       activeTileY: newY,
       activeTile: newTile,
@@ -278,20 +281,24 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     move is valid */
     for (let i = 0; i < TetrisConsts.MAX_PIXEL; i += 1) {
       /* Check to see if any pixel goes out of the board */
-      const xValid = newX + tiles[activeTile][newRotate][i][0] >= 0
+      /* TBS-5: HACK - we ignore any pixels that has y coord < 0
+      so that we can safely spawn tiles pixel by pixel */
+      const yToCheck = newY + tiles[activeTile][newRotate][i][1];
+      if (yToCheck >= 0) {
+        const xValid = newX + tiles[activeTile][newRotate][i][0] >= 0
         && newX + tiles[activeTile][newRotate][i][0] < boardWidth;
-      const yValid = newY + tiles[activeTile][newRotate][i][1] >= 0
-        && newY + tiles[activeTile][newRotate][i][1] < boardHeight;
+        const yValid = yToCheck < boardHeight;
 
-      if (xValid && yValid) {
-        /* Check for any overlap */
-        const pixelOverlapped = field[newY + tiles[activeTile][newRotate][i][1]][
-          newX + tiles[activeTile][newRotate][i][0]] !== 0;
-        if (pixelOverlapped) {
+        if (xValid && yValid) {
+          /* Check for any overlap */
+          const pixelOverlapped = field[yToCheck][
+            newX + tiles[activeTile][newRotate][i][0]] !== 0;
+          if (pixelOverlapped) {
+            return false;
+          }
+        } else {
           return false;
         }
-      } else {
-        return false;
       }
     }
     return true;
@@ -302,7 +309,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @return: Object containing the updated value for states; returning
    * undefined if game is over
    */
-  handleBlockedMovement(): { activeTileX: number; activeTileY: number;
+  handleBlockedMovement(): { init: boolean;
+    activeTileX: number; activeTileY: number;
     activeTile: TetrisConsts.Tile; tileRotate: TetrisConsts.Rotation;
     field: number[][]; } | undefined {
     const { field } = this.state;
@@ -334,18 +342,22 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
     const newTile = Math.floor(Math.random()
       * (TetrisConsts.MAX_TILE_INDEX - TetrisConsts.MIN_TILE_INDEX + 1)) + 1;
-    const newX = boardWidth / 2;
-    const newY = 1;
+    const newX = Math.floor(boardWidth / 2);
+    const newY = TetrisConsts.Y_START;
     const newRotate = TetrisConsts.Rotation.Up;
 
     /* Check if game is over. If not, update score + spawn a new tile
     + set new time interval and continue */
     let isGameOver = false;
     for (let i = 0; i < TetrisConsts.MAX_PIXEL; i += 1) {
-      if (newField[newY + tiles[newTile][newRotate][i][1]][
-        newX + tiles[newTile][newRotate][i][0]] !== 0) {
-        isGameOver = true;
-        break;
+      /* TBS-5: HACK - we ignore any pixels that has y coord < 0
+      so that we can safely spawn tiles pixel by pixel */
+      const yToCheck = newY + tiles[newTile][newRotate][i][1];
+      if (yToCheck >= 0) {
+        if (newField[yToCheck][newX + tiles[newTile][newRotate][i][0]] !== 0) {
+          isGameOver = true;
+          break;
+        }
       }
     }
 
@@ -365,6 +377,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     this.setGameInterval(TetrisConsts.DEFAULT_TIME_INTERVAL_MS);
 
     return {
+      init: true,
       activeTileX: newX,
       activeTileY: newY,
       activeTile: newTile,
@@ -422,8 +435,12 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     const newField = field;
 
     for (let i = 0; i < TetrisConsts.MAX_PIXEL; i += 1) {
-      newField[tileY + tiles[tile][tileRotate][i][1]][
-        tileX + tiles[tile][tileRotate][i][0]] = renderValue;
+      /* TBS-5: HACK - we ignore any pixels that has y coord < 0
+      so that we can safely spawn tiles pixel by pixel */
+      const yToRender = tileY + tiles[tile][tileRotate][i][1];
+      if (yToRender >= 0) {
+        newField[yToRender][tileX + tiles[tile][tileRotate][i][0]] = renderValue;
+      }
     }
 
     this.setState(() => ({
