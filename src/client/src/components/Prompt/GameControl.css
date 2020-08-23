@@ -17,67 +17,79 @@
 }
 
 .game-control-visible {
-  -webkit-animation: slideIn 1s forwards;
-  -moz-animation: slideIn 1s forwards;
-  animation: slideIn 1s forwards;
+  -webkit-animation: slideIn 0.75s forwards;
+  -moz-animation: slideIn 0.75s forwards;
+  animation: slideIn 0.75s forwards;
 }
 
 @-webkit-keyframes slideIn {
   0% {
-    transform: translateY(2000px);
+    opacity: 0;
+    transform: translateY(1000px);
   }
   100% {
+    opacity: 1;
     transform: translateY(0);
   }
 }
 
 @-moz-keyframes slideIn {
   0% {
-    transform: translateY(2000px);
+    opacity: 0;
+    transform: translateY(1000px);
   }
   100% {
+    opacity: 1;
     transform: translateY(0);
   }
 }
 
 @keyframes slideIn {
   0% {
-    transform: translateY(2000px);
+    opacity: 0;
+    transform: translateY(1000px);
   }
   100% {
+    opacity: 1;
     transform: translateY(0);
   }
 }
 
 .game-control-hidden {
-  -webkit-animation: slideOut 1s forwards;
-  -moz-animation: slideOut 1s forwards;
-  animation: slideOut 1s forwards;
+  -webkit-animation: slideOut 0.75s forwards;
+  -moz-animation: slideOut 0.75s forwards;
+  animation: slideOut 0.75s forwards;
 }
 
 @-webkit-keyframes slideOut {
   0% {
+    opacity: 1;
     transform: translateY(0);
   }
   100% {
-    transform: translateY(2000px);
+    opacity: 0;
+    transform: translateY(1000px);
   }
 }
 
 @-moz-keyframes slideOut {
   0% {
+    opacity: 1;
     transform: translateY(0);
   }
   100% {
-    transform: translateY(2000px);
+    opacity: 0;
+    transform: translateY(1000px);
   }
 }
 
 @keyframes slideOut {
   0% {
+    opacity: 1;
     transform: translateY(0);
   }
   100% {
-    transform: translateY(2000px);
+    opacity: 0;
+    transform: translateY(1000px);
   }
 }
