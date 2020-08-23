@@ -125,13 +125,13 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       gameOver, init, field, activeTileX, activeTileY, activeTileRotate, activeTile,
     } = this.state;
 
-    /* Return if game is over or paused */
-    if (gameOver || isPaused) {
+    if (newGame) {
+      this.handleNewGameClick();
       return;
     }
 
-    if (newGame) {
-      this.handleNewGameClick();
+    /* Return if game is over or paused */
+    if (gameOver || isPaused) {
       return;
     }
 
