@@ -1,10 +1,14 @@
 import React from 'react';
-import { scaleDown as Menu } from 'react-burger-menu';
+import { scaleDown as Menu, State } from 'react-burger-menu';
+
+import LoginForm from '../components/Form/LoginForm';
+import GameControl from '../components/Prompt/GameControl';
 import Tetris from '../components/Game/Tetris';
 import './Landing.css';
 
 type LandingState = {
-  isOpen: boolean;
+  formIsOpened: boolean;
+  gameIsPaused: boolean;
 };
 
 class Landing extends React.Component<{}, LandingState> {
@@ -12,62 +16,40 @@ class Landing extends React.Component<{}, LandingState> {
     super(props);
 
     this.state = {
-      isOpen: false,
+      formIsOpened: false,
+      gameIsPaused: true,
     };
-
-    this.toggleLoginForm = this.toggleLoginForm.bind(this);
   }
 
-  handleStateChange(state: LandingState): void {
-    this.setState({ isOpen: state.isOpen });
+  handleGameState(): void {
+    this.setState((state: LandingState) => ({ gameIsPaused: !state.gameIsPaused }));
   }
 
-  toggleLoginForm(): void {
-    this.setState((state) => ({ isOpen: !state.isOpen }));
+  handleFormState(state: State): void {
+    this.setState({ formIsOpened: state.isOpen });
   }
 
   render(): JSX.Element {
-    const { isOpen } = this.state;
+    const { formIsOpened, gameIsPaused } = this.state;
 
     return (
       <div id="outer-container">
         <Menu
           customBurgerIcon={false}
-          isOpen={isOpen}
-          onStateChange={(state): void => this.handleStateChange(state)}
+          isOpen={formIsOpened}
+          onStateChange={(state: State): void => this.handleFormState(state)}
           outerContainerId="outer-container"
           pageWrapId="game-container"
           width="600px"
         >
-          <div className="form">
-            <form>
-              <div className="mb-2">
-                <label className="form-label" htmlFor="username-input">
-                  Username
-                  <input type="email" className="form-control-custom" id="username-input" />
-                </label>
-              </div>
-              <div className="mb-2">
-                <label className="form-label" htmlFor="password-input">
-                  Password
-                  <input type="password" className="form-control-custom" id="password-input" />
-                </label>
-              </div>
-              <div className="mb-2">
-                <button type="submit" className="btn-custom btn-custom-dark btn-block">Log In</button>
-                <button type="submit" className="btn-custom btn-custom-dark btn-block">Register Now</button>
-              </div>
-            </form>
-          </div>
+          <LoginForm />
         </Menu>
         <div id="game-container">
-          <div className="popup-console-wrap">
-            <div className="popup-console">
-              <button type="submit" className="btn-custom btn-custom-light btn-block">Play</button>
-              <button type="submit" className="btn-custom btn-custom-light btn-block" onClick={(): void => this.toggleLoginForm()}>Log In</button>
-            </div>
-          </div>
-          <Tetris boardWidth={14} boardHeight={20} isPaused={false} newGame={false} />
+          <GameControl
+            openForm={(): void => this.setState(() => ({ formIsOpened: true }))}
+            toggleGame={(): void => this.setState(() => ({ gameIsPaused: !gameIsPaused }))}
+          />
+          <Tetris boardWidth={14} boardHeight={20} isPaused={gameIsPaused} newGame={false} />
         </div>
       </div>
     );
