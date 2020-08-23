@@ -67,7 +67,7 @@ class Landing extends React.Component<{}, LandingState> {
               <button type="submit" className="btn-custom btn-custom-light btn-block" onClick={(): void => this.toggleLoginForm()}>Log In</button>
             </div>
           </div>
-          <Tetris boardWidth={14} boardHeight={20} />
+          <Tetris boardWidth={14} boardHeight={20} isPaused={false} newGame={false} />
         </div>
       </div>
     );

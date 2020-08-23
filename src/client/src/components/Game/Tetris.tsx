@@ -7,13 +7,14 @@ type TetrisProps =
 {
   boardWidth: number;
   boardHeight: number;
+  isPaused: boolean;
+  newGame: boolean;
 };
 
 type TetrisState =
 {
   init: boolean;
   gameOver: boolean;
-  isPaused: boolean;
   activeTileX: number;
   activeTileY: number;
   activeTile: number;
@@ -37,7 +38,6 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     this.state = {
       init: true,
       gameOver: false,
-      isPaused: false,
       activeTileX: initStates.xStart,
       activeTileY: TetrisConsts.Y_START,
       activeTile: initStates.tileStart,
@@ -88,16 +88,6 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
   }
 
   /**
-   * @brief: handlePauseClick: Callback for the event of the pause
-   * button being clicked on
-   */
-  handlePauseClick(): void {
-    this.setState((prev) => ({
-      isPaused: !prev.isPaused,
-    }));
-  }
-
-  /**
    * @brief: handleNewGameClick: Callback for the event of the new game
    * button being clicked on
    */
@@ -107,7 +97,6 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     this.setState(() => ({
       init: true,
       gameOver: false,
-      isPaused: false,
       activeTileX: newStates.xStart,
       activeTileY: TetrisConsts.Y_START,
       activeTile: newStates.tileStart,
@@ -130,8 +119,21 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    */
   handleBoardUpdate(command: TetrisConsts.Command): void {
     const {
-      gameOver, isPaused, init, field, activeTileX, activeTileY, activeTileRotate, activeTile,
+      isPaused, newGame,
+    } = this.props;
+    const {
+      gameOver, init, field, activeTileX, activeTileY, activeTileRotate, activeTile,
     } = this.state;
+
+    /* Return if game is over or paused */
+    if (gameOver || isPaused) {
+      return;
+    }
+
+    if (newGame) {
+      this.handleNewGameClick();
+      return;
+    }
 
     let newInit = init;
     let newField = field;
@@ -144,11 +146,6 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     let yAdd = 0;
     let rotateAdd = 0;
     let yAddValid = true;
-
-    /* Return if game is over or paused */
-    if (gameOver || isPaused) {
-      return;
-    }
 
     /* Handling init - We only render the newly
     spawned tile */
@@ -450,7 +447,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
   render(): JSX.Element {
     const {
-      field, gameOver, score, level, activeTileRotate, isPaused,
+      field, gameOver, score, level, activeTileRotate,
     } = this.state;
     return (
       <div className="game-wrap">
