@@ -16,7 +16,7 @@
     "express": "^4.17.1",
     "mongodb": "^3.6.0",
     "mongoose": "^5.9.28",
-    "typescript": "^3.9.7"
+    "typescript": "^4.0.2"
   },
   "scripts": {
     "build": "node scripts/build.js",
@@ -33,7 +33,7 @@
     "start": "concurrently \"yarn run server\" \"yarn run client\""
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
+    "eslint": "^7.7.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-airbnb-typescript": "^9.0.0",
     "eslint-plugin-import": "^2.22.0",
