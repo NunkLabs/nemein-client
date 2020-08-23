@@ -9,20 +9,20 @@ import './Landing.css';
 type LandingState = {
   formIsOpened: boolean;
   gameIsPaused: boolean;
+  gameWillRestart: boolean;
 };
 
 class Landing extends React.Component<{}, LandingState> {
   constructor(props: {}) {
     super(props);
 
+    this.handleFormState = this.handleFormState.bind(this);
+
     this.state = {
       formIsOpened: false,
       gameIsPaused: true,
+      gameWillRestart: false,
     };
-  }
-
-  handleGameState(): void {
-    this.setState((state: LandingState) => ({ gameIsPaused: !state.gameIsPaused }));
   }
 
   handleFormState(state: State): void {
@@ -30,7 +30,7 @@ class Landing extends React.Component<{}, LandingState> {
   }
 
   render(): JSX.Element {
-    const { formIsOpened, gameIsPaused } = this.state;
+    const { formIsOpened, gameIsPaused, gameWillRestart } = this.state;
 
     return (
       <div id="outer-container">
@@ -46,10 +46,19 @@ class Landing extends React.Component<{}, LandingState> {
         </Menu>
         <div id="game-container">
           <GameControl
-            openForm={(): void => this.setState(() => ({ formIsOpened: true }))}
-            toggleGame={(): void => this.setState(() => ({ gameIsPaused: !gameIsPaused }))}
+            openForm={(): void => this.setState({ formIsOpened: true })}
+            toggleGame={(): void => this.setState({ gameIsPaused: !gameIsPaused })}
+            restartGame={(): void => this.setState({
+              gameIsPaused: false,
+              gameWillRestart: !gameWillRestart,
+            })}
           />
-          <Tetris boardWidth={14} boardHeight={20} isPaused={gameIsPaused} newGame={false} />
+          <Tetris
+            boardWidth={14}
+            boardHeight={20}
+            isPaused={gameIsPaused}
+            newGame={gameWillRestart}
+          />
         </div>
       </div>
     );

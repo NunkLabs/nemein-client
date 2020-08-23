@@ -4,6 +4,7 @@ import './GameControl.css';
 type GameControlProps = {
   openForm: Function;
   toggleGame: Function;
+  restartGame: Function;
 };
 
 type GameControlState = {
@@ -26,13 +27,13 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   componentDidMount(): void {
     const { escHandler } = this;
 
-    document.addEventListener('keydown', escHandler, false);
+    document.addEventListener('keydown', escHandler);
   }
 
   componentWillUnmount(): void {
     const { escHandler } = this;
 
-    document.removeEventListener('keydown', escHandler, false);
+    document.removeEventListener('keydown', escHandler);
   }
 
   escHandler(event: KeyboardEvent): void {
@@ -46,45 +47,66 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   }
 
   render(): JSX.Element {
-    const { openForm, toggleGame } = this.props;
+    const { openForm, toggleGame, restartGame } = this.props;
     const { initialState, promptVisible } = this.state;
 
     return (
       <div className="game-control-wrap">
         <div className={`game-control game-control-${promptVisible ? 'visible' : 'hidden'}`}>
           { initialState ? (
-            <button
-              type="submit"
-              className="btn-custom btn-custom-light btn-block"
-              onClick={(): void => {
-                toggleGame();
-                this.setState({
-                  initialState: false,
-                  promptVisible: false,
-                });
-              }}
-            >
-              Play
-            </button>
+            <div>
+              <button
+                type="submit"
+                className="btn-custom btn-custom-light btn-block"
+                onClick={(): void => {
+                  toggleGame();
+                  this.setState({
+                    initialState: false,
+                    promptVisible: false,
+                  });
+                }}
+              >
+                Play
+              </button>
+              <button
+                type="submit"
+                className="btn-custom btn-custom-light btn-block"
+                onClick={(): void => openForm()}
+              >
+                Log In
+              </button>
+            </div>
           ) : (
-            <button
-              type="submit"
-              className="btn-custom btn-custom-light btn-block"
-              onClick={(): void => {
-                toggleGame();
-                this.setState({ promptVisible: false });
-              }}
-            >
-              Resume
-            </button>
+            <div>
+              <button
+                type="submit"
+                className="btn-custom btn-custom-light btn-block"
+                onClick={(): void => {
+                  toggleGame();
+                  this.setState({ promptVisible: false });
+                }}
+              >
+                Resume
+              </button>
+              <button
+                type="submit"
+                className="btn-custom btn-custom-light btn-block"
+                onClick={(): void => {
+                  restartGame();
+                  this.setState({ promptVisible: false });
+                }}
+              >
+                Restart
+              </button>
+              <button
+                type="submit"
+                className="btn-custom btn-custom-light btn-block"
+                onClick={(): void => openForm()}
+              >
+                Log In
+              </button>
+            </div>
           )}
-          <button
-            type="submit"
-            className="btn-custom btn-custom-light btn-block"
-            onClick={(): void => openForm()}
-          >
-            Log In
-          </button>
         </div>
       </div>
     );
