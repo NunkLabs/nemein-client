@@ -463,22 +463,6 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
             rotate={activeTileRotate}
           />
         </div>
-        <div className="controls-wrap">
-          <button
-            type="button"
-            className="btn-custom btn-custom-light btn-block"
-            onClick={(): void => this.handleNewGameClick()}
-          >
-            New Game
-          </button>
-          <button
-            type="button"
-            className="btn-custom btn-custom-light btn-block"
-            onClick={(): void => this.handlePauseClick()}
-          >
-            {isPaused ? 'Resume' : 'Pause'}
-          </button>
-        </div>
       </div>
     );
   }

@@ -1,3 +1,18 @@
+#outer-container {
+  height: 100%;
+  position: relative;
+}
+
+#game-container {
+  height: 100%;
+  position: relative;
+  padding-top: 100px;
+}
+
+/*
+  Login Form
+*/
+
 .form {
   height: 100%;
   width: 500px;
@@ -8,10 +23,6 @@
   padding-left: 50px;
   padding-bottom: 250px;
 }
-
-/*
-  Custom react-burget-menu stylings
-*/
 
 .bm-burger-button {
   position: fixed;
@@ -57,4 +68,26 @@
 
 .bm-overlay {
   background: rgba(0, 0, 0, 0) !important;
+}
+
+/*
+  Popup Console
+*/
+
+.popup-console-wrap {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  align-items: center;
+}
+
+.popup-console {
+  width: 300px;
+  background: #2E3440;
+  border: 5px solid transparent;
+  border-radius: 0.1rem;
+  margin: auto;
+  top: 40%;
+  position: relative;
+  z-index: 1;
 }

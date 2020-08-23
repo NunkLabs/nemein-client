@@ -181,7 +181,7 @@ fieldset:disabled a.btn-custom {
   color: #D8DEE9;
   background-color: #D8DEE9;
   background-clip: padding-box;
-  border: 3px solid #D8DEE9;
+  border: 5px solid #D8DEE9;
   border-radius: 0.1rem;
   outline: none;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
