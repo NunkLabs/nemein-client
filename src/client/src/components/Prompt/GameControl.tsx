@@ -36,6 +36,11 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
     document.removeEventListener('keydown', escHandler);
   }
 
+  /**
+   * @brief: escHandler: Callback for the event of the Escape
+   * key being received; pause the game and pull up the game control prompt
+   * @param[in]: event - The keyboard event received
+   */
   escHandler(event: KeyboardEvent): void {
     const { toggleGame } = this.props;
     const { promptVisible } = this.state;

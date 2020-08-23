@@ -25,6 +25,12 @@ class Landing extends React.Component<{}, LandingState> {
     };
   }
 
+  /**
+   * @brief: handleFormState: Callback to sync the state being set
+   * using our own onClick event with the state being set using the
+   * default means in the react-burger-menu module
+   * @param[in]: state - The state of the menu
+   */
   handleFormState(state: State): void {
     this.setState({ formIsOpened: state.isOpen });
   }
