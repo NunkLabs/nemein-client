@@ -4,37 +4,39 @@ import Tetris from '../components/Game/Tetris';
 import './Landing.css';
 
 type LandingState = {
-  isOpen: boolean
-}
+  isOpen: boolean;
+};
 
 class Landing extends React.Component<{}, LandingState> {
-  constructor (props: {}) {
+  constructor(props: {}) {
     super(props);
 
     this.state = {
-      isOpen: false
-    }
+      isOpen: false,
+    };
 
     this.toggleLoginForm = this.toggleLoginForm.bind(this);
   }
 
-  handleStateChange (state: LandingState) {
-    this.setState({ isOpen: state.isOpen })  
+  handleStateChange(state: LandingState): void {
+    this.setState({ isOpen: state.isOpen });
   }
 
-  toggleLoginForm() {
-    this.setState(state => ({ isOpen: !state.isOpen }))
+  toggleLoginForm(): void {
+    this.setState((state) => ({ isOpen: !state.isOpen }));
   }
 
   render(): JSX.Element {
+    const { isOpen } = this.state;
+
     return (
       <div id="outer-container">
         <Menu
-          customBurgerIcon={ false }
-          isOpen={ this.state.isOpen }
-          onStateChange={ state => this.handleStateChange(state) }
+          customBurgerIcon={false}
+          isOpen={isOpen}
+          onStateChange={(state): void => this.handleStateChange(state)}
           outerContainerId="outer-container"
-          pageWrapId="game-container" 
+          pageWrapId="game-container"
           width="600px"
         >
           <div className="form">
@@ -59,17 +61,17 @@ class Landing extends React.Component<{}, LandingState> {
           </div>
         </Menu>
         <div id="game-container">
-          <div className='popup-console-wrap'>
-            <div className='popup-console'>
+          <div className="popup-console-wrap">
+            <div className="popup-console">
               <button type="submit" className="btn-custom btn-custom-light btn-block">Play</button>
-              <button type="submit" className="btn-custom btn-custom-light btn-block" onClick={ this.toggleLoginForm }>Log In</button>
+              <button type="submit" className="btn-custom btn-custom-light btn-block" onClick={(): void => this.toggleLoginForm()}>Log In</button>
             </div>
           </div>
-          <Tetris boardWidth={ 14 } boardHeight={ 20 }/>
+          <Tetris boardWidth={14} boardHeight={20} />
         </div>
       </div>
     );
-  } 
+  }
 }
 
 export default Landing;

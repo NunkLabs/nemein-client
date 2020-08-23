@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const App = (): JSX.Element => (
   <Router>
     <Switch>
-      <Route exact path="/" component={ Landing } />
+      <Route exact path="/" component={Landing} />
     </Switch>
   </Router>
 );
