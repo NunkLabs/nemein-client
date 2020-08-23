@@ -8,13 +8,15 @@ type TetrisProps =
   boardWidth: number;
   boardHeight: number;
   isPaused: boolean;
-  newGame: boolean;
+  newGame: boolean; /* We now use the newGame prop as a 'switch' to toggle a new game
+  instead of polling its' value to determine whether or not a new game should start */
 };
 
 type TetrisState =
 {
   init: boolean;
   gameOver: boolean;
+  newGameSwitch: boolean;
   activeTileX: number;
   activeTileY: number;
   activeTile: number;
@@ -38,6 +40,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     this.state = {
       init: true,
       gameOver: false,
+      newGameSwitch: props.newGame,
       activeTileX: initStates.xStart,
       activeTileY: TetrisConsts.Y_START,
       activeTile: initStates.tileStart,
@@ -92,11 +95,14 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * button being clicked on
    */
   handleNewGameClick(): void {
+    const { newGame } = this.props;
+    
     const newStates = this.initNewGame();
 
     this.setState(() => ({
       init: true,
       gameOver: false,
+      newGameSwitch: newGame,
       activeTileX: newStates.xStart,
       activeTileY: TetrisConsts.Y_START,
       activeTile: newStates.tileStart,
@@ -122,10 +128,10 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       isPaused, newGame,
     } = this.props;
     const {
-      gameOver, init, field, activeTileX, activeTileY, activeTileRotate, activeTile,
+      init, gameOver, newGameSwitch, activeTileX, activeTileY, activeTile, activeTileRotate, field,
     } = this.state;
 
-    if (newGame) {
+    if (newGameSwitch != newGame) {
       this.handleNewGameClick();
       return;
     }
