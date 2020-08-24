@@ -4,7 +4,6 @@ import { v4 as uuid } from 'uuid';
 type TetrisBoardProps =
 {
   field: number[][];
-  gameOver: boolean;
   score: number;
   level: number;
   rotate: number;
@@ -12,9 +11,7 @@ type TetrisBoardProps =
 
 const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
   const board: JSX.Element[] = [];
-  const {
-    field, gameOver, score, level,
-  } = props;
+  const { field, score, level } = props;
 
   field.forEach((row) => {
     const cols = row.map((column: number) => <div className={`col-${column}`} key={uuid()} />);
@@ -32,7 +29,6 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
           Score:
           {score}
         </p>
-        {gameOver && <p className="tetris-text">Game Over</p>}
       </div>
       <div className="tetris-board">{board}</div>
     </div>

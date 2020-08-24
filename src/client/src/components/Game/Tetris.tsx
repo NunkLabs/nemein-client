@@ -7,9 +7,11 @@ type TetrisProps =
 {
   boardWidth: number;
   boardHeight: number;
-  gameIsPaused: boolean;
-  gameWillRestart: boolean; /* We now use the newGame prop as a 'switch' to toggle a new game
+  gamePaused: boolean;
+  gameRestart: boolean; /* We now use the newGame prop as a 'switch' to toggle a new game
   instead of polling its' value to determine whether or not a new game should start */
+  gameState: Function; /* We use a callback as another switch to let the parent component
+  know whether the game is over */
 };
 
 type TetrisState =
@@ -40,7 +42,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     this.state = {
       init: true,
       gameOver: false,
-      newGameSwitch: props.newGame,
+      newGameSwitch: props.gameRestart,
       activeTileX: initStates.xStart,
       activeTileY: TetrisConsts.Y_START,
       activeTile: initStates.tileStart,
@@ -95,14 +97,17 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * button being clicked on
    */
   handleNewGameClick(): void {
-    const { newGame } = this.props;
+    const { gameRestart, gameState } = this.props;
+
+    /* Call gameState callback to reset parent's gameOver prop */
+    gameState(false);
 
     const newStates = this.initNewGame();
 
     this.setState(() => ({
       init: true,
       gameOver: false,
-      newGameSwitch: newGame,
+      newGameSwitch: gameRestart,
       activeTileX: newStates.xStart,
       activeTileY: TetrisConsts.Y_START,
       activeTile: newStates.tileStart,
@@ -124,20 +129,25 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * always 'Down' for each tick of the game
    */
   handleBoardUpdate(command: TetrisConsts.Command): void {
-    const { isPaused, newGame } = this.props;
+    const { gamePaused, gameRestart, gameState } = this.props;
     const {
       init, gameOver, newGameSwitch, activeTileX, activeTileY, activeTile, activeTileRotate, field,
     } = this.state;
 
-    if (newGameSwitch !== newGame) {
+    /* Call new game handler and return if the new game/restart button was clicked */
+    if (newGameSwitch !== gameRestart) {
       this.handleNewGameClick();
       return;
     }
 
-    /* Return if game is over or paused */
-    if (gameOver || isPaused) {
+    /* Call gameState callback and return if game is over */
+    if (gameOver) {
+      gameState(true);
       return;
     }
+
+    /* Return if game is paused */
+    if (gamePaused) return;
 
     let newInit = init;
     let newField = field;
@@ -449,14 +459,13 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
   render(): JSX.Element {
     const {
-      field, gameOver, score, level, activeTileRotate,
+      field, score, level, activeTileRotate,
     } = this.state;
 
     return (
       <div className="game-wrap">
         <TetrisBoard
           field={field}
-          gameOver={gameOver}
           score={score}
           level={level}
           rotate={activeTileRotate}

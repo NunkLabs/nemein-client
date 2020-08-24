@@ -2,6 +2,7 @@ import React from 'react';
 import './GameControl.css';
 
 type GameControlProps = {
+  isOver: boolean;
   openForm: Function;
   toggleGame: Function;
   restartGame: Function;
@@ -9,6 +10,7 @@ type GameControlProps = {
 
 type GameControlState = {
   initialState: boolean;
+  needRestart: boolean;
   promptVisible: boolean;
 };
 
@@ -21,8 +23,26 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
 
     this.state = {
       initialState: true,
+      needRestart: false,
       promptVisible: true,
     };
+  }
+
+  static getDerivedStateFromProps(props: GameControlProps, state: GameControlState): object | null {
+    if (props.isOver && !state.promptVisible) {
+      return {
+        promptVisible: true,
+      };
+    }
+
+    if (!props.isOver && state.promptVisible && state.needRestart) {
+      return {
+        needRestart: false,
+        promptVisible: false,
+      };
+    }
+
+    return null;
   }
 
   componentDidMount(): void {
@@ -36,7 +56,7 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
     const { escHandler, unfocusedHandler } = this;
 
     document.removeEventListener('keydown', escHandler);
-    document.removeEventListener('addEventListener', unfocusedHandler);
+    document.removeEventListener('visibilitychange', unfocusedHandler);
   }
 
   /**
@@ -70,7 +90,9 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   }
 
   render(): JSX.Element {
-    const { openForm, toggleGame, restartGame } = this.props;
+    const {
+      isOver, openForm, toggleGame, restartGame,
+    } = this.props;
     const { initialState, promptVisible } = this.state;
 
     return (
@@ -80,7 +102,7 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
             <div>
               <button
                 type="submit"
-                className="btn-custom btn-custom-light btn-block"
+                className="btn-custom btn-custom-dark btn-block"
                 onClick={(): void => {
                   toggleGame();
                   this.setState({
@@ -93,7 +115,7 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
               </button>
               <button
                 type="submit"
-                className="btn-custom btn-custom-light btn-block"
+                className="btn-custom btn-custom-dark btn-block"
                 onClick={(): void => openForm()}
               >
                 Log In
@@ -101,29 +123,36 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
             </div>
           ) : (
             <div>
+              { isOver ? (
+                <h2>Game Over</h2>
+              ) : (
+                <button
+                  type="submit"
+                  className="btn-custom btn-custom-dark btn-block"
+                  onClick={(): void => {
+                    toggleGame();
+                    this.setState({ promptVisible: false });
+                  }}
+                >
+                  Resume
+                </button>
+              )}
               <button
                 type="submit"
-                className="btn-custom btn-custom-light btn-block"
-                onClick={(): void => {
-                  toggleGame();
-                  this.setState({ promptVisible: false });
-                }}
-              >
-                Resume
-              </button>
-              <button
-                type="submit"
-                className="btn-custom btn-custom-light btn-block"
+                className="btn-custom btn-custom-dark btn-block"
                 onClick={(): void => {
                   restartGame();
-                  this.setState({ promptVisible: false });
+                  this.setState({
+                    needRestart: true,
+                    promptVisible: false,
+                  });
                 }}
               >
                 Restart
               </button>
               <button
                 type="submit"
-                className="btn-custom btn-custom-light btn-block"
+                className="btn-custom btn-custom-dark btn-block"
                 onClick={(): void => openForm()}
               >
                 Log In

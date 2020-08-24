@@ -10,6 +10,7 @@ type LandingState = {
   formOpened: boolean;
   gamePaused: boolean;
   gameRestart: boolean;
+  gameOver: boolean;
 };
 
 class Landing extends React.Component<{}, LandingState> {
@@ -22,6 +23,7 @@ class Landing extends React.Component<{}, LandingState> {
       formOpened: false,
       gamePaused: true,
       gameRestart: false,
+      gameOver: false,
     };
   }
 
@@ -36,7 +38,9 @@ class Landing extends React.Component<{}, LandingState> {
   }
 
   render(): JSX.Element {
-    const { formOpened, gamePaused, gameRestart } = this.state;
+    const {
+      formOpened, gamePaused, gameRestart, gameOver,
+    } = this.state;
 
     return (
       <div id="outer-container">
@@ -52,6 +56,7 @@ class Landing extends React.Component<{}, LandingState> {
         </Menu>
         <div id="game-container">
           <GameControl
+            isOver={gameOver}
             openForm={(): void => this.setState({ formOpened: true })}
             toggleGame={(): void => this.setState({ gamePaused: !gamePaused })}
             restartGame={(): void => this.setState({
@@ -64,6 +69,7 @@ class Landing extends React.Component<{}, LandingState> {
             boardHeight={20}
             gamePaused={gamePaused}
             gameRestart={gameRestart}
+            gameState={(isOver: boolean): void => this.setState({ gameOver: isOver })}
           />
         </div>
       </div>

@@ -16,6 +16,14 @@ h1 {
   text-align: center;
 }
 
+h2 {
+  padding: 10px;
+  color: #D8DEE9;
+  font-family: 'Rubik Mono One', sans-serif;
+  font-size: 2em;
+  text-align: center;
+}
+
 p {
   color: #D8DEE9;
   font-family: 'Rubik Mono One', sans-serif;
