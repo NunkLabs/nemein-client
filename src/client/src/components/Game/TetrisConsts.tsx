@@ -73,10 +73,10 @@ export const TILES_COORDS_ARR = [
 ];
 
 /* Keyboard event consts */
-export const ARROW_DOWN_UNICODE = 40;
-export const ARROW_LEFT_UNICODE = 37;
-export const ARROW_UP_UNICODE = 38;
-export const ARROW_RIGHT_UNICODE = 39;
+export const ARROW_DOWN = 'ArrowDown';
+export const ARROW_LEFT = 'ArrowLeft';
+export const ARROW_UP = 'ArrowUp';
+export const ARROW_RIGHT = 'ArrowRight';
 export const KEYBOARD_EVENT = 'keydown';
 
 /* Timer consts */

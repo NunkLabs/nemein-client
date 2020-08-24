@@ -124,9 +124,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * always 'Down' for each tick of the game
    */
   handleBoardUpdate(command: TetrisConsts.Command): void {
-    const {
-      isPaused, newGame,
-    } = this.props;
+    const { isPaused, newGame } = this.props;
     const {
       init, gameOver, newGameSwitch, activeTileX, activeTileY, activeTile, activeTileRotate, field,
     } = this.state;
@@ -236,17 +234,17 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @param[in]: event - The keyboard event received
    */
   keyboardInputHandle(event: KeyboardEvent): void {
-    switch (event.keyCode) {
-      case TetrisConsts.ARROW_DOWN_UNICODE:
+    switch (event.key) {
+      case TetrisConsts.ARROW_DOWN:
         this.handleBoardUpdate(TetrisConsts.Command.Down);
         break;
-      case TetrisConsts.ARROW_LEFT_UNICODE:
+      case TetrisConsts.ARROW_LEFT:
         this.handleBoardUpdate(TetrisConsts.Command.Left);
         break;
-      case TetrisConsts.ARROW_UP_UNICODE:
+      case TetrisConsts.ARROW_UP:
         this.handleBoardUpdate(TetrisConsts.Command.Rotate);
         break;
-      case TetrisConsts.ARROW_RIGHT_UNICODE:
+      case TetrisConsts.ARROW_RIGHT:
         this.handleBoardUpdate(TetrisConsts.Command.Right);
         break;
       default:
@@ -267,10 +265,10 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @param[in]: rotateAdd - Amount of rotation to be added
    * @return: True of the move is valid, false otw
    */
-  isMoveValid(activeTileX: number, xAdd: number,
-    activeTileY: number, yAdd: number,
-    activeTile: TetrisConsts.Tile,
-    activeTileRotate: TetrisConsts.Rotation, rotateAdd: number): boolean {
+  isMoveValid(
+    activeTileX: number, xAdd: number, activeTileY: number, yAdd: number,
+    activeTile: TetrisConsts.Tile, activeTileRotate: TetrisConsts.Rotation, rotateAdd: number,
+  ): boolean {
     const { field } = this.state;
     const { boardWidth, boardHeight } = this.props;
     const tiles = TetrisConsts.TILES_COORDS_ARR;
@@ -312,10 +310,10 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @return: Object containing the updated value for states; returning
    * undefined if game is over
    */
-  handleBlockedMovement(): { init: boolean;
-    activeTileX: number; activeTileY: number;
-    activeTile: TetrisConsts.Tile; tileRotate: TetrisConsts.Rotation;
-    field: number[][]; } | undefined {
+  handleBlockedMovement(): {
+    init: boolean; activeTileX: number; activeTileY: number; activeTile: TetrisConsts.Tile;
+    tileRotate: TetrisConsts.Rotation; field: number[][];
+  } | undefined {
     const { field } = this.state;
     const { boardWidth, boardHeight } = this.props;
     const tiles = TetrisConsts.TILES_COORDS_ARR;
@@ -394,9 +392,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * and randomizing the new tile
    * @return: Object containing the init value for states
    */
-  initNewGame(): { xStart: number;
-    tileStart: TetrisConsts.Tile;
-    fieldStart: number[][]; } {
+  initNewGame(): { xStart: number; tileStart: TetrisConsts.Tile; fieldStart: number[][] } {
     const { boardWidth, boardHeight } = this.props;
 
     const fieldInit: number[][] = [];
