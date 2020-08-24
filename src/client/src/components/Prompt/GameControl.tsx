@@ -17,6 +17,7 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
     super(props);
 
     this.escHandler = this.escHandler.bind(this);
+    this.unfocusedHandler = this.unfocusedHandler.bind(this);
 
     this.state = {
       initialState: true,
@@ -25,15 +26,17 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   }
 
   componentDidMount(): void {
-    const { escHandler } = this;
+    const { escHandler, unfocusedHandler } = this;
 
     document.addEventListener('keydown', escHandler);
+    document.addEventListener('visibilitychange', unfocusedHandler);
   }
 
   componentWillUnmount(): void {
-    const { escHandler } = this;
+    const { escHandler, unfocusedHandler } = this;
 
     document.removeEventListener('keydown', escHandler);
+    document.removeEventListener('addEventListener', unfocusedHandler);
   }
 
   /**
@@ -46,6 +49,21 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
     const { promptVisible } = this.state;
 
     if (!promptVisible && event.key === 'Escape') {
+      toggleGame();
+      this.setState({ promptVisible: true });
+    }
+  }
+
+  /**
+   * @brief: unfocusedHandler: Callback for the event of visibility
+   * status of the document being changed; key being received; pause the
+   * game and pull up the game control prompt
+   */
+  unfocusedHandler(): void {
+    const { toggleGame } = this.props;
+    const { promptVisible } = this.state;
+
+    if (!promptVisible && document.visibilityState !== 'visible') {
       toggleGame();
       this.setState({ promptVisible: true });
     }
