@@ -7,8 +7,8 @@ type TetrisProps =
 {
   boardWidth: number;
   boardHeight: number;
-  isPaused: boolean;
-  newGame: boolean; /* We now use the newGame prop as a 'switch' to toggle a new game
+  gameIsPaused: boolean;
+  gameWillRestart: boolean; /* We now use the newGame prop as a 'switch' to toggle a new game
   instead of polling its' value to determine whether or not a new game should start */
 };
 

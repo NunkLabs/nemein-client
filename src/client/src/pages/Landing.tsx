@@ -7,9 +7,9 @@ import Tetris from '../components/Game/Tetris';
 import './Landing.css';
 
 type LandingState = {
-  formIsOpened: boolean;
-  gameIsPaused: boolean;
-  gameWillRestart: boolean;
+  formOpened: boolean;
+  gamePaused: boolean;
+  gameRestart: boolean;
 };
 
 class Landing extends React.Component<{}, LandingState> {
@@ -19,9 +19,9 @@ class Landing extends React.Component<{}, LandingState> {
     this.handleFormState = this.handleFormState.bind(this);
 
     this.state = {
-      formIsOpened: false,
-      gameIsPaused: true,
-      gameWillRestart: false,
+      formOpened: false,
+      gamePaused: true,
+      gameRestart: false,
     };
   }
 
@@ -32,17 +32,17 @@ class Landing extends React.Component<{}, LandingState> {
    * @param[in]: state - The state of the menu
    */
   handleFormState(state: State): void {
-    this.setState({ formIsOpened: state.isOpen });
+    this.setState({ formOpened: state.isOpen });
   }
 
   render(): JSX.Element {
-    const { formIsOpened, gameIsPaused, gameWillRestart } = this.state;
+    const { formOpened, gamePaused, gameRestart } = this.state;
 
     return (
       <div id="outer-container">
         <Menu
           customBurgerIcon={false}
-          isOpen={formIsOpened}
+          isOpen={formOpened}
           onStateChange={(state: State): void => this.handleFormState(state)}
           outerContainerId="outer-container"
           pageWrapId="game-container"
@@ -52,18 +52,18 @@ class Landing extends React.Component<{}, LandingState> {
         </Menu>
         <div id="game-container">
           <GameControl
-            openForm={(): void => this.setState({ formIsOpened: true })}
-            toggleGame={(): void => this.setState({ gameIsPaused: !gameIsPaused })}
+            openForm={(): void => this.setState({ formOpened: true })}
+            toggleGame={(): void => this.setState({ gamePaused: !gamePaused })}
             restartGame={(): void => this.setState({
-              gameIsPaused: false,
-              gameWillRestart: !gameWillRestart,
+              gamePaused: false,
+              gameRestart: !gameRestart,
             })}
           />
           <Tetris
             boardWidth={14}
             boardHeight={20}
-            isPaused={gameIsPaused}
-            newGame={gameWillRestart}
+            gamePaused={gamePaused}
+            gameRestart={gameRestart}
           />
         </div>
       </div>
