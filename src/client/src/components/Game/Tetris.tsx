@@ -147,7 +147,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     }
 
     /* Return if game is paused */
-    if (gamePaused) return;
+    if (gamePaused) {
+      return;
+    }
 
     let newInit = init;
     let newField = field;

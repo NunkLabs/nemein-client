@@ -68,7 +68,9 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
     const { toggleGame } = this.props;
     const { promptVisible } = this.state;
 
-    if (event.key !== 'Escape') return;
+    if (event.key !== 'Escape') { 
+      return;
+    }
 
     if (promptVisible) {
       toggleGame();
