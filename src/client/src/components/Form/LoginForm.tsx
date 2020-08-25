@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './LoginForm.css';
 
 const LoginFrom: React.FC<{}> = () => (
@@ -17,8 +18,14 @@ const LoginFrom: React.FC<{}> = () => (
         </label>
       </div>
       <div className="mb-2">
-        <button type="submit" className="btn-custom btn-custom-dark btn-block">Log In</button>
-        <button type="submit" className="btn-custom btn-custom-dark btn-block">Register Now</button>
+        <Link to="/home">
+          <button type="submit" className="btn-custom btn-custom-dark btn-block">Log In</button>
+        </Link>
+      </div>
+      <div className="mb-2">
+        <Link to="/home">
+          <button type="submit" className="btn-custom btn-custom-dark btn-block">Register Now</button>
+        </Link>
       </div>
     </form>
   </div>

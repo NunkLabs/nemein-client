@@ -1,9 +1,9 @@
 import React from 'react';
 import { scaleDown as Menu, State } from 'react-burger-menu';
 
-import LoginForm from '../components/Form/LoginForm';
-import GameControl from '../components/Prompt/GameControl';
-import Tetris from '../components/Game/Tetris';
+import LoginForm from '../../components/Form/LoginForm';
+import GameControl from '../../components/Prompt/GameControl';
+import Tetris from '../../components/Game/Tetris';
 import './Landing.css';
 
 type LandingState = {

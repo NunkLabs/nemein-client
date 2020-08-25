@@ -3,7 +3,7 @@ import './GameControl.css';
 
 type GameControlProps = {
   isOver: boolean;
-  openForm: Function;
+  openForm?: Function;
   toggleGame: Function;
   restartGame: Function;
 };
@@ -116,7 +116,9 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
               <button
                 type="submit"
                 className="btn-custom btn-custom-dark btn-block"
-                onClick={(): void => openForm()}
+                onClick={(): void => {
+                  if (openForm) openForm();
+                }}
               >
                 Log In
               </button>
@@ -153,7 +155,9 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
               <button
                 type="submit"
                 className="btn-custom btn-custom-dark btn-block"
-                onClick={(): void => openForm()}
+                onClick={(): void => {
+                  if (openForm) openForm();
+                }}
               >
                 Log In
               </button>
