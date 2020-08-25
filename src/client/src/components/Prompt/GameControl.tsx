@@ -35,10 +35,10 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
       };
     }
 
-    if (!props.isOver && state.promptVisible && state.needRestart) {
+    if (!props.isOver && state.needRestart) {
       return {
-        needRestart: false,
         promptVisible: false,
+        needRestart: false,
       };
     }
 
@@ -146,8 +146,8 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
           onClick={(): void => {
             restartGame();
             this.setState({
-              needRestart: true,
               promptVisible: false,
+              needRestart: true,
             });
           }}
         >
