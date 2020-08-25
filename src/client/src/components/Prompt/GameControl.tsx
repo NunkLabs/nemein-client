@@ -3,9 +3,9 @@ import './GameControl.css';
 
 type GameControlProps = {
   isOver: boolean;
-  openForm?: Function;
   toggleGame: Function;
   restartGame: Function;
+  openForm?: Function;
 };
 
 type GameControlState = {
@@ -18,8 +18,8 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   constructor(props: GameControlProps) {
     super(props);
 
-    this.escHandler = this.escHandler.bind(this);
-    this.unfocusedHandler = this.unfocusedHandler.bind(this);
+    this.handleEscKey = this.handleEscKey.bind(this);
+    this.handleUnfocus = this.handleUnfocus.bind(this);
 
     this.state = {
       initialState: true,
@@ -46,25 +46,25 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   }
 
   componentDidMount(): void {
-    const { escHandler, unfocusedHandler } = this;
+    const { handleEscKey, handleUnfocus } = this;
 
-    document.addEventListener('keydown', escHandler);
-    document.addEventListener('visibilitychange', unfocusedHandler);
+    document.addEventListener('keydown', handleEscKey);
+    document.addEventListener('visibilitychange', handleUnfocus);
   }
 
   componentWillUnmount(): void {
-    const { escHandler, unfocusedHandler } = this;
+    const { handleEscKey, handleUnfocus } = this;
 
-    document.removeEventListener('keydown', escHandler);
-    document.removeEventListener('visibilitychange', unfocusedHandler);
+    document.removeEventListener('keydown', handleEscKey);
+    document.removeEventListener('visibilitychange', handleUnfocus);
   }
 
   /**
-   * @brief: escHandler: Callback for the event of the Escape
+   * @brief: handleEscKey: Callback for the event of the Escape
    * key being received; pause the game and pull up the game control prompt
    * @param[in]: event - The keyboard event received
    */
-  escHandler(event: KeyboardEvent): void {
+  handleEscKey(event: KeyboardEvent): void {
     const { toggleGame } = this.props;
     const { promptVisible } = this.state;
 
@@ -75,11 +75,11 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   }
 
   /**
-   * @brief: unfocusedHandler: Callback for the event of visibility
+   * @brief: handleUnfocus: Callback for the event of visibility
    * status of the document being changed; key being received; pause the
    * game and pull up the game control prompt
    */
-  unfocusedHandler(): void {
+  handleUnfocus(): void {
     const { toggleGame } = this.props;
     const { promptVisible } = this.state;
 
@@ -89,80 +89,100 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
     }
   }
 
+  renderInitialPrompt(): JSX.Element {
+    const { toggleGame } = this.props;
+
+    const logInButton = this.renderLoginButton();
+
+    return (
+      <div>
+        <button
+          type="submit"
+          className="btn-custom btn-custom-dark btn-block"
+          onClick={(): void => {
+            toggleGame();
+            this.setState({
+              initialState: false,
+              promptVisible: false,
+            });
+          }}
+        >
+          Play
+        </button>
+        { logInButton }
+      </div>
+    );
+  }
+
+  renderPrompt(): JSX.Element {
+    const { isOver, toggleGame, restartGame } = this.props;
+
+    const logInButton = this.renderLoginButton();
+
+    return (
+      <div>
+        { isOver ? (
+          <h2>Game Over</h2>
+        ) : (
+          <button
+            type="submit"
+            className="btn-custom btn-custom-dark btn-block"
+            onClick={(): void => {
+              toggleGame();
+              this.setState({ promptVisible: false });
+            }}
+          >
+            Resume
+          </button>
+        )}
+        <button
+          type="submit"
+          className="btn-custom btn-custom-dark btn-block"
+          onClick={(): void => {
+            restartGame();
+            this.setState({
+              needRestart: true,
+              promptVisible: false,
+            });
+          }}
+        >
+          Restart
+        </button>
+        { logInButton }
+      </div>
+    );
+  }
+
+  renderLoginButton(): JSX.Element {
+    const { openForm } = this.props;
+
+    return openForm ? (
+      <button
+        type="submit"
+        className="btn-custom btn-custom-dark btn-block"
+        onClick={(): void => openForm()}
+      >
+        Log In
+      </button>
+    ) : (
+      <button
+        type="submit"
+        className="btn-custom btn-custom-dark btn-block"
+      >
+        Log Out
+      </button>
+    );
+  }
+
   render(): JSX.Element {
-    const {
-      isOver, openForm, toggleGame, restartGame,
-    } = this.props;
     const { initialState, promptVisible } = this.state;
+
+    const prompt = initialState ? this.renderInitialPrompt() : this.renderPrompt();
 
     return (
       <div className="game-control-wrap">
         <div className={`game-control game-control-${promptVisible ? 'visible' : 'hidden'}`}>
-          { initialState ? (
-            <div>
-              <button
-                type="submit"
-                className="btn-custom btn-custom-dark btn-block"
-                onClick={(): void => {
-                  toggleGame();
-                  this.setState({
-                    initialState: false,
-                    promptVisible: false,
-                  });
-                }}
-              >
-                Play
-              </button>
-              <button
-                type="submit"
-                className="btn-custom btn-custom-dark btn-block"
-                onClick={(): void => {
-                  if (openForm) openForm();
-                }}
-              >
-                Log In
-              </button>
-            </div>
-          ) : (
-            <div>
-              { isOver ? (
-                <h2>Game Over</h2>
-              ) : (
-                <button
-                  type="submit"
-                  className="btn-custom btn-custom-dark btn-block"
-                  onClick={(): void => {
-                    toggleGame();
-                    this.setState({ promptVisible: false });
-                  }}
-                >
-                  Resume
-                </button>
-              )}
-              <button
-                type="submit"
-                className="btn-custom btn-custom-dark btn-block"
-                onClick={(): void => {
-                  restartGame();
-                  this.setState({
-                    needRestart: true,
-                    promptVisible: false,
-                  });
-                }}
-              >
-                Restart
-              </button>
-              <button
-                type="submit"
-                className="btn-custom btn-custom-dark btn-block"
-                onClick={(): void => {
-                  if (openForm) openForm();
-                }}
-              >
-                Log In
-              </button>
-            </div>
-          )}
+          { prompt }
         </div>
       </div>
     );

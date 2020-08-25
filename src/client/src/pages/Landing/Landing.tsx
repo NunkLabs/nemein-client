@@ -57,12 +57,12 @@ class Landing extends React.Component<{}, LandingState> {
         <div id="game-container">
           <GameControl
             isOver={gameOver}
-            openForm={(): void => this.setState({ formOpened: true })}
             toggleGame={(): void => this.setState({ gamePaused: !gamePaused })}
             restartGame={(): void => this.setState({
               gamePaused: false,
               gameRestart: !gameRestart,
             })}
+            openForm={(): void => this.setState({ formOpened: true })}
           />
           <Tetris
             boardWidth={14}
