@@ -21,14 +21,24 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
   return (
     <div className="tetris-main">
       <div className="tetris-info">
-        <p className="tetris-text">
-          Level:
-          {level}
-        </p>
-        <p className="tetris-text">
-          Score:
-          {score}
-        </p>
+        <div className="row">
+          <div className="col">
+            <p className="tetris-text">
+              Level
+            </p>
+            <p> 
+              {level}
+            </p>
+          </div>
+          <div className="col">
+            <p className="tetris-text">
+              Score
+            </p>
+            <p>
+              {score}
+            </p>
+          </div>
+        </div>
       </div>
       <div className="tetris-board">{board}</div>
     </div>

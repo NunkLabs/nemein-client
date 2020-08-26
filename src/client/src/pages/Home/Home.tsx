@@ -1,7 +1,6 @@
 import React from 'react';
 import GameControl from '../../components/Prompt/GameControl';
 import Tetris from '../../components/Game/Tetris';
-import './Home.css';
 
 type HomeState = {
   gamePaused: boolean;

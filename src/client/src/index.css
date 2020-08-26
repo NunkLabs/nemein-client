@@ -38,6 +38,20 @@ label {
   font-size: 1em;
 }
 
+/*
+  Common stylings for pages
+*/
+#outer-container {
+  height: 100%;
+  position: relative;
+}
+
+#game-container {
+  height: 100%;
+  position: relative;
+  padding-top: 100px;
+}
+
 /*  
   Tetris Component
 */
