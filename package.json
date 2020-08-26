@@ -30,7 +30,8 @@
     "lint-server": "cd src/server && eslint . --fix --ext .js",
     "preinstall": "cd src/client && yarn install && yarn run build",
     "server": "node src/server/index.js",
-    "start": "concurrently \"yarn run server\" \"yarn run client\""
+    "start": "concurrently \"yarn run server\" \"yarn run client\"",
+    "start-production": "yarn run build && concurrently \"yarn run server\" \"serve -s src/client/build\""
   },
   "devDependencies": {
     "eslint": "6.8.0",
