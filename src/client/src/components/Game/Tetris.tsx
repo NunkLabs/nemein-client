@@ -278,8 +278,13 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @return: True of the move is valid, false otw
    */
   isMoveValid(
-    activeTileX: number, xAdd: number, activeTileY: number, yAdd: number,
-    activeTile: TetrisConsts.Tile, activeTileRotate: TetrisConsts.Rotation, rotateAdd: number,
+    activeTileX: number,
+    xAdd: number,
+    activeTileY: number,
+    yAdd: number,
+    activeTile: TetrisConsts.Tile,
+    activeTileRotate: TetrisConsts.Rotation,
+    rotateAdd: number,
   ): boolean {
     const { field } = this.state;
     const { boardWidth, boardHeight } = this.props;
@@ -299,7 +304,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       const yToCheck = newY + tiles[activeTile][newRotate][i][TetrisConsts.Y_INDEX];
       const xToCheck = newX + tiles[activeTile][newRotate][i][TetrisConsts.X_INDEX];
       if (yToCheck >= 0) {
-        const xValid =  xToCheck >= 0 && xToCheck < boardWidth;
+        const xValid = xToCheck >= 0 && xToCheck < boardWidth;
         const yValid = yToCheck < boardHeight;
 
         if (xValid && yValid) {
@@ -322,8 +327,12 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * undefined if game is over
    */
   handleBlockedMovement(): {
-    init: boolean; activeTileX: number; activeTileY: number; activeTile: TetrisConsts.Tile;
-    tileRotate: TetrisConsts.Rotation; field: [number[], number][];
+    init: boolean;
+    activeTileX: number;
+    activeTileY: number;
+    activeTile: TetrisConsts.Tile;
+    tileRotate: TetrisConsts.Rotation;
+    field: [number[], number][];
   } | undefined {
     const { field } = this.state;
     const { boardWidth, boardHeight } = this.props;
@@ -344,8 +353,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       if (isLineComplete) {
         for (let detectedRow = row; detectedRow > 0; detectedRow -= 1) {
           for (let col = 0; col < boardWidth; col += 1) {
-            newField[col][TetrisConsts.COL_INDEX][detectedRow] =
-              newField[col][TetrisConsts.COL_INDEX][detectedRow - 1];
+            newField[col][TetrisConsts.COL_INDEX][detectedRow] = newField[
+              col][TetrisConsts.COL_INDEX][detectedRow - 1];
           }
         }
         row += 1;
@@ -365,7 +374,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       /* TBS-5: HACK - we ignore any pixels that has y coord < 0
       so that we can safely spawn tiles pixel by pixel */
       const yToCheck = newY + tiles[newTile][newRotate][i][TetrisConsts.Y_INDEX];
-      const xToCheck = newX + tiles[newTile][newRotate][i][TetrisConsts.X_INDEX]
+      const xToCheck = newX + tiles[newTile][newRotate][i][TetrisConsts.X_INDEX];
       if (yToCheck >= 0) {
         if (newField[xToCheck][TetrisConsts.COL_INDEX][yToCheck] !== 0) {
           isGameOver = true;
@@ -404,7 +413,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * and randomizing the new tile
    * @return: Object containing the init value for states
    */
-  initNewGame(): { xStart: number; tileStart: TetrisConsts.Tile; fieldStart: [number[], number][] } {
+  initNewGame(): { xStart: number;
+    tileStart: TetrisConsts.Tile;
+    fieldStart: [number[], number][]; } {
     const { boardWidth, boardHeight } = this.props;
 
     const fieldInit: [number[], number][] = [];
@@ -436,7 +447,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @param[in]: tileRotate - Desired tile's rotation
    * @param[in]: renderValue - Render value (color of tile)
    */
-  renderTile(tileX: number, tileY: number,
+  renderTile(tileX: number,
+    tileY: number,
     tile: TetrisConsts.Tile,
     tileRotate: TetrisConsts.Rotation,
     renderValue: number): void {
@@ -460,14 +472,18 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
   render(): JSX.Element {
     const {
+      boardHeight, boardWidth,
+    } = this.props;
+
+    const {
       field, score, level, activeTileRotate,
     } = this.state;
 
     const renderField: number[][] = [];
-    
-    for (let y = 0; y < this.props.boardHeight; y += 1) {
+
+    for (let y = 0; y < boardHeight; y += 1) {
       const row = [];
-      for (let x = 0; x < this.props.boardWidth; x += 1) {
+      for (let x = 0; x < boardWidth; x += 1) {
         row.push(field[x][TetrisConsts.COL_INDEX][y]);
       }
       renderField.push(row);
