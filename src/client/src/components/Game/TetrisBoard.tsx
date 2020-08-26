@@ -13,9 +13,9 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
   const board: JSX.Element[] = [];
   const { field, score, level } = props;
 
-  field.forEach((row) => {
-    const cols = row.map((column: number) => <div className={`col-${column}`} key={uuid()} />);
-    board.push(<div className="tetris-row" key={uuid()}>{cols}</div>);
+  field.forEach((col) => {
+    const rows = col.map((row: number) => <div className={`row-${row}`} key={uuid()} />);
+    board.push(<div className="tetris-col" key={uuid()}>{rows}</div>);
   });
 
   return (

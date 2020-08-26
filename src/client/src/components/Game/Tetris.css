@@ -22,47 +22,47 @@
   border-radius: 0.1rem;
 }
 
-.tetris-row {
+.tetris-col {
   display: flex;
 }
 
 /* Styles for tiles */
-[class*=col-] {
+[class*=row-] {
   max-width: 32px !important;
   border: 1px solid transparent;
   padding: 15px;
 }
 
 /* Default (empty) board column */
-.col-0 {
+.row-0 {
   background-color: #2E3440;
 }
 
 /* Colors for tiles */
-.col-1 {
+.row-1 {
   background-color: #A3BE8C;
 }
 
-.col-2 {
+.row-2 {
   background-color: #5E81AC;
 }
 
-.col-3 {
+.row-3 {
   background-color: #D08770;
 }
 
-.col-4 {
+.row-4 {
   background-color: #88C0D0;
 }
 
-.col-5 {
+.row-5 {
   background-color: #B48EAD;
 }
 
-.col-6 {
+.row-6 {
   background-color: #BF616A;
 }
 
-.col-7 {
+.row-7 {
   background-color: #EBCB8B;
 }
