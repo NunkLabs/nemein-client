@@ -26,7 +26,7 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
             <p className="tetris-text">
               Level
             </p>
-            <p> 
+            <p>
               {level}
             </p>
           </div>

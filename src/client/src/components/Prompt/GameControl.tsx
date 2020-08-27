@@ -60,15 +60,20 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   }
 
   /**
-   * @brief: handleEscKey: Callback for the event of the Escape
-   * key being received; pause the game and pull up the game control prompt
+   * @brief: handleEscKey: Callback for the event of the Escape key being received; pause the game
+   * and pull up the game control prompt
    * @param[in]: event - The keyboard event received
    */
   handleEscKey(event: KeyboardEvent): void {
     const { toggleGame } = this.props;
     const { promptVisible } = this.state;
 
-    if (event.key !== 'Escape') { 
+    /* HACK - prevent Tab's default behavior to avoid the page moving with the prompt */
+    if (event.key === 'Tab') {
+      event.preventDefault();
+    }
+
+    if (event.key !== 'Escape') {
       return;
     }
 
@@ -82,9 +87,8 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   }
 
   /**
-   * @brief: handleUnfocus: Callback for the event of visibility
-   * status of the document being changed; key being received; pause the
-   * game and pull up the game control prompt
+   * @brief: handleUnfocus: Callback for the event of visibility status of the document being
+   * changed; key being received; pause the game and pull up the game control prompt
    */
   handleUnfocus(): void {
     const { toggleGame } = this.props;
