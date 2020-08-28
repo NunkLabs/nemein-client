@@ -232,6 +232,10 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
           newY += yAdd;
         }
         break;
+      case TetrisConsts.Command.HardDrop:
+        newY = activeGhostTileY;
+        yAddValid = false;
+        break;
       default:
         return;
     }
@@ -289,6 +293,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
         break;
       case TetrisConsts.ARROW_RIGHT:
         this.handleBoardUpdate(TetrisConsts.Command.Right);
+        break;
+      case TetrisConsts.SPACE:
+        this.handleBoardUpdate(TetrisConsts.Command.HardDrop);
         break;
       default:
     }
