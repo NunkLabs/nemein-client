@@ -68,8 +68,9 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
     const { toggleGame } = this.props;
     const { promptVisible } = this.state;
 
-    /* HACK - prevent Tab's default behavior to avoid the page moving with the prompt */
-    if (event.key === 'Tab') {
+    /* HACK - ignore Tab's default behavior to avoid the page moving with the prompt, also ignore
+    Spacebar to avoid the prompt getting the Spacebar input instead of the game */
+    if (event.key === 'Tab' || event.key === ' ') {
       event.preventDefault();
     }
 
