@@ -18,7 +18,7 @@ type TetrisCol =
 {
   colArr: number[];
   lowestY: number;
-}
+};
 
 type TetrisState =
 {
@@ -41,20 +41,14 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
   constructor(props: TetrisProps) {
     super(props);
 
-    const tiles = TetrisConsts.TILES_COORDS_ARR;
-
     /* Binding handles */
     this.keyboardInputHandle = this.keyboardInputHandle.bind(this);
 
     const initStates = this.initNewGame();
 
-    /* HACK: Instead of having to call the functions, we simply just calculate
-    the ghost tile's Y coordinate as it is only the higest pixel - number of
-    pixels to the pivot (0.0) of the init tile */
-    const { tileStart } = initStates;
-    const pixelsToPivot = tiles[tileStart][TetrisConsts.Rotation.Up][
-      TetrisConsts.UPPER_Y_INDEX][TetrisConsts.Y_INDEX];
-    const initGhostTileY = props.boardHeight - 1 - pixelsToPivot;
+    const initTile = initStates.tileStart;
+    const initRotation = TetrisConsts.Rotation.Up;
+    const initGhostTileY = this.prepareGhostTileY(initTile, initRotation);
 
     this.state = {
       init: true,
@@ -63,8 +57,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       activeTileX: initStates.xStart,
       activeTileY: TetrisConsts.Y_START,
       activeGhostTileY: initGhostTileY,
-      activeTile: tileStart,
-      activeTileRotate: TetrisConsts.Rotation.Up,
+      activeTile: initTile,
+      activeTileRotate: initRotation,
       score: 0,
       level: 1,
       tileCount: 0,
@@ -83,7 +77,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
   componentWillUnmount(): void {
     const { keyboardInputHandle } = this;
-    const { timerId } = this.state;
+    const {
+      timerId,
+    } = this.state;
 
     document.removeEventListener(TetrisConsts.KEYBOARD_EVENT, keyboardInputHandle);
 
@@ -96,7 +92,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * the lower the value is, the faster the game becomes
    */
   setGameInterval(interval: number): void {
-    const { timerId, level } = this.state;
+    const {
+      timerId, level,
+    } = this.state;
 
     window.clearInterval(timerId);
 
@@ -115,9 +113,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * button being clicked on
    */
   handleNewGameClick(): void {
-    const { gameRestart, gameState, boardHeight } = this.props;
-
-    const tiles = TetrisConsts.TILES_COORDS_ARR;
+    const {
+      gameRestart, gameState,
+    } = this.props;
 
     /* Call gameState callback to reset parent's gameOver prop */
     gameState(false);
@@ -128,9 +126,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     the ghost tile's Y coordinate as it is only the higest pixel - number of
     pixels to the pivot (0.0) of the init tile */
     const { tileStart } = newStates;
-    const pixelsToPivot = tiles[tileStart][TetrisConsts.Rotation.Up][
-      TetrisConsts.UPPER_Y_INDEX][TetrisConsts.Y_INDEX];
-    const initGhostTileY = boardHeight - 1 - pixelsToPivot;
+    const newTileRotation = TetrisConsts.Rotation.Up;
+    const initGhostTileY = this.prepareGhostTileY(tileStart, newTileRotation);
 
     this.setState(() => ({
       init: true,
@@ -140,7 +137,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       activeTileY: TetrisConsts.Y_START,
       activeGhostTileY: initGhostTileY,
       activeTile: newStates.tileStart,
-      activeTileRotate: TetrisConsts.Rotation.Up,
+      activeTileRotate: newTileRotation,
       score: 0,
       level: 1,
       tileCount: 0,
@@ -158,7 +155,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * always 'Down' for each tick of the game
    */
   handleBoardUpdate(command: TetrisConsts.Command): void {
-    const { gamePaused, gameRestart, gameState } = this.props;
+    const {
+      gamePaused, gameRestart, gameState,
+    } = this.props;
     const {
       init, gameOver, newGameSwitch, activeTileX, activeTileY,
       activeGhostTileY, activeTile, activeTileRotate, field,
@@ -193,8 +192,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     let rotateAdd = 0;
     let yAddValid = true;
 
-    /* Handling init - We only render the newly
-    spawned tile */
+    /* Handling init - We only render the newly spawned tile */
     if (init) {
       this.renderTile(activeTileX, activeGhostTileY, activeTile,
         activeTileRotate, TetrisConsts.GHOST_TILE_INDEX);
@@ -247,7 +245,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     }
 
     /* Render new tile after the new coords are updated */
-    let newGhostY = this.findYGhostTile(newX, newY, newTile, newRotate);
+    let newGhostY = this.findGhostTileY(newX, newY, newTile, newRotate);
     this.renderTile(newX, newGhostY, newTile, newRotate, TetrisConsts.GHOST_TILE_INDEX);
     this.renderTile(newX, newY, newTile, newRotate, newTile);
 
@@ -264,7 +262,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       newY = newStates.newY;
       newTile = newStates.newTile;
       newRotate = newStates.newRotate;
-      newGhostY = this.findYGhostTile(newX, newY, newTile, newRotate);
+      newGhostY = this.findGhostTileY(newX, newY, newTile, newRotate);
       newField = newStates.newField;
     }
 
@@ -328,8 +326,12 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     activeTile: TetrisConsts.Tile,
     activeTileRotate: TetrisConsts.Rotation,
     addRotate: number): boolean {
-    const { field } = this.state;
-    const { boardWidth, boardHeight } = this.props;
+    const {
+      field,
+    } = this.state;
+    const {
+      boardWidth, boardHeight,
+    } = this.props;
     const tiles = TetrisConsts.TILES_COORDS_ARR;
 
     const newX = addX ? (activeTileX + addX) : activeTileX;
@@ -337,8 +339,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     const newRotate = activeTileRotate + addRotate === TetrisConsts.MAX_ROTATE
       ? TetrisConsts.Rotation.Up : (activeTileRotate + addRotate);
 
-    /* We scan through each pixel of the tile to determine if the
-    move is valid */
+    /* We scan through each pixel of the tile to determine if the move is valid */
     for (let i = 0; i < TetrisConsts.MAX_PIXEL; i += 1) {
       /* Check to see if any pixel goes out of the board */
       /* TBS-5: HACK - we ignore any pixels that has y coord < 0
@@ -379,7 +380,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     const {
       activeTileX, activeTileY, activeTile, activeTileRotate, field,
     } = this.state;
-    const { boardWidth, boardHeight } = this.props;
+    const {
+      boardWidth, boardHeight,
+    } = this.props;
     const tiles = TetrisConsts.TILES_COORDS_ARR;
 
     const retField = field;
@@ -389,7 +392,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       const xToRender = activeTileX + tiles[activeTile][activeTileRotate][i][TetrisConsts.X_INDEX];
       const yToRender = activeTileY + tiles[activeTile][activeTileRotate][i][TetrisConsts.Y_INDEX];
       if (yToRender >= 0) {
-        const lowestY = retField[xToRender].lowestY;
+        const { lowestY } = retField[xToRender];
         if (lowestY > yToRender) {
           retField[xToRender].lowestY = yToRender;
         }
@@ -480,7 +483,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
   initNewGame(): { xStart: number;
     tileStart: TetrisConsts.Tile;
     fieldStart: TetrisCol[]; } {
-    const { boardWidth, boardHeight } = this.props;
+    const {
+      boardWidth, boardHeight,
+    } = this.props;
 
     const fieldInit: TetrisCol[] = [];
 
@@ -489,7 +494,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       for (let y = 0; y < boardHeight; y += 1) {
         col.push(0);
       }
-      let tmp: TetrisCol = {
+      const tmp: TetrisCol = {
         colArr: col,
         lowestY: boardHeight - 1,
       };
@@ -508,17 +513,19 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
   }
 
   /**
-   * @brief: findYGhostTile: Find the optimal Y for the ghost tile
+   * @brief: findGhostTileY: Find the optimal Y for the ghost tile
    * @param[in]: tileX - Actual tile's x
    * @param[in]: tileY - Actual tile's y
    * @param[in]: tile - Actual tile type
    * @param[in]: tileRotate - Actual tile's rotation
    */
-  findYGhostTile(tileX: number,
+  findGhostTileY(tileX: number,
     tileY: number,
     tile: TetrisConsts.Tile,
     tileRotate: TetrisConsts.Rotation): number {
-    const { field } = this.state;
+    const {
+      field,
+    } = this.state;
     const tiles = TetrisConsts.TILES_COORDS_ARR;
 
     /* First we find the lowest Y among the number of cols this
@@ -545,14 +552,10 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     tile since the lowest Y doesn't help here */
     if (yHigherThanCmp) {
       let iter = 0;
-      while (true) {
-        const found = this.isMoveValid(tileX, 0, tileY, iter, tile, tileRotate, 0);
-        if (!found) {
-          ret = tileY + iter - 1;
-          break;
-        }
+      while (this.isMoveValid(tileX, 0, tileY, iter, tile, tileRotate, 0)) {
         iter += 1;
       }
+      ret = tileY + iter - 1;
       return ret;
     }
 
@@ -567,11 +570,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       it is best to try to find the best fit for the tile starting from
       the lowest Y we just found. We first try to go upwards (Y increases) */
     let upperBoundAttempts = 0;
-    while (true) {
-      const found = this.isMoveValid(tileX, 0, ret, 1, tile, tileRotate, 0);
-      if (!found) {
-        break;
-      }
+    while (this.isMoveValid(tileX, 0, ret, 1, tile, tileRotate, 0)) {
       ret += 1;
       upperBoundAttempts += 1;
     }
@@ -582,15 +581,34 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     }
 
     /* Otherwise, it is in the lower region */
-    while (true) {
-      const found = this.isMoveValid(tileX, 0, ret, 0, tile, tileRotate, 0);
-      if (found) {
-        break;
-      }
+    while (!this.isMoveValid(tileX, 0, ret, 0, tile, tileRotate, 0)) {
       ret -= 1;
     }
 
     return ret;
+  }
+
+  /**
+   * @brief: prepareGhostTileY: Get the Y coord of the ghost tile
+   * of a newly spawned tile
+   * @note: This is basically a quick hack - Instead of having to
+   * call other functions (findGhostTileY), we can simply just
+   * calculate the ghost tile's Y coordinate as it is only
+   * [the higest pixel - number of pixels to the pivot
+   * (0, 0) of the init tile]
+   * @param[in]: tile - Actual tile type
+   * @param[in]: tileRotate - Actual tile's rotation
+   */
+  prepareGhostTileY(tile: TetrisConsts.Tile,
+    tileRotate: TetrisConsts.Rotation): number {
+    const {
+      boardHeight,
+    } = this.props;
+    const tiles = TetrisConsts.TILES_COORDS_ARR;
+
+    const pixelsToPivot = tiles[tile][tileRotate][
+      TetrisConsts.UPPER_Y_INDEX][TetrisConsts.Y_INDEX];
+    return boardHeight - 1 - pixelsToPivot;
   }
 
   /**
@@ -606,7 +624,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     tile: TetrisConsts.Tile,
     tileRotate: TetrisConsts.Rotation,
     renderValue: number): void {
-    const { field } = this.state;
+    const {
+      field,
+    } = this.state;
     const tiles = TetrisConsts.TILES_COORDS_ARR;
 
     const newField = field;
@@ -628,7 +648,6 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     const {
       boardHeight, boardWidth,
     } = this.props;
-
     const {
       field, score, level, activeTileRotate,
     } = this.state;

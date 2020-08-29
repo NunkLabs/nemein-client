@@ -67,7 +67,7 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   handleEscKey(event: KeyboardEvent): void {
     const { toggleGame } = this.props;
     const { promptVisible } = this.state;
-    
+
     /* HACK - prevent Tab's default behavior to avoid the page moving with the prompt */
     if (event.key === 'Tab') {
       event.preventDefault();

@@ -5,8 +5,6 @@ export const Y_START = 0;
 export const X_INDEX = 0;
 export const Y_INDEX = 1;
 export const UPPER_Y_INDEX = 2;
-export const COL_INDEX = 0;
-export const LOWEST_ROW_INDEX = 1;
 
 /* Tiles coords consts */
 export const MAX_TILE_INDEX = 7;
