@@ -14,6 +14,12 @@ type TetrisProps =
   know whether the game is over */
 };
 
+type TetrisCol =
+{
+  colArr: number[];
+  lowestY: number;
+}
+
 type TetrisState =
 {
   init: boolean;
@@ -28,7 +34,7 @@ type TetrisState =
   level: number;
   tileCount: number;
   timerId: number;
-  field: [number[], number][];
+  field: TetrisCol[];
 };
 
 class Tetris extends React.Component<TetrisProps, TetrisState> {
@@ -345,7 +351,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
         if (xValid && yValid) {
           /* Check for any overlap */
-          const pixelOverlapped = field[xToCheck][TetrisConsts.COL_INDEX][yToCheck] !== 0;
+          const pixelOverlapped = field[xToCheck].colArr[yToCheck] !== 0;
           if (pixelOverlapped) {
             return false;
           }
@@ -368,7 +374,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     newY: number;
     newTile: TetrisConsts.Tile;
     newRotate: TetrisConsts.Rotation;
-    newField: [number[], number][];
+    newField: TetrisCol[];
   } | undefined {
     const {
       activeTileX, activeTileY, activeTile, activeTileRotate, field,
@@ -383,9 +389,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       const xToRender = activeTileX + tiles[activeTile][activeTileRotate][i][TetrisConsts.X_INDEX];
       const yToRender = activeTileY + tiles[activeTile][activeTileRotate][i][TetrisConsts.Y_INDEX];
       if (yToRender >= 0) {
-        const lowestY = retField[xToRender][TetrisConsts.LOWEST_ROW_INDEX];
+        const lowestY = retField[xToRender].lowestY;
         if (lowestY > yToRender) {
-          retField[xToRender][TetrisConsts.LOWEST_ROW_INDEX] = yToRender;
+          retField[xToRender].lowestY = yToRender;
         }
       }
     }
@@ -395,7 +401,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       let isLineComplete = true;
 
       for (let col = 0; col < boardWidth; col += 1) {
-        if (retField[col][TetrisConsts.COL_INDEX][row] === 0) {
+        if (retField[col].colArr[row] === 0) {
           isLineComplete = false;
           break;
         }
@@ -404,16 +410,15 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       if (isLineComplete) {
         for (let detectedRow = row; detectedRow > 0; detectedRow -= 1) {
           for (let col = 0; col < boardWidth; col += 1) {
-            retField[col][TetrisConsts.COL_INDEX][
-              detectedRow] = retField[col][TetrisConsts.COL_INDEX][detectedRow - 1];
+            retField[col].colArr[detectedRow] = retField[col].colArr[detectedRow - 1];
           }
         }
         row += 1;
 
         /* Update the lowest row value for each col */
         for (let col = 0; col < boardWidth; col += 1) {
-          if (retField[col][TetrisConsts.LOWEST_ROW_INDEX] !== boardHeight - 1) {
-            retField[col][TetrisConsts.LOWEST_ROW_INDEX] += 1;
+          if (retField[col].lowestY !== boardHeight - 1) {
+            retField[col].lowestY += 1;
           }
         }
       }
@@ -435,7 +440,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       const yToCheck = newY + tiles[newTile][newRotate][i][TetrisConsts.Y_INDEX];
       const xToCheck = newX + tiles[newTile][newRotate][i][TetrisConsts.X_INDEX];
       if (yToCheck >= 0) {
-        if (retField[xToCheck][TetrisConsts.COL_INDEX][yToCheck] !== 0) {
+        if (retField[xToCheck].colArr[yToCheck] !== 0) {
           isGameOver = true;
           break;
         }
@@ -474,17 +479,21 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    */
   initNewGame(): { xStart: number;
     tileStart: TetrisConsts.Tile;
-    fieldStart: [number[], number][]; } {
+    fieldStart: TetrisCol[]; } {
     const { boardWidth, boardHeight } = this.props;
 
-    const fieldInit: [number[], number][] = [];
+    const fieldInit: TetrisCol[] = [];
 
     for (let x = 0; x < boardWidth; x += 1) {
-      const col = [];
+      const col: number[] = [];
       for (let y = 0; y < boardHeight; y += 1) {
         col.push(0);
       }
-      fieldInit.push([col, boardHeight - 1]);
+      let tmp: TetrisCol = {
+        colArr: col,
+        lowestY: boardHeight - 1,
+      };
+      fieldInit.push(tmp);
     }
 
     const xInit = Math.floor(boardWidth / 2);
@@ -519,7 +528,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     for (let i = 0; i < TetrisConsts.MAX_PIXEL; i += 1) {
       const xToCheck = tileX + tiles[tile][tileRotate][i][TetrisConsts.X_INDEX];
       const yToCheck = tileY + tiles[tile][tileRotate][i][TetrisConsts.Y_INDEX];
-      const yToCmp = field[xToCheck][TetrisConsts.LOWEST_ROW_INDEX];
+      const yToCmp = field[xToCheck].lowestY;
       /* If the current tile is already higher than the
       lowest Y among the X range, we have to handle it differently */
       if (yToCheck > yToCmp) {
@@ -606,7 +615,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       const xToRender = tileX + tiles[tile][tileRotate][i][TetrisConsts.X_INDEX];
       const yToRender = tileY + tiles[tile][tileRotate][i][TetrisConsts.Y_INDEX];
       if (yToRender >= 0) {
-        newField[xToRender][TetrisConsts.COL_INDEX][yToRender] = renderValue;
+        newField[xToRender].colArr[yToRender] = renderValue;
       }
     }
 
@@ -629,7 +638,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     for (let y = 0; y < boardHeight; y += 1) {
       const row = [];
       for (let x = 0; x < boardWidth; x += 1) {
-        row.push(field[x][TetrisConsts.COL_INDEX][y]);
+        row.push(field[x].colArr[y]);
       }
       renderField.push(row);
     }
