@@ -251,7 +251,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
     /* Handling blocked movement */
     if (!yAddValid) {
-      const newStates = this.handleBlockedMovement();
+      const newStates = this.handleBlockedMovement(newX, newY);
       /* Game over */
       if (newStates === undefined) {
         return;
@@ -366,19 +366,22 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
   /**
    * @brief: handleBlockedMovement: Handle for blocked movements
+   * @param[in]: activeTileX: Rendered X coord
+   * @param[in]: activeTileY: Rendered Y coord
    * @return: Object containing the updated value for states; returning
    * undefined if game is over
    */
-  handleBlockedMovement(): {
-    newInit: boolean;
-    newX: number;
-    newY: number;
-    newTile: TetrisConsts.Tile;
-    newRotate: TetrisConsts.Rotation;
-    newField: TetrisCol[];
-  } | undefined {
+  handleBlockedMovement(activeTileX: number,
+    activeTileY: number): {
+      newInit: boolean;
+      newX: number;
+      newY: number;
+      newTile: TetrisConsts.Tile;
+      newRotate: TetrisConsts.Rotation;
+      newField: TetrisCol[];
+    } | undefined {
     const {
-      activeTileX, activeTileY, activeTile, activeTileRotate, field,
+      activeTile, activeTileRotate, field,
     } = this.state;
     const {
       boardWidth, boardHeight,
