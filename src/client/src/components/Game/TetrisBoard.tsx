@@ -1,22 +1,31 @@
 import React from 'react';
-import { v4 as uuid } from 'uuid';
+import * as TetrisConsts from './TetrisConsts';
+import * as TetrisUtils from './TetrisUtils';
 
 type TetrisBoardProps =
 {
   field: number[][];
   score: number;
   level: number;
-  rotate: number;
+  spawnedTiles: TetrisConsts.Tile[];
 };
 
 const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
-  const board: JSX.Element[] = [];
-  const { field, score, level } = props;
+  const {
+    field, score, level, spawnedTiles,
+  } = props;
 
-  field.forEach((col) => {
-    const rows = col.map((row: number) => <div className={`row-${row}`} key={uuid()} />);
-    board.push(<div className="tetris-col" key={uuid()}>{rows}</div>);
+  /* Prepare an HTML element for the main game board */
+  const gameBoard = TetrisUtils.fieldToJsxElement(field);
+
+  /* Prepare HTML elements for the tile queue */
+  const tileFields: JSX.Element[][] = [];
+  spawnedTiles.forEach((tile) => {
+    const tileField = TetrisUtils.getTileField(tile, TetrisConsts.Rotation.Up);
+    const tileRenderField = TetrisUtils.fieldToJsxElement(tileField);
+    tileFields.push(tileRenderField);
   });
+  const tileRenderFields = tileFields.map((tile) => <div className="tetris-board">{tile}</div>);
 
   return (
     <div className="tetris-main">
@@ -40,7 +49,16 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
           </div>
         </div>
       </div>
-      <div className="tetris-board">{board}</div>
+      <div className="tetris-gamespace">
+        <div className="row">
+          <div className="col">
+            <div className="tetris-board">{gameBoard}</div>
+          </div>
+          <div className="col">
+            <div>{tileRenderFields}</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

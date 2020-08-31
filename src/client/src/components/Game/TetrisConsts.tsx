@@ -5,6 +5,10 @@ export const Y_START = 0;
 export const X_INDEX = 0;
 export const Y_INDEX = 1;
 export const UPPER_Y_INDEX = 2;
+export const LOWER_Y_INDEX = 1;
+export const UPPER_X_INDEX = 3;
+export const LOWER_X_INDEX = 0;
+export const MAX_SPAWNED_TILES = 4;
 
 /* Tiles coords consts */
 export const MAX_TILE_INDEX = 7;
@@ -82,6 +86,7 @@ export const ARROW_LEFT = 'ArrowLeft';
 export const ARROW_UP = 'ArrowUp';
 export const ARROW_RIGHT = 'ArrowRight';
 export const SPACE = ' ';
+export const C_KEY = 'c';
 export const KEYBOARD_EVENT = 'keydown';
 
 /* Timer consts */
@@ -94,6 +99,7 @@ export enum Command {
   Right,
   Rotate,
   HardDrop,
+  HoldTile,
 }
 
 export enum Tile {
