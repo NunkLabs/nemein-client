@@ -252,8 +252,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
             const prevTile = newTile;
             newTile = newHeldTile;
             newHeldTile = prevTile;
-          } 
-          else {
+          } else {
             const getTileRet = TetrisUtils.getNewTile(newTiles);
             newHeldTile = newTile;
             newTile = getTileRet.newTile;
@@ -308,6 +307,14 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       field: newField,
       spawnedTiles: newTiles,
     }));
+
+    /* TBS-36: Getting new tile to spawn immediately
+
+    This recursive call should not affect performance as we'd fall in the init
+    handling section of this function - which should return anyway. Unless I'm wrong..? */
+    if (!yAddValid) {
+      this.handleBoardUpdate(TetrisConsts.Command.Down);
+    }
   }
 
   /**
