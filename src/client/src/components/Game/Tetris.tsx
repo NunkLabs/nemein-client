@@ -26,9 +26,11 @@ type TetrisState =
   init: boolean;
   gameOver: boolean;
   newGameSwitch: boolean;
+  onHold: boolean;
   activeTileX: number;
   activeTileY: number;
   activeGhostTileY: number;
+  heldTile: TetrisConsts.Tile;
   activeTile: TetrisConsts.Tile;
   activeTileRotate: TetrisConsts.Rotation;
   score: number;
@@ -52,9 +54,11 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       init: initStates.initGame,
       gameOver: initStates.initGameOver,
       newGameSwitch: props.gameRestart,
+      onHold: initStates.initOnHold,
       activeTileX: initStates.initActiveTileX,
       activeTileY: initStates.initActiveTileY,
       activeGhostTileY: initStates.initActiveGhostTileY,
+      heldTile: initStates.initHeldTile,
       activeTile: initStates.initActiveTile,
       activeTileRotate: initStates.initActiveTileRotate,
       score: initStates.initScore,
@@ -125,6 +129,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       init: initStates.initGame,
       gameOver: initStates.initGameOver,
       newGameSwitch: gameRestart,
+      onHold: initStates.initOnHold,
       activeTileX: initStates.initActiveTileX,
       activeTileY: initStates.initActiveTileY,
       activeGhostTileY: initStates.initActiveGhostTileY,
@@ -152,8 +157,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       gamePaused, gameRestart, gameState, boardWidth,
     } = this.props;
     const {
-      init, gameOver, newGameSwitch, activeTileX, activeTileY,
-      activeGhostTileY, activeTile, activeTileRotate, field, spawnedTiles,
+      init, gameOver, newGameSwitch, onHold, activeTileX, activeTileY,
+      activeGhostTileY, heldTile, activeTile, activeTileRotate, field, spawnedTiles,
     } = this.state;
 
     /* Call new game handler and return if the new game/restart button was clicked */
@@ -174,9 +179,11 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     }
 
     let newInit = init;
+    let newOnHold = onHold;
     let newX = activeTileX;
     let newY = activeTileY;
     let newGhostY = activeGhostTileY;
+    let newHeldTile = heldTile;
     let newTile = activeTile;
     let newRotate = activeTileRotate;
     let newField = field;
@@ -240,12 +247,23 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
         break;
       }
       case TetrisConsts.Command.HoldTile: {
-        newX = Math.floor(boardWidth / 2);
-        newY = TetrisConsts.Y_START;
-        const getTileRet = TetrisUtils.getNewTile(newTiles);
-        newTile = getTileRet.newTile;
-        newTiles = getTileRet.newTiles;
-        newRotate = TetrisConsts.Rotation.Up;
+        if (!newOnHold) {
+          if (newHeldTile !== TetrisConsts.Tile.Blank) {
+            const prevTile = newTile;
+            newTile = newHeldTile;
+            newHeldTile = prevTile;
+          } 
+          else {
+            const getTileRet = TetrisUtils.getNewTile(newTiles);
+            newHeldTile = newTile;
+            newTile = getTileRet.newTile;
+            newTiles = getTileRet.newTiles;
+          }
+          newX = Math.floor(boardWidth / 2);
+          newY = TetrisConsts.Y_START;
+          newRotate = TetrisConsts.Rotation.Up;
+          newOnHold = true;
+        }
         break;
       }
       default: {
@@ -274,14 +292,17 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       newGhostY = this.findGhostTileY(newX, newY, newTile, newRotate);
       newField = newStates.newField;
       newTiles = newStates.newTiles;
+      newOnHold = (newOnHold === true) ? false : newOnHold;
     }
 
     /* Update new states */
     this.setState(() => ({
       init: newInit,
+      onHold: newOnHold,
       activeTileX: newX,
       activeTileY: newY,
       activeGhostTileY: newGhostY,
+      heldTile: newHeldTile,
       activeTile: newTile,
       activeTileRotate: newRotate,
       field: newField,
@@ -507,10 +528,11 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    */
   initNewGame(): { initGame: boolean;
     initGameOver: boolean;
-    initTileHeld: boolean;
+    initOnHold: boolean;
     initActiveTileX: number;
     initActiveTileY: number;
     initActiveGhostTileY: number;
+    initHeldTile: TetrisConsts.Tile;
     initActiveTile: TetrisConsts.Tile;
     initActiveTileRotate: TetrisConsts.Rotation;
     initScore: number;
@@ -551,10 +573,11 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     return {
       initGame: true,
       initGameOver: false,
-      initTileHeld: false,
+      initOnHold: false,
       initActiveTileX: Math.floor(boardWidth / 2),
       initActiveTileY: TetrisConsts.Y_START,
       initActiveGhostTileY: retGhostTileY,
+      initHeldTile: TetrisConsts.Tile.Blank,
       initActiveTile: retTile,
       initActiveTileRotate: retRotation,
       initScore: 0,
@@ -711,7 +734,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       boardHeight, boardWidth,
     } = this.props;
     const {
-      score, level, field, spawnedTiles,
+      score, level, heldTile, field, spawnedTiles,
     } = this.state;
 
     const renderField: number[][] = [];
@@ -731,6 +754,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
           score={score}
           level={level}
           spawnedTiles={spawnedTiles}
+          heldTile={heldTile}
         />
       </div>
     );

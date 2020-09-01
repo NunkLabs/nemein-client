@@ -8,24 +8,30 @@ type TetrisBoardProps =
   score: number;
   level: number;
   spawnedTiles: TetrisConsts.Tile[];
+  heldTile: TetrisConsts.Tile;
 };
 
 const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
   const {
-    field, score, level, spawnedTiles,
+    field, score, level, spawnedTiles, heldTile,
   } = props;
+  const renderTiles = TetrisConsts.RENDER_TILES_ARR;
 
   /* Prepare an HTML element for the main game board */
   const gameBoard = TetrisUtils.fieldToJsxElement(field);
 
   /* Prepare HTML elements for the tile queue */
-  const tileFields: JSX.Element[][] = [];
+  const spawnedTilesFieldsRender: JSX.Element[][] = [];
   spawnedTiles.forEach((tile) => {
-    const tileField = TetrisUtils.getTileField(tile, TetrisConsts.Rotation.Up);
-    const tileRenderField = TetrisUtils.fieldToJsxElement(tileField);
-    tileFields.push(tileRenderField);
+    const spawnedTileField = renderTiles[tile];
+    const spawnedTileFieldRender = TetrisUtils.fieldToJsxElement(spawnedTileField);
+    spawnedTilesFieldsRender.push(spawnedTileFieldRender);
   });
-  const tileRenderFields = tileFields.map((tile) => <div className="tetris-board">{tile}</div>);
+  const tileRenderFields = spawnedTilesFieldsRender.map((tile) => <div className="tetris-board">{tile}</div>);
+
+  /* Prepare an HTML element for the currently held tile */
+  const heldTileField = renderTiles[heldTile];
+  const heldTileFieldRender = TetrisUtils.fieldToJsxElement(heldTileField);
 
   return (
     <div className="tetris-main">
@@ -51,6 +57,9 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
       </div>
       <div className="tetris-gamespace">
         <div className="row">
+          <div className="col">
+            <div className="tetris-board">{heldTileFieldRender}</div>
+          </div>
           <div className="col">
             <div className="tetris-board">{gameBoard}</div>
           </div>

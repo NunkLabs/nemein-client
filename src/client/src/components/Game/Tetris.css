@@ -1,6 +1,6 @@
 .game-wrap {
   height: 800px;
-  width: 700px; /* FIXME */
+  width: 800px; /* FIXME */
   margin: auto;
   display: flex;
   align-items: center;

@@ -33,48 +33,6 @@ export function getNewTile(spawnedTiles: TetrisConsts.Tile[]): {
 }
 
 /**
- * @brief: getTileField: Get the render field of a single tile
- * @param[in]: tile - Tile to render
- * @param[in]: tileRotate - Rotation of the tile to render
- * @return: Field of coords of the tile to render
- */
-export function getTileField(
-  tile: TetrisConsts.Tile,
-  tileRotate: TetrisConsts.Rotation,
-): number[][] {
-  const tiles = TetrisConsts.TILES_COORDS_ARR;
-
-  /* First, we find the pivot of the tile */
-  const pivotX = -tiles[tile][tileRotate][TetrisConsts.LOWER_X_INDEX][TetrisConsts.X_INDEX];
-  const pivotY = -tiles[tile][tileRotate][TetrisConsts.LOWER_Y_INDEX][TetrisConsts.Y_INDEX];
-
-  /* Find all the (x,y) points to render */
-  const coordsToRender: {x: number; y: number}[] = [];
-  for (let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL; pixelIter += 1) {
-    const renderX = pivotX + tiles[tile][tileRotate][pixelIter][TetrisConsts.X_INDEX];
-    const renderY = pivotY + tiles[tile][tileRotate][pixelIter][TetrisConsts.Y_INDEX];
-    coordsToRender.push({ x: renderX, y: renderY });
-  }
-
-  /* Init a blank field for the tile */
-  const retField: number[][] = [];
-  for (let x = 0; x < TetrisConsts.MAX_PIXEL; x += 1) {
-    const col: number[] = [];
-    for (let y = 0; y < TetrisConsts.MAX_PIXEL; y += 1) {
-      col.push(0);
-    }
-    retField.push(col);
-  }
-
-  /* Populate the return field with the correct render values for each pixel */
-  coordsToRender.forEach((coord) => {
-    retField[coord.y][coord.x] = tile;
-  });
-
-  return retField;
-}
-
-/**
  * @brief: fieldToJsxElement: Convert a field of coords to a JSX element for render
  * @param[in]: field - Field to render
  * @return: JSX element of field
@@ -92,6 +50,5 @@ export function fieldToJsxElement(field: number[][]): JSX.Element[] {
 
 export default {
   getNewTile,
-  getTileField,
   fieldToJsxElement,
 };
