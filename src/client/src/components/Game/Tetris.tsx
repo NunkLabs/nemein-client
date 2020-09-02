@@ -13,6 +13,7 @@ type TetrisProps =
   instead of polling its' value to determine whether or not a new game should start */
   gameState: Function; /* We use a callback as another switch to let the parent component
   know whether the game is over */
+  firstGameStart: boolean;
 };
 
 type TetrisCol =
@@ -134,6 +135,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       activeTileY: initStates.initActiveTileY,
       activeGhostTileY: initStates.initActiveGhostTileY,
       activeTile: initStates.initActiveTile,
+      heldTile: initStates.initHeldTile,
       activeTileRotate: initStates.initActiveTileRotate,
       score: initStates.initScore,
       level: initStates.initLevel,
@@ -737,7 +739,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
   render(): JSX.Element {
     const {
-      boardHeight, boardWidth,
+      boardHeight, boardWidth, firstGameStart,
     } = this.props;
     const {
       score, level, heldTile, field, spawnedTiles,
@@ -761,6 +763,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
           level={level}
           spawnedTiles={spawnedTiles}
           heldTile={heldTile}
+          firstGameStart={firstGameStart}
         />
       </div>
     );

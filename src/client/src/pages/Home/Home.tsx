@@ -1,6 +1,6 @@
 import React from 'react';
-import GameControl from '../../components/Prompt/GameControl';
-import Tetris from '../../components/Game/Tetris';
+// import GameControl from '../../components/Prompt/GameControl';
+// import Tetris from '../../components/Game/Tetris';
 
 type HomeState = {
   gamePaused: boolean;
@@ -20,13 +20,13 @@ class Home extends React.Component<{}, HomeState> {
   }
 
   render(): JSX.Element {
-    const {
-      gamePaused, gameRestart, gameOver,
-    } = this.state;
+    // const {
+    //   gamePaused, gameRestart, gameOver,
+    // } = this.state;
 
     return (
       <div id="game-container">
-        <GameControl
+        {/* <GameControl
           isOver={gameOver}
           toggleGame={(): void => this.setState({ gamePaused: !gamePaused })}
           restartGame={(): void => this.setState({
@@ -40,7 +40,7 @@ class Home extends React.Component<{}, HomeState> {
           gamePaused={gamePaused}
           gameRestart={gameRestart}
           gameState={(isOver: boolean): void => this.setState({ gameOver: isOver })}
-        />
+        /> */}
       </div>
     );
   }

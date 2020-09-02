@@ -10,6 +10,7 @@ type LandingState = {
   gamePaused: boolean;
   gameRestart: boolean;
   gameOver: boolean;
+  firstGameStart: boolean;
 };
 
 class Landing extends React.Component<{}, LandingState> {
@@ -23,6 +24,7 @@ class Landing extends React.Component<{}, LandingState> {
       gamePaused: true,
       gameRestart: false,
       gameOver: false,
+      firstGameStart: false,
     };
   }
 
@@ -38,7 +40,7 @@ class Landing extends React.Component<{}, LandingState> {
 
   render(): JSX.Element {
     const {
-      formOpened, gamePaused, gameRestart, gameOver,
+      formOpened, gamePaused, gameRestart, gameOver, firstGameStart,
     } = this.state;
 
     return (
@@ -62,13 +64,18 @@ class Landing extends React.Component<{}, LandingState> {
               gameRestart: !gameRestart,
             })}
             openForm={(): void => this.setState({ formOpened: true })}
+            toggleFirstGame={(): void => this.setState({
+              gamePaused: !gamePaused,
+              firstGameStart: true,
+            })}
           />
           <Tetris
             boardWidth={14}
-            boardHeight={20}
+            boardHeight={23}
             gamePaused={gamePaused}
             gameRestart={gameRestart}
             gameState={(isOver: boolean): void => this.setState({ gameOver: isOver })}
+            firstGameStart={firstGameStart}
           />
         </div>
       </div>

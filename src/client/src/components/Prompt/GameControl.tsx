@@ -6,6 +6,7 @@ type GameControlProps = {
   toggleGame: Function;
   restartGame: Function;
   openForm?: Function;
+  toggleFirstGame: Function;
 };
 
 type GameControlState = {
@@ -92,7 +93,7 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   }
 
   renderInitialPrompt(): JSX.Element {
-    const { toggleGame } = this.props;
+    const { toggleFirstGame } = this.props;
 
     const logInButton = this.renderLoginButton();
 
@@ -102,7 +103,7 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
           type="submit"
           className="btn-custom btn-custom-dark btn-block"
           onClick={(): void => {
-            toggleGame();
+            toggleFirstGame();
             this.setState({
               initialState: false,
               promptVisible: false,
