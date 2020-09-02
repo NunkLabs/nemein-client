@@ -384,14 +384,13 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     /* We scan through each pixel of the tile to determine if the move is valid */
     for (let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL; pixelIter += 1) {
       /* Check to see if any pixel goes out of the board */
-      /* TBS-5: HACK - we ignore any pixels that has y coord < 0
-      so that we can safely spawn tiles pixel by pixel */
+      /* HACK - We check pixels' y coords first to safely render tiles
+      pixel by pixel initially */
       const yToCheck = newY + tiles[activeTile][newRotate][pixelIter][TetrisConsts.Y_INDEX];
       const xToCheck = newX + tiles[activeTile][newRotate][pixelIter][TetrisConsts.X_INDEX];
+      const xValid = xToCheck >= 0 && xToCheck < boardWidth;
       if (yToCheck >= 0) {
-        const xValid = xToCheck >= 0 && xToCheck < boardWidth;
         const yValid = yToCheck < boardHeight;
-
         if (xValid && yValid) {
           /* Check for any overlap */
           const pixelOverlapped = field[xToCheck].colArr[yToCheck] !== 0;
@@ -401,6 +400,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
         } else {
           return false;
         }
+      } else if (!xValid) {
+        return false;
       }
     }
     return true;
@@ -490,8 +491,6 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     + set new time interval and continue */
     let isGameOver = false;
     for (let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL; pixelIter += 1) {
-      /* TBS-5: HACK - we ignore any pixels that has y coord < 0
-      so that we can safely spawn tiles pixel by pixel */
       const yToCheck = retY + tiles[retTile][retRotate][pixelIter][TetrisConsts.Y_INDEX];
       const xToCheck = retX + tiles[retTile][retRotate][pixelIter][TetrisConsts.X_INDEX];
       if (yToCheck >= 0) {
