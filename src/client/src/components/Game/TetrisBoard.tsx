@@ -27,7 +27,7 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
     const spawnedTileFieldRender = TetrisUtils.fieldToJsxElement(spawnedTileField);
     spawnedTilesFieldsRender.push(spawnedTileFieldRender);
   });
-  const tileRenderFields = spawnedTilesFieldsRender.map((tile) => <div className="tetris-board">{tile}</div>);
+  const tileRenderFields = spawnedTilesFieldsRender.map((tile) => <div className="tetris-next">{tile}</div>);
 
   /* Prepare an HTML element for the currently held tile */
   const heldTileField = renderTiles[heldTile];
@@ -58,7 +58,7 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
       <div className="tetris-gamespace">
         <div className="row">
           <div className="col">
-            <div className="tetris-board">{heldTileFieldRender}</div>
+            <div className="tetris-held">{heldTileFieldRender}</div>
           </div>
           <div className="col">
             <div className="tetris-board">{gameBoard}</div>

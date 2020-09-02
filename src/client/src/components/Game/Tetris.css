@@ -1,6 +1,6 @@
 .game-wrap {
   height: 800px;
-  width: 800px; /* FIXME */
+  width: 1000px;
   margin: auto;
   display: flex;
   align-items: center;
@@ -15,6 +15,17 @@
 .tetris-text {
   font-size: 1.5em;
   color: #D8DEE9;
+}
+
+.tetris-held {
+  border: 5px solid #D8DEE9;
+  border-radius: 0.1rem;
+}
+
+.tetris-next {
+  border: 5px solid #D8DEE9;
+  border-radius: 0.1rem;
+  margin-bottom: 25px;
 }
 
 .tetris-board {
