@@ -30,14 +30,15 @@
     "client": "cd client && yarn start",
     "lint": "concurrently \"yarn run lint-server\" \"yarn run lint-client\"",
     "lint-client": "cd client && eslint . --fix --ext .ts,.tsx",
-    "lint-server": "cd server && eslint . --fix --ext .js",
+    "lint-server": "cd server && eslint . --fix --ext .ts",
     "preinstall": "cd client && yarn install",
     "server": "node server/dist/index.js",
     "start": "yarn run build && concurrently \"yarn run server\" \"serve -s client/build\""
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.0.1",
+    "@typescript-eslint/parser": "^4.0.1",
     "eslint": "6.8.0",
-    "eslint-config-airbnb": "^18.2.0",
     "eslint-config-airbnb-typescript": "^9.0.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
