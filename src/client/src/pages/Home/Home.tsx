@@ -3,9 +3,9 @@ import React from 'react';
 // import Tetris from '../../components/Game/Tetris';
 
 type HomeState = {
-  gamePaused: boolean;
-  gameRestart: boolean;
-  gameOver: boolean;
+  // gamePaused: boolean;
+  // gameRestart: boolean;
+  // gameOver: boolean;
 };
 
 class Home extends React.Component<{}, HomeState> {
@@ -13,9 +13,9 @@ class Home extends React.Component<{}, HomeState> {
     super(props);
 
     this.state = {
-      gamePaused: true,
-      gameRestart: false,
-      gameOver: false,
+      // gamePaused: true,
+      // gameRestart: false,
+      // gameOver: false,
     };
   }
 

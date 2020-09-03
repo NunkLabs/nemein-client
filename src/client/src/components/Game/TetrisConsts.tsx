@@ -9,6 +9,9 @@ export const LOWER_Y_INDEX = 1;
 export const UPPER_X_INDEX = 3;
 export const LOWER_X_INDEX = 0;
 export const MAX_SPAWNED_TILES = 4;
+export const EARLY_LEVEL_MULTIPLIER = 60;
+export const LATE_LEVEL_MULTIPLIER = 0.5;
+export const INTERVAL_CAP = 900;
 
 /* Tiles coords consts */
 export const MAX_TILE_INDEX = 7;

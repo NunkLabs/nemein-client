@@ -97,14 +97,14 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    */
   setGameInterval(interval: number): void {
     const {
-      timerId, level,
+      timerId,
     } = this.state;
 
     window.clearInterval(timerId);
 
     const newTimerId = window.setInterval(
       () => this.handleBoardUpdate(TetrisConsts.Command.Down),
-      interval - (level * 10 > 600 ? 600 : level * 10),
+      interval,
     );
 
     this.setState(() => ({
@@ -429,7 +429,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       newTiles: TetrisConsts.Tile[];
     } | undefined {
     const {
-      field, spawnedTiles,
+      field, spawnedTiles, level,
     } = this.state;
     const {
       boardWidth, boardHeight,
@@ -516,7 +516,10 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       level: 1 + Math.floor(prev.tileCount / 10),
     }));
 
-    this.setGameInterval(TetrisConsts.DEFAULT_TIME_INTERVAL_MS);
+    const newGameInterval = level * TetrisConsts.EARLY_LEVEL_MULTIPLIER > TetrisConsts.INTERVAL_CAP
+      ? (TetrisConsts.INTERVAL_CAP + level * TetrisConsts.LATE_LEVEL_MULTIPLIER)
+      : (level * TetrisConsts.EARLY_LEVEL_MULTIPLIER);
+    this.setGameInterval(TetrisConsts.DEFAULT_TIME_INTERVAL_MS - newGameInterval);
 
     return {
       newInit: true,

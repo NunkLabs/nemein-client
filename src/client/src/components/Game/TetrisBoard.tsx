@@ -14,7 +14,7 @@ type TetrisBoardProps =
 
 const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
   const {
-    field, score, level, spawnedTiles, heldTile, firstGameStart, 
+    field, score, level, spawnedTiles, heldTile, firstGameStart,
   } = props;
   const renderTiles = TetrisConsts.RENDER_TILES_ARR;
 
@@ -24,7 +24,8 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
   /* Prepare HTML elements for the tile queue */
   const spawnedTilesFieldsRender: JSX.Element[][] = [];
   spawnedTiles.forEach((tile) => {
-    const spawnedTileField = firstGameStart ? renderTiles[tile] : renderTiles[TetrisConsts.Tile.Blank];
+    const spawnedTileField = firstGameStart ? renderTiles[tile]
+      : renderTiles[TetrisConsts.Tile.Blank];
     const spawnedTileFieldRender = TetrisUtils.fieldToJsxElement(spawnedTileField);
     spawnedTilesFieldsRender.push(spawnedTileFieldRender);
   });
