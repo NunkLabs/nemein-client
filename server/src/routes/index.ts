@@ -23,10 +23,10 @@ router.get('/home', (req, res, next): void => {
 
 /* Handle Google login */
 router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
-router.get('/auth/google/callback', passport.authenticate('google', { 
+router.get('/auth/google/callback', passport.authenticate('google', {
   prompt: 'select_account',
   successRedirect: '/home',
-  failureRedirect: '/landing'
+  failureRedirect: '/landing',
 }));
 
 /* Handle logout */

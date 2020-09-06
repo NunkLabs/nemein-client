@@ -1,6 +1,7 @@
 import path from 'path';
 import express from 'express';
 import session from 'express-session';
+import mongo from 'connect-mongo';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import passport from 'passport';
@@ -30,10 +31,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../../client/build')));
 
 /* Configure session */
+const MongoStore = mongo(session);
+
 app.use(session({
   secret: 'nunkugemu',
   resave: false,
   saveUninitialized: false,
+  store: new MongoStore({ mongooseConnection: mongoose.connection }),
 }));
 
 /* Initialize Passport with Google OAuth */
