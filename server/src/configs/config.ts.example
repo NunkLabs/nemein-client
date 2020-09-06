@@ -1,0 +1,12 @@
+export const env = {
+  PRODUCTION_MODE: false,
+  PORT: 8080,
+  MONGO_URI: ''
+}
+
+export const keys = {
+  google: {
+    CLIENT_ID: '',
+    CLIENT_SECRET: ''
+  }
+}
