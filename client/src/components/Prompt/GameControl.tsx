@@ -168,12 +168,12 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
         Log In
       </button>
     ) : (
-      <button
-        type="submit"
+      <a
         className="btn-custom btn-custom-dark btn-block"
+        href="/logout"
       >
         Log Out
-      </button>
+      </a>
     );
   }
 
