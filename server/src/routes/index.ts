@@ -23,7 +23,11 @@ router.get('/home', (req, res, next): void => {
 
 /* Handle Google login */
 router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
-router.get('/auth/google/callback', passport.authenticate('google', { successRedirect: '/home', failureRedirect: '/landing' }));
+router.get('/auth/google/callback', passport.authenticate('google', { 
+  prompt: 'select_account',
+  successRedirect: '/home',
+  failureRedirect: '/landing'
+}));
 
 /* Handle logout */
 router.get('/logout', (req, res) => {
