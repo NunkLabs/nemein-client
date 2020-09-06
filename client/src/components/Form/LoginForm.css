@@ -3,10 +3,23 @@
   width: 500px;
   max-width: 500px;
   margin: auto;
-  padding-top: 250px;
+  padding-top: 200px;
   padding-right: 50px;
   padding-left: 50px;
-  padding-bottom: 250px;
+  padding-bottom: 200px;
+}
+
+.form-separator {
+  color: #4C566A;
+  font-family: 'Rubik Mono One', sans-serif;
+  font-size: 1em;
+  text-align: center;
+}
+
+.form h1 {
+  color: #4C566A;
+  font-size: 2.75em;
+  margin-bottom: 50px;
 }
 
 .bm-burger-button {

@@ -3,6 +3,7 @@ import './LoginForm.css';
 
 const LoginFrom: React.FC<{}> = () => (
   <div className="form">
+    <h1>TetriBASS</h1>
     <form>
       <div className="mb-2">
         <label className="form-label" htmlFor="username-input">
@@ -20,7 +21,9 @@ const LoginFrom: React.FC<{}> = () => (
         <a className="btn-custom btn-custom-dark btn-block">Log In</a>
         <a className="btn-custom btn-custom-dark btn-block">Register Now</a>
       </div>
-      <div className="mb-2" />
+      <div className="mb-2 form-separator">
+        OR
+      </div>
       <div className="mb-2">
         <a className="btn-custom btn-custom-dark btn-block" href="/auth/google">Log In with Google</a>
       </div>

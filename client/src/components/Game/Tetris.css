@@ -12,6 +12,11 @@
   padding-bottom: 10px;
 }
 
+.tetris-info {
+  padding-left: 150px;
+  padding-right: 150px;
+}
+
 .tetris-text {
   font-size: 1.5em;
   color: #D8DEE9;
