@@ -18,8 +18,8 @@ const LoginFrom: React.FC<{}> = () => (
         </label>
       </div>
       <div className="mb-2">
-        <a className="btn-custom btn-custom-dark btn-block">Log In</a>
-        <a className="btn-custom btn-custom-dark btn-block">Register Now</a>
+        <button type="submit" className="btn-custom btn-custom-dark btn-block">Log In</button>
+        <button type="submit" className="btn-custom btn-custom-dark btn-block">Register Now</button>
       </div>
       <div className="mb-2 form-separator">
         OR
