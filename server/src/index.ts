@@ -7,7 +7,7 @@ import morgan from 'morgan';
 import passport from 'passport';
 import logger from './utils/logger';
 import routes from './routes/index';
-import googleOAuth from './routes/auth/google';
+import googleStrategy from './utils/passport';
 import { env } from './configs/config';
 
 /* Connect server to MongoDB */
@@ -41,7 +41,7 @@ app.use(session({
 }));
 
 /* Initialize Passport with Google OAuth */
-googleOAuth(passport);
+googleStrategy(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 

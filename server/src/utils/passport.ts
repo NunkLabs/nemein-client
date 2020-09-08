@@ -1,12 +1,12 @@
 import { PassportStatic } from 'passport';
 import google from 'passport-google-oauth20';
-import logger from '../../utils/logger';
-import User from '../../models/User';
-import { keys } from '../../configs/config';
+import logger from './logger';
+import User from '../models/User';
+import { keys } from '../configs/config';
 
 const GoogleStrategy = google.Strategy;
 
-const googleOAuth = (passport: PassportStatic): void => {
+const googleStrategy = (passport: PassportStatic): void => {
   passport.serializeUser(({ id }, done) => done(null, id));
 
   passport.deserializeUser((id, done) => {
@@ -42,4 +42,4 @@ const googleOAuth = (passport: PassportStatic): void => {
   );
 };
 
-export default googleOAuth;
+export default googleStrategy;
