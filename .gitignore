@@ -16,7 +16,6 @@ dist/
 
 # Packages & dependency directories
 node_modules/
-yarn.lock
 package-lock.json
 
 # Optional npm cache directory
