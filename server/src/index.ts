@@ -12,6 +12,7 @@ import { env } from './configs/config';
 
 /* Connect server to MongoDB */
 mongoose.connect(env.MONGO_URI || 'mongodb://localhost:27017/tetribass', {
+  useFindAndModify: false,
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(
@@ -25,6 +26,7 @@ mongoose.connection.on('error', (err) => logger.error(err));
 
 /* Initialize Express server */
 const app = express();
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 /* Serve up static route */

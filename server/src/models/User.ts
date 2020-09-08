@@ -1,5 +1,18 @@
 import mongoose from 'mongoose';
 
+interface IUser {
+  emailAddress: string;
+  displayName: string;
+  profilePic: string;
+  createdAt: Date;
+  scores: [
+    {
+      score: number;
+      timestamp: Date;
+    }
+  ];
+}
+
 const UserSchema = new mongoose.Schema({
   emailAddress: {
     type: String,
@@ -14,10 +27,21 @@ const UserSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now(),
+    required: true,
   },
+  scores: [
+    {
+      _id: false,
+      score: {
+        type: Number,
+      },
+      timestamp: {
+        type: Date,
+      },
+    },
+  ],
 });
 
-const User = mongoose.model('User', UserSchema);
+const User = mongoose.model<IUser & mongoose.Document>('User', UserSchema);
 
 export default User;
