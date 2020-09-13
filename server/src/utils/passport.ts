@@ -26,7 +26,7 @@ const googleStrategy = (passport: PassportStatic): void => {
         emailAddress: profile.emails ? profile.emails[0].value : '',
         displayName: profile.displayName,
         profilePic: profile.photos ? profile.photos[0].value : '',
-        createdAt: moment().format('MMMM Do YYYY'),
+        createdAt: moment().format('MMMM Do, YYYY'),
         scores: [],
       };
 

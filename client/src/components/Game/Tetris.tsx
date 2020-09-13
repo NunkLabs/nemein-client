@@ -178,7 +178,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       axios.put('/api/user/update/scores', JSON.stringify({
         newScore: {
           score,
-          timestamp: moment().format('MMMM Do YYYY'),
+          timestamp: moment().format('MMMM Do, YYYY'),
         },
       }), {
         headers: {
