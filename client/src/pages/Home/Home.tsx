@@ -8,6 +8,7 @@ type HomeState = {
   gameRestart: boolean;
   gameOver: boolean;
   firstGameStart: boolean;
+  userAuth: boolean;
 };
 
 class Home extends React.Component<Record<string, unknown>, HomeState> {
@@ -19,12 +20,13 @@ class Home extends React.Component<Record<string, unknown>, HomeState> {
       gameRestart: false,
       gameOver: false,
       firstGameStart: false,
+      userAuth: true,
     };
   }
 
   render(): JSX.Element {
     const {
-      gamePaused, gameRestart, gameOver, firstGameStart,
+      gamePaused, gameRestart, gameOver, firstGameStart, userAuth,
     } = this.state;
 
     return (
@@ -49,6 +51,7 @@ class Home extends React.Component<Record<string, unknown>, HomeState> {
             gameRestart={gameRestart}
             gameState={(isOver: boolean): void => this.setState({ gameOver: isOver })}
             firstGameStart={firstGameStart}
+            userAuth={userAuth}
           />
         </div>
       </div>

@@ -11,6 +11,7 @@ type LandingState = {
   gameRestart: boolean;
   gameOver: boolean;
   firstGameStart: boolean;
+  userAuth: boolean;
 };
 
 class Landing extends React.Component<Record<string, unknown>, LandingState> {
@@ -25,6 +26,7 @@ class Landing extends React.Component<Record<string, unknown>, LandingState> {
       gameRestart: false,
       gameOver: false,
       firstGameStart: false,
+      userAuth: false,
     };
   }
 
@@ -40,7 +42,7 @@ class Landing extends React.Component<Record<string, unknown>, LandingState> {
 
   render(): JSX.Element {
     const {
-      formOpened, gamePaused, gameRestart, gameOver, firstGameStart,
+      formOpened, gamePaused, gameRestart, gameOver, firstGameStart, userAuth,
     } = this.state;
 
     return (
@@ -76,6 +78,7 @@ class Landing extends React.Component<Record<string, unknown>, LandingState> {
             gameRestart={gameRestart}
             gameState={(isOver: boolean): void => this.setState({ gameOver: isOver })}
             firstGameStart={firstGameStart}
+            userAuth={userAuth}
           />
         </div>
       </div>

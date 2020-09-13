@@ -16,6 +16,7 @@ type TetrisProps = {
   gameState: (arg0: boolean) => void; /* We use a callback as another switch to let the
   parent component know whether the game is over */
   firstGameStart: boolean;
+  userAuth: boolean;
 };
 
 type TetrisCol = {
@@ -159,7 +160,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    */
   handleBoardUpdate(command: TetrisConsts.Command): void {
     const {
-      gamePaused, gameRestart, gameState, boardWidth,
+      gamePaused, gameRestart, gameState, boardWidth, userAuth,
     } = this.props;
 
     const {
@@ -178,7 +179,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     if (gameOver) {
       gameState(true);
 
-      if (!progressSaved) {
+      if (userAuth && !progressSaved) {
         axios.put('/api/user/update/scores', JSON.stringify({
           newScore: {
             score,
