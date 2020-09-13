@@ -158,7 +158,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @param[in]: command - The command to be executed. The command is
    * always 'Down' for each tick of the game
    */
-  handleBoardUpdate(command: TetrisConsts.Command): void {
+  async handleBoardUpdate(command: TetrisConsts.Command): Promise<void> {
     const {
       gamePaused, gameRestart, gameState, boardWidth, userAuth,
     } = this.props;
@@ -180,7 +180,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       gameState(true);
 
       if (userAuth && !progressSaved) {
-        axios.put('/api/user/update/scores', JSON.stringify({
+        await axios.put('/api/user/update/scores', JSON.stringify({
           newScore: {
             score,
             timestamp: moment().format('MMMM Do, YYYY'),
@@ -189,8 +189,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
           headers: {
             'Content-Type': 'application/json',
           },
-        })
-          .catch(() => {});
+        });
 
         this.setState({
           progressSaved: true,
@@ -340,7 +339,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     This recursive call should not affect performance as we'd fall in the init
     handling section of this function - which should return anyway. Unless I'm wrong..? */
     if (!yAddValid) {
-      this.handleBoardUpdate(TetrisConsts.Command.Down);
+      await this.handleBoardUpdate(TetrisConsts.Command.Down);
     }
   }
 
@@ -350,25 +349,25 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * command
    * @param[in]: event - The keyboard event received
    */
-  keyboardInputHandle(event: KeyboardEvent): void {
+  async keyboardInputHandle(event: KeyboardEvent): Promise<void> {
     switch (event.key) {
       case TetrisConsts.ARROW_DOWN:
-        this.handleBoardUpdate(TetrisConsts.Command.Down);
+        await this.handleBoardUpdate(TetrisConsts.Command.Down);
         break;
       case TetrisConsts.ARROW_LEFT:
-        this.handleBoardUpdate(TetrisConsts.Command.Left);
+        await this.handleBoardUpdate(TetrisConsts.Command.Left);
         break;
       case TetrisConsts.ARROW_UP:
-        this.handleBoardUpdate(TetrisConsts.Command.Rotate);
+        await this.handleBoardUpdate(TetrisConsts.Command.Rotate);
         break;
       case TetrisConsts.ARROW_RIGHT:
-        this.handleBoardUpdate(TetrisConsts.Command.Right);
+        await this.handleBoardUpdate(TetrisConsts.Command.Right);
         break;
       case TetrisConsts.SPACE:
-        this.handleBoardUpdate(TetrisConsts.Command.HardDrop);
+        await this.handleBoardUpdate(TetrisConsts.Command.HardDrop);
         break;
       case TetrisConsts.C_KEY:
-        this.handleBoardUpdate(TetrisConsts.Command.HoldTile);
+        await this.handleBoardUpdate(TetrisConsts.Command.HoldTile);
         break;
       default:
     }
