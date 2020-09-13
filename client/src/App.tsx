@@ -4,6 +4,7 @@ import {
 } from 'react-router-dom';
 import Landing from './pages/Landing/Landing';
 import Home from './pages/Home/Home';
+import Profile from './pages/Profile/Profile';
 
 const App = (): JSX.Element => (
   <Router>
@@ -16,6 +17,9 @@ const App = (): JSX.Element => (
       </Route>
       <Route exact path="/home">
         <Home />
+      </Route>
+      <Route exact path="/profile">
+        <Profile />
       </Route>
     </Switch>
   </Router>

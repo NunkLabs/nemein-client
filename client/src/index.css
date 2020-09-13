@@ -51,6 +51,12 @@ label {
   padding-top: 100px;
 }
 
+#profile-container {
+  height: 100%;
+  position: relative;
+  padding-top: 100px;
+}
+
 /*  
   Tetris Component
 */
@@ -199,7 +205,7 @@ fieldset:disabled a.btn-custom {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #D8DEE9;
+  color: #4C566A;
   background-color: #D8DEE9;
   background-clip: padding-box;
   border: 5px solid #D8DEE9;
