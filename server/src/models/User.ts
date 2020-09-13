@@ -4,11 +4,11 @@ interface IUser {
   emailAddress: string;
   displayName: string;
   profilePic: string;
-  createdAt: Date;
+  createdAt: string;
   scores: [
     {
       score: number;
-      timestamp: Date;
+      timestamp: string;
     }
   ];
 }
@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
   },
   createdAt: {
-    type: Date,
+    type: String,
     required: true,
   },
   scores: [
@@ -36,7 +36,7 @@ const UserSchema = new mongoose.Schema({
         type: Number,
       },
       timestamp: {
-        type: Date,
+        type: String,
       },
     },
   ],

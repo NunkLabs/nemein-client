@@ -1,5 +1,6 @@
 import { PassportStatic } from 'passport';
 import google from 'passport-google-oauth20';
+import moment from 'moment';
 import logger from './logger';
 import User from '../models/User';
 import { keys } from '../configs/config';
@@ -25,11 +26,8 @@ const googleStrategy = (passport: PassportStatic): void => {
         emailAddress: profile.emails ? profile.emails[0].value : '',
         displayName: profile.displayName,
         profilePic: profile.photos ? profile.photos[0].value : '',
-        createdAt: Date.now(),
-        scores: Array(5).fill({
-          score: 0,
-          timestamp: Date.now(),
-        }),
+        createdAt: moment().format('MMMM Do YYYY'),
+        scores: [],
       };
 
       try {
