@@ -8,6 +8,10 @@ type ProfileCardState = {
   displayName: string;
   profilePic: string;
   createdAt: string;
+  scores: Array<{
+    score: number;
+    timestamp: string;
+  }>;
 };
 
 class ProfileCard extends React.Component<Record<string, unknown>, ProfileCardState> {
@@ -19,18 +23,43 @@ class ProfileCard extends React.Component<Record<string, unknown>, ProfileCardSt
       displayName: '',
       profilePic: '',
       createdAt: '',
+      scores: [],
     };
   }
 
   async componentDidMount(): Promise<void> {
-    const { data } = await axios.get('/api/user/');
+    const { data: userInfo } = await axios.get('/api/user/');
+    const { data: userScores } = await axios.get('/api/user/scores');
 
     this.setState({
-      emailAddress: data.emailAddress,
-      displayName: data.displayName,
-      profilePic: data.profilePic,
-      createdAt: data.createdAt,
+      emailAddress: userInfo.emailAddress,
+      displayName: userInfo.displayName,
+      profilePic: userInfo.profilePic,
+      createdAt: userInfo.createdAt,
+      scores: userScores.scores,
     });
+  }
+
+  renderScores(): JSX.Element {
+    const { scores: userScores } = this.state;
+
+    return userScores.length ? (
+      <div className="high-score">
+        <div className="mb-4">Your High Scores</div>
+        {userScores.map((value) => {
+          const { score, timestamp } = value;
+
+          return (
+            <div className="record">
+              <div className="score">{score}</div>
+              <div className="timestamp">{timestamp}</div>
+            </div>
+          );
+        })}
+      </div>
+    ) : (
+      <div />
+    );
   }
 
   render(): JSX.Element {
@@ -65,6 +94,7 @@ class ProfileCard extends React.Component<Record<string, unknown>, ProfileCardSt
             </div>
           </div>
         </div>
+        {this.renderScores()}
       </div>
     );
   }

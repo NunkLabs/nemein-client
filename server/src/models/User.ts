@@ -5,12 +5,10 @@ interface IUser {
   displayName: string;
   profilePic: string;
   createdAt: string;
-  scores: [
-    {
-      score: number;
-      timestamp: string;
-    }
-  ];
+  scores: Array<{
+    score: number,
+    timestamp: string
+  }>;
 }
 
 const UserSchema = new mongoose.Schema({

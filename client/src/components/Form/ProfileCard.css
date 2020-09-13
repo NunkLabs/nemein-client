@@ -45,22 +45,22 @@
   border-radius: 0.1rem;
   color: #434C5E;
   font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1.5em;
+  font-size: 1.25em;
   padding: 25px;
   text-align: center;
-}
-
-.high-score .score {
-  text-align: left;
-  font-size: 0.75em;
-}
-
-.high-score .timestamp {
-  text-align: right;
-  font-size: 0.75em;
 }
 
 .record {
   display: grid;
   grid-template-columns: minmax(175px, 25%) 1fr;
+}
+
+.record .score {
+  text-align: left;
+  font-size: 0.5em;
+}
+
+.record .timestamp {
+  text-align: right;
+  font-size: 0.5em;
 }
