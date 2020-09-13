@@ -38,6 +38,7 @@ type TetrisState =
   activeTileRotate: TetrisConsts.Rotation;
   score: number;
   level: number;
+  progressSaved: boolean;
   tileCount: number;
   timerId: number;
   field: TetrisCol[];
@@ -66,6 +67,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       activeTileRotate: initStates.initActiveTileRotate,
       score: initStates.initScore,
       level: initStates.initLevel,
+      progressSaved: initStates.initProgressSaved,
       tileCount: initStates.initTileCount,
       timerId: 0,
       field: initStates.initField,
@@ -141,6 +143,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       activeTileRotate: initStates.initActiveTileRotate,
       score: initStates.initScore,
       level: initStates.initLevel,
+      progressSaved: initStates.initProgressSaved,
       tileCount: initStates.initTileCount,
       field: initStates.initField,
       spawnedTiles: initStates.initSpawnedTiles,
@@ -160,14 +163,16 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     const {
       gamePaused, gameRestart, gameState, boardWidth,
     } = this.props;
+
     const {
       init, gameOver, newGameSwitch, onHold, activeTileX, activeTileY, activeGhostTileY,
-      heldTile, activeTile, activeTileRotate, score, field, spawnedTiles,
+      heldTile, activeTile, activeTileRotate, score, field, progressSaved, spawnedTiles,
     } = this.state;
 
     /* Call new game handler and return if the new game/restart button was clicked */
     if (newGameSwitch !== gameRestart) {
       this.handleNewGameClick();
+
       return;
     }
 
@@ -175,16 +180,22 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     if (gameOver) {
       gameState(true);
 
-      axios.put('/api/user/update/scores', JSON.stringify({
-        newScore: {
-          score,
-          timestamp: moment().format('MMMM Do, YYYY'),
-        },
-      }), {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      if (!progressSaved) {
+        axios.put('/api/user/update/scores', JSON.stringify({
+          newScore: {
+            score,
+            timestamp: moment().format('MMMM Do, YYYY'),
+          },
+        }), {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        this.setState({
+          progressSaved: true,
+        });
+      }
 
       return;
     }
@@ -562,6 +573,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     initActiveTileRotate: TetrisConsts.Rotation;
     initScore: number;
     initLevel: number;
+    initProgressSaved: boolean;
     initTileCount: number;
     initField: TetrisCol[];
     initSpawnedTiles: TetrisConsts.Tile[];
@@ -607,6 +619,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       initActiveTileRotate: retRotation,
       initScore: 0,
       initLevel: 1,
+      initProgressSaved: false,
       initTileCount: 0,
       initField: retField,
       initSpawnedTiles: retTiles,

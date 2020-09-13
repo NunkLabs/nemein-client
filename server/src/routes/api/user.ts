@@ -111,8 +111,8 @@ router.put('/update/scores', async (req, res) => {
           const { newScore } = req.body;
 
           dbUser.scores.push(newScore);
-          dbUser.scores.sort((a, b) => b.score - a.score)
-          
+          dbUser.scores.sort((a, b) => b.score - a.score);
+
           if (dbUser.scores.length > 5) {
             dbUser.scores.pop();
           }
