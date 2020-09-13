@@ -1,6 +1,7 @@
 import path from 'path';
 import express from 'express';
 import passport from 'passport';
+
 import apiRoutes from './api/index';
 
 const router = express.Router();

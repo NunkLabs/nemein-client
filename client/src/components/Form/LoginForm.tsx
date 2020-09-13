@@ -1,7 +1,8 @@
 import React from 'react';
+
 import './LoginForm.css';
 
-const LoginFrom: React.FC<{}> = () => (
+const LoginFrom: React.FC<Record<string, unknown>> = () => (
   <div className="form">
     <h1>TetriBASS</h1>
     <form>

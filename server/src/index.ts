@@ -5,6 +5,7 @@ import mongo from 'connect-mongo';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import passport from 'passport';
+
 import logger from './utils/logger';
 import routes from './routes/index';
 import googleStrategy from './utils/passport';

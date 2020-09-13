@@ -1,6 +1,7 @@
 import { PassportStatic } from 'passport';
 import google from 'passport-google-oauth20';
 import moment from 'moment';
+
 import logger from './logger';
 import User from '../models/User';
 import { keys } from '../configs/config';

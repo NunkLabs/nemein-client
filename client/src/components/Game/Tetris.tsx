@@ -1,31 +1,29 @@
 import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
+
 import TetrisBoard from './TetrisBoard';
 import './Tetris.css';
 import * as TetrisConsts from './TetrisConsts';
 import * as TetrisUtils from './TetrisUtils';
 
-type TetrisProps =
-{
+type TetrisProps = {
   boardWidth: number;
   boardHeight: number;
   gamePaused: boolean;
   gameRestart: boolean; /* We now use the newGame prop as a 'switch' to toggle a new game
   instead of polling its' value to determine whether or not a new game should start */
-  gameState: Function; /* We use a callback as another switch to let the parent component
-  know whether the game is over */
+  gameState: (arg0: boolean) => void; /* We use a callback as another switch to let the
+  parent component know whether the game is over */
   firstGameStart: boolean;
 };
 
-type TetrisCol =
-{
+type TetrisCol = {
   colArr: number[];
   lowestY: number;
 };
 
-type TetrisState =
-{
+type TetrisState = {
   init: boolean;
   gameOver: boolean;
   newGameSwitch: boolean;
@@ -190,7 +188,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
           headers: {
             'Content-Type': 'application/json',
           },
-        });
+        })
+          .catch(() => {});
 
         this.setState({
           progressSaved: true,
@@ -395,12 +394,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     activeTile: TetrisConsts.Tile,
     activeTileRotate: TetrisConsts.Rotation,
     addRotate: number): boolean {
-    const {
-      field,
-    } = this.state;
-    const {
-      boardWidth, boardHeight,
-    } = this.props;
+    const { field } = this.state;
+    const { boardWidth, boardHeight } = this.props;
+
     const tiles = TetrisConsts.TILES_COORDS_ARR;
 
     const newX = addX ? (activeTileX + addX) : activeTileX;
@@ -453,12 +449,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       newField: TetrisCol[];
       newTiles: TetrisConsts.Tile[];
     } | undefined {
-    const {
-      field, spawnedTiles, level,
-    } = this.state;
-    const {
-      boardWidth, boardHeight,
-    } = this.props;
+    const { field, spawnedTiles, level } = this.state;
+    const { boardWidth, boardHeight } = this.props;
+
     const tiles = TetrisConsts.TILES_COORDS_ARR;
 
     const retField = field;
@@ -578,9 +571,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     initField: TetrisCol[];
     initSpawnedTiles: TetrisConsts.Tile[];
   } {
-    const {
-      boardWidth, boardHeight,
-    } = this.props;
+    const { boardWidth, boardHeight } = this.props;
 
     const retTiles = [];
     /* Add an additional tile to pop in init */
@@ -637,12 +628,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     tileY: number,
     tile: TetrisConsts.Tile,
     tileRotate: TetrisConsts.Rotation): number {
-    const {
-      boardWidth, boardHeight,
-    } = this.props;
-    const {
-      field,
-    } = this.state;
+    const { boardWidth, boardHeight } = this.props;
+    const { field } = this.state;
+
     const tiles = TetrisConsts.TILES_COORDS_ARR;
 
     /* First we find the lowest Y among the number of cols this
@@ -723,9 +711,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    */
   prepareGhostTileY(tile: TetrisConsts.Tile,
     tileRotate: TetrisConsts.Rotation): number {
-    const {
-      boardHeight,
-    } = this.props;
+    const { boardHeight } = this.props;
+
     const tiles = TetrisConsts.TILES_COORDS_ARR;
 
     const pixelsToPivot = tiles[tile][tileRotate][
@@ -747,9 +734,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     tile: TetrisConsts.Tile,
     tileRotate: TetrisConsts.Rotation,
     renderValue: number): void {
-    const {
-      field,
-    } = this.state;
+    const { field } = this.state;
+
     const tiles = TetrisConsts.TILES_COORDS_ARR;
 
     const newField = field;

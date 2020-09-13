@@ -1,12 +1,13 @@
 import React from 'react';
+
 import './GameControl.css';
 
 type GameControlProps = {
   isOver: boolean;
-  toggleGame: Function;
-  restartGame: Function;
-  openForm?: Function;
-  toggleFirstGame: Function;
+  toggleGame: () => void;
+  restartGame: () => void;
+  openForm?: () => void;
+  toggleFirstGame: () => void;
 };
 
 type GameControlState = {
@@ -29,7 +30,10 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
     };
   }
 
-  static getDerivedStateFromProps(props: GameControlProps, state: GameControlState): object | null {
+  static getDerivedStateFromProps(
+    props: GameControlProps,
+    state: GameControlState,
+  ): Record<string, unknown> | null {
     if (props.isOver && !state.promptVisible) {
       return {
         promptVisible: true,

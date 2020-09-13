@@ -13,8 +13,8 @@ type LandingState = {
   firstGameStart: boolean;
 };
 
-class Landing extends React.Component<{}, LandingState> {
-  constructor(props: {}) {
+class Landing extends React.Component<Record<string, unknown>, LandingState> {
+  constructor(props: Record<string, unknown>) {
     super(props);
 
     this.handleFormState = this.handleFormState.bind(this);

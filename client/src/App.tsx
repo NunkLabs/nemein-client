@@ -2,6 +2,7 @@ import React from 'react';
 import {
   BrowserRouter as Router, Redirect, Route, Switch,
 } from 'react-router-dom';
+
 import Landing from './pages/Landing/Landing';
 import Home from './pages/Home/Home';
 import Profile from './pages/Profile/Profile';

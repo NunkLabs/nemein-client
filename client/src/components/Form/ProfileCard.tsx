@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+
 import './ProfileCard.css';
 
 type ProfileCardState = {
@@ -9,8 +10,8 @@ type ProfileCardState = {
   createdAt: string;
 };
 
-class ProfileCard extends React.Component<{}, ProfileCardState> {
-  constructor(props: {}) {
+class ProfileCard extends React.Component<Record<string, unknown>, ProfileCardState> {
+  constructor(props: Record<string, unknown>) {
     super(props);
 
     this.state = {
@@ -22,13 +23,13 @@ class ProfileCard extends React.Component<{}, ProfileCardState> {
   }
 
   async componentDidMount(): Promise<void> {
-    const { data: userInfo } = await axios.get('/api/user/');
+    const { data } = await axios.get('/api/user/');
 
     this.setState({
-      emailAddress: userInfo.emailAddress,
-      displayName: userInfo.displayName,
-      profilePic: userInfo.profilePic,
-      createdAt: userInfo.createdAt,
+      emailAddress: data.emailAddress,
+      displayName: data.displayName,
+      profilePic: data.profilePic,
+      createdAt: data.createdAt,
     });
   }
 

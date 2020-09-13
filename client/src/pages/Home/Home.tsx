@@ -1,4 +1,5 @@
 import React from 'react';
+
 import GameControl from '../../components/Prompt/GameControl';
 import Tetris from '../../components/Game/Tetris';
 
@@ -9,8 +10,8 @@ type HomeState = {
   firstGameStart: boolean;
 };
 
-class Home extends React.Component<{}, HomeState> {
-  constructor(props: {}) {
+class Home extends React.Component<Record<string, unknown>, HomeState> {
+  constructor(props: Record<string, unknown>) {
     super(props);
 
     this.state = {

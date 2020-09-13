@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 import express from 'express';
+
 import User from '../../models/User';
 import logger from '../../utils/logger';
 
