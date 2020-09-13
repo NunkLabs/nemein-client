@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+import moment from 'moment';
 import TetrisBoard from './TetrisBoard';
 import './Tetris.css';
 import * as TetrisConsts from './TetrisConsts';
@@ -159,8 +161,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       gamePaused, gameRestart, gameState, boardWidth,
     } = this.props;
     const {
-      init, gameOver, newGameSwitch, onHold, activeTileX, activeTileY,
-      activeGhostTileY, heldTile, activeTile, activeTileRotate, field, spawnedTiles,
+      init, gameOver, newGameSwitch, onHold, activeTileX, activeTileY, activeGhostTileY,
+      heldTile, activeTile, activeTileRotate, score, field, spawnedTiles,
     } = this.state;
 
     /* Call new game handler and return if the new game/restart button was clicked */
@@ -169,9 +171,21 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       return;
     }
 
-    /* Call gameState callback and return if game is over */
+    /* Call gameState callback, save user's score and return if game is over */
     if (gameOver) {
       gameState(true);
+
+      axios.put('/api/user/update/scores', JSON.stringify({
+        newScore: {
+          score,
+          timestamp: moment().format('MMMM Do YYYY'),
+        },
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
       return;
     }
 
