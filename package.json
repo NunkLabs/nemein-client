@@ -1,5 +1,5 @@
 {
-  "name": "TetriBASS",
+  "name": "tetribass",
   "version": "1.0.0",
   "private": true,
   "repository": "https://github.com/NunkuGemu/TetriBASS.git",
@@ -32,7 +32,7 @@
     "clean:deps": "rm -rf node_modules && rm -rf client/node_modules",
     "clean:logs": "find . -name \"*.log\" -type f -delete",
     "client": "cd client && yarn start",
-    "dev": "yarn run build:client && cd server && concurrently \"tsc -w\" \"nodemon dist/index.js\"",
+    "dev": "yarn run build:client && cd server && concurrently --kill-others \"tsc -w\" \"nodemon dist/index.js\"",
     "lint": "concurrently \"yarn run lint:server\" \"yarn run lint:client\"",
     "lint:client": "cd client && eslint . --fix --ext .ts,.tsx",
     "lint:server": "cd server && eslint . --fix --ext .ts",
