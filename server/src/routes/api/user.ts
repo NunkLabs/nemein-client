@@ -30,8 +30,6 @@ router.get('/', async (req, res) => {
       return res.status(500).end();
     }
   } else {
-    res.redirect('/landing');
-
     return res.status(401).end();
   }
 });
@@ -58,8 +56,6 @@ router.get('/scores', async (req, res) => {
       return res.status(500).end();
     }
   } else {
-    res.redirect('/landing');
-
     return res.status(401).end();
   }
 });
@@ -92,8 +88,6 @@ router.put('/update', async (req, res) => {
       return res.status(500).end();
     }
   } else {
-    res.redirect('/landing');
-
     return res.status(401).end();
   }
 });
@@ -129,8 +123,6 @@ router.put('/update/scores', async (req, res) => {
       return res.status(500).end();
     }
   } else {
-    res.redirect('/landing');
-
     return res.status(401).end();
   }
 });
