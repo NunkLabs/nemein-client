@@ -15,7 +15,7 @@
     "express-session": "^1.17.1",
     "logform": "^2.2.0",
     "moment": "^2.27.0",
-    "mongodb": "^3.6.1",
+    "mongodb": "^3.6.2",
     "mongoose": "^5.10.2",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
