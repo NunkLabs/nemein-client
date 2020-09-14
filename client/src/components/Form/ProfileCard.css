@@ -5,7 +5,7 @@
 
 .profile-card {
   background-color: #282c34;
-  border: 5px solid #282c34;
+  border: 5px solid #d8dee9;
   border-radius: 0.5rem;
   box-shadow: 1rem 0 2rem #1d1f23;
   display: grid;
@@ -44,7 +44,7 @@
 
 .high-score {
   background-color: #282c34;
-  border: 5px solid #282c34;
+  border: 5px solid #d8dee9;
   border-radius: 0.1rem;
   box-shadow: 1rem 0 2rem #1d1f23;
   color: #d8dee9;

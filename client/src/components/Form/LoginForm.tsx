@@ -19,15 +19,15 @@ const LoginFrom: React.FC<Record<string, unknown>> = () => (
         </label>
       </div>
       <div className="mb-3 form-buttons">
-        <button type="submit" className="btn-custom btn-custom-light btn-block">Log In</button>
+        <button type="submit" className="btn-custom btn-custom-dark btn-block">Log In</button>
         <div />
-        <button type="submit" className="btn-custom btn-custom-dark btn-block">Register Now</button>
+        <button type="submit" className="btn-custom btn-custom-light btn-block">Register Now</button>
       </div>
       <div className="mb-3 form-separator">
         OR
       </div>
       <div>
-        <a className="btn-custom btn-custom-light btn-block google-log-in" href="/auth/google">Log In with Google</a>
+        <a className="btn-custom btn-custom-dark btn-block google-log-in" href="/auth/google">Log In with Google</a>
       </div>
     </form>
   </div>

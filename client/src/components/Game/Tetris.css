@@ -21,20 +21,20 @@
 }
 
 .tetris-held {
-  border: 5px solid #282c34;
+  border: 5px solid #d8dee9;
   border-radius: 0.5rem;
   box-shadow: 1rem 0 2rem #1d1f23;
 }
 
 .tetris-next {
-  border: 5px solid #282c34;
+  border: 5px solid #d8dee9;
   border-radius: 0.5rem;
   box-shadow: 1rem 0 2rem #1d1f23;
   margin-bottom: 15px;
 }
 
 .tetris-board {
-  border: 5px solid #282c34;
+  border: 5px solid #d8dee9;
   border-radius: 0.5rem;
   box-shadow: 1rem 0 2rem #1d1f23;
 }
@@ -46,14 +46,12 @@
 /* Styles for tiles */
 div[class*=row-] {
   border: 1px solid transparent;
-  box-shadow: 1rem 0 1rem #1d1f23;
   padding: 12.5px;
 }
 
 /* Default (empty) board column */
 .row-0 {
   background-color: #282c34;
-  box-shadow: none !important;
 }
 
 /* Colors for tiles */
