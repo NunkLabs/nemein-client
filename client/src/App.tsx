@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  BrowserRouter as Router, Redirect, Route, Switch,
+  BrowserRouter as Router, Route, Switch,
 } from 'react-router-dom';
 
 import Landing from './pages/Landing/Landing';
@@ -11,9 +11,6 @@ const App = (): JSX.Element => (
   <Router>
     <Switch>
       <Route exact path="/">
-        <Redirect to="/landing" />
-      </Route>
-      <Route exact path="/landing">
         <Landing />
       </Route>
       <Route exact path="/home">
