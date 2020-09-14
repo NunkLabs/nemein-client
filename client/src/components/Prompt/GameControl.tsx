@@ -105,7 +105,7 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
       <div>
         <button
           type="submit"
-          className="btn-custom btn-custom-dark btn-block"
+          className="mb-2 btn-custom btn-custom-dark btn-block"
           onClick={(): void => {
             toggleFirstGame();
             this.setState({
@@ -133,7 +133,7 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
         ) : (
           <button
             type="submit"
-            className="btn-custom btn-custom-dark btn-block"
+            className="mb-2 btn-custom btn-custom-dark btn-block"
             onClick={(): void => {
               toggleGame();
               this.setState({ promptVisible: false });
@@ -144,7 +144,7 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
         )}
         <button
           type="submit"
-          className="btn-custom btn-custom-dark btn-block"
+          className="mb-2 btn-custom btn-custom-dark btn-block"
           onClick={(): void => {
             restartGame();
             this.setState({

@@ -8,7 +8,7 @@ const LoginFrom: React.FC<Record<string, unknown>> = () => (
     <form>
       <div className="mb-2">
         <label className="form-label" htmlFor="username-input">
-          Username
+          Email address
           <input type="email" className="form-control-custom" id="username-input" />
         </label>
       </div>
@@ -18,15 +18,16 @@ const LoginFrom: React.FC<Record<string, unknown>> = () => (
           <input type="password" className="form-control-custom" id="password-input" />
         </label>
       </div>
-      <div className="mb-2">
-        <button type="submit" className="btn-custom btn-custom-dark btn-block">Log In</button>
+      <div className="mb-3 form-buttons">
+        <button type="submit" className="btn-custom btn-custom-light btn-block">Log In</button>
+        <div />
         <button type="submit" className="btn-custom btn-custom-dark btn-block">Register Now</button>
       </div>
-      <div className="mb-2 form-separator">
+      <div className="mb-3 form-separator">
         OR
       </div>
-      <div className="mb-2">
-        <a className="btn-custom btn-custom-dark btn-block" href="/auth/google">Log In with Google</a>
+      <div>
+        <a className="btn-custom btn-custom-light btn-block google-log-in" href="/auth/google">Log In with Google</a>
       </div>
     </form>
   </div>

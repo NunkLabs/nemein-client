@@ -7,7 +7,6 @@ type ProfileCardState = {
   emailAddress: string;
   displayName: string;
   profilePic: string;
-  createdAt: string;
   scores: Array<{
     score: number;
     timestamp: string;
@@ -22,7 +21,6 @@ class ProfileCard extends React.Component<Record<string, unknown>, ProfileCardSt
       emailAddress: '',
       displayName: '',
       profilePic: '',
-      createdAt: '',
       scores: [],
     };
   }
@@ -35,7 +33,6 @@ class ProfileCard extends React.Component<Record<string, unknown>, ProfileCardSt
       emailAddress: userInfo.emailAddress,
       displayName: userInfo.displayName,
       profilePic: userInfo.profilePic,
-      createdAt: userInfo.createdAt,
       scores: userScores.scores,
     });
   }
@@ -45,7 +42,7 @@ class ProfileCard extends React.Component<Record<string, unknown>, ProfileCardSt
 
     return userScores.length ? (
       <div className="high-score">
-        <div className="mb-4">Your High Scores</div>
+        <p className="mb-4">YOUR HIGH SCORES</p>
         {userScores.map((value) => {
           const { score, timestamp } = value;
 
@@ -64,7 +61,7 @@ class ProfileCard extends React.Component<Record<string, unknown>, ProfileCardSt
 
   render(): JSX.Element {
     const {
-      emailAddress, displayName, profilePic, createdAt,
+      emailAddress, displayName, profilePic,
     } = this.state;
 
     const profilePicURL = {
@@ -80,16 +77,12 @@ class ProfileCard extends React.Component<Record<string, unknown>, ProfileCardSt
           <div className="profile-cl">
             <div className="user-info">
               <div className="mb-2">
-                <div className="label">Display Name</div>
-                <div>{displayName}</div>
+                DISPLAY NAME
+                <p>{displayName}</p>
               </div>
               <div className="mb-2">
-                <div className="label">Email Address</div>
-                <div>{emailAddress}</div>
-              </div>
-              <div className="mb-2">
-                <div className="label">User since</div>
-                <div>{createdAt}</div>
+                EMAIL ADDRESS
+                <p>{emailAddress}</p>
               </div>
             </div>
           </div>

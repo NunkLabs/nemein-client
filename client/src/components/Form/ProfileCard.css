@@ -4,9 +4,10 @@
 }
 
 .profile-card {
-  background-color: #ECEFF4;
-  border: 5px solid #D8DEE9;
-  border-radius: 0.1rem;
+  background-color: #282c34;
+  border: 5px solid #282c34;
+  border-radius: 0.5rem;
+  box-shadow: 1rem 0 2rem #1d1f23;
   display: grid;
   grid-template-columns: minmax(175px, 25%) 1fr;
   margin-bottom: 10px;
@@ -19,35 +20,41 @@
 .user-profile-pic {
   height: 150px;
   width: 150px;
-  background-color: #ECEFF4;
+  background-color: #d8dee9;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  border: 5px solid #D8DEE9;
-  border-radius: 0.1rem;
+  border: 5px solid #282c34;
+  border-radius: 0.5rem;
+  box-shadow: 1rem 0 2rem #1d1f23;
 }
 
 .user-info {
   margin: auto;
-  color: #434C5E;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1em;
+  color: #eceff4;
+  font-family: 'Kanit', sans-serif;
+  font-size: 1.25em;
   text-align: left;
 }
 
-.label {
-  font-size: 0.75em;
+.user-info p {
+  color: #d8dee9;
+  font-size: 1.5em;
 }
 
 .high-score {
-  background-color: #ECEFF4;
-  border: 5px solid #D8DEE9;
+  background-color: #282c34;
+  border: 5px solid #282c34;
   border-radius: 0.1rem;
-  color: #434C5E;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1.25em;
+  box-shadow: 1rem 0 2rem #1d1f23;
+  color: #d8dee9;
+  font-family: 'Kanit', sans-serif;
   padding: 25px;
   text-align: center;
+}
+
+.high-score p {
+  font-size: 2em;
 }
 
 .record {
@@ -57,10 +64,10 @@
 
 .record .score {
   text-align: left;
-  font-size: 0.5em;
+  font-size: 1.75em;
 }
 
 .record .timestamp {
   text-align: right;
-  font-size: 0.5em;
+  font-size: 1.75em;
 }

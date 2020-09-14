@@ -9,38 +9,25 @@
   padding-bottom: 200px;
 }
 
-.form-separator {
-  color: #4C566A;
-  font-family: 'Rubik Mono One', sans-serif;
-  font-size: 1em;
-  text-align: center;
-}
-
 .form h1 {
-  color: #4C566A;
-  font-size: 2.75em;
   margin-bottom: 50px;
 }
 
-.bm-burger-button {
-  position: fixed;
-  width: 48px;
-  height: 36px;
-  left: 36px;
-  top: 36px;
+.form-buttons {
+  display: grid;
+  grid-template-columns: 195px 10px 195px;
 }
 
-.bm-burger-bars {
-  background: #D8DEE9;
+.form-separator {
+  color: #d8dee9;
+  font-family: 'Kanit', sans-serif;
+  font-size: 1.75em;
+  font-weight: 500;
+  text-align: center;
 }
-
-.bm-burger-bars-hover {
-  background: #ECEFF4;
-}
-
 
 .bm-cross {
-  background: #2E3440;
+  background: #d8dee9;
 }
 
 .bm-menu-wrap {
@@ -49,14 +36,9 @@
 }
 
 .bm-menu {
-  background: #ECEFF4;
+  background: #282c34;
+  box-shadow: 1rem 0 2rem #1d1f23;
   padding: 2.5em 1.5em 0;
-  font-size: 1.15em;
-}
-
-.bm-item-list {
-  color: #b8b7ad;
-  padding: 0.8em;
 }
 
 .bm-item {
@@ -65,5 +47,5 @@
 }
 
 .bm-overlay {
-  background: rgba(0, 0, 0, 0) !important;
+  background: #1d1f2363 !important;
 }

@@ -7,35 +7,36 @@
   justify-content: center;
 }
 
-.tetris-main {
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
 .tetris-info {
-  padding-left: 150px;
-  padding-right: 150px;
+  width: 458px;
+  margin: auto;
 }
 
-.tetris-text {
-  font-size: 1.5em;
-  color: #D8DEE9;
+.tetris-info p {
+  color: #d8dee9;
+  font-size: 2em;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 1rem 0 1rem #1d1f23;
 }
 
 .tetris-held {
-  border: 5px solid #D8DEE9;
-  border-radius: 0.1rem;
+  border: 5px solid #282c34;
+  border-radius: 0.5rem;
+  box-shadow: 1rem 0 2rem #1d1f23;
 }
 
 .tetris-next {
-  border: 5px solid #D8DEE9;
-  border-radius: 0.1rem;
-  margin-bottom: 20px;
+  border: 5px solid #282c34;
+  border-radius: 0.5rem;
+  box-shadow: 1rem 0 2rem #1d1f23;
+  margin-bottom: 15px;
 }
 
 .tetris-board {
-  border: 5px solid #D8DEE9;
-  border-radius: 0.1rem;
+  border: 5px solid #282c34;
+  border-radius: 0.5rem;
+  box-shadow: 1rem 0 2rem #1d1f23;
 }
 
 .tetris-col {
@@ -43,47 +44,48 @@
 }
 
 /* Styles for tiles */
-[class*=row-] {
-  max-width: 32px !important;
+div[class*=row-] {
   border: 1px solid transparent;
-  padding: 15px;
+  box-shadow: 1rem 0 1rem #1d1f23;
+  padding: 12.5px;
 }
 
 /* Default (empty) board column */
 .row-0 {
-  background-color: #2E3440;
+  background-color: #282c34;
+  box-shadow: none !important;
 }
 
 /* Colors for tiles */
 .row-1 {
-  background-color: #A3BE8C;
+  background-color: #a3be8c;
 }
 
 .row-2 {
-  background-color: #5E81AC;
+  background-color: #5e81ac;
 }
 
 .row-3 {
-  background-color: #D08770;
+  background-color: #d08770;
 }
 
 .row-4 {
-  background-color: #88C0D0;
+  background-color: #88c0d0;
 }
 
 .row-5 {
-  background-color: #B48EAD;
+  background-color: #b48ead;
 }
 
 .row-6 {
-  background-color: #BF616A;
+  background-color: #bf616a;
 }
 
 .row-7 {
-  background-color: #EBCB8B;
+  background-color: #ebcb8b;
 }
 
 .row-8 {
-  background-color:#D8DEE9;
-  opacity: 0.5;
+  background-color: #d8dee9;
+  opacity: 0.25;
 }

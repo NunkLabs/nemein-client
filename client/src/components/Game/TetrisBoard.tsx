@@ -37,20 +37,20 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
   const heldTileFieldRender = TetrisUtils.fieldToJsxElement(heldTileField);
 
   return (
-    <div className="tetris-main">
+    <div>
       <div className="tetris-info">
         <div className="row">
           <div className="col">
-            <p className="tetris-text">
-              Level
+            <p>
+              LEVEL
             </p>
             <p>
               {level}
             </p>
           </div>
           <div className="col">
-            <p className="tetris-text">
-              Score
+            <p>
+              SCORE
             </p>
             <p>
               {score}
