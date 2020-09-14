@@ -1,5 +1,5 @@
 body, html, #root {
-  background: #282c34;
+  background: #262b35;
   font-size: 10px;
   height: 100%;
   margin: 0;
@@ -8,7 +8,7 @@ body, html, #root {
 
 h1 {
   padding: 10px;
-  color: #282c34;
+  color: #262b35;
   font-family: 'Rubik Mono One', sans-serif;
   font-size: 5em;
   text-align: center;
@@ -20,7 +20,6 @@ h2 {
   font-family: 'Rubik Mono One', sans-serif;
   font-size: 3.25em;
   text-align: center;
-  text-shadow: 1rem 0 2rem #1d1f23;
 }
 
 p {
@@ -32,14 +31,14 @@ p {
 
 label {
   width: 100%;
-  color: #282c34;
+  color: #323946;
   font-family: 'Kanit', sans-serif;
   font-size: 1.75em;
   font-weight: 500;
 }
 
 ::placeholder {
-  color: #282c3463;
+  color: #323946;
   font-family: 'Kanit', sans-serif;
   font-size: 1em;
 }
@@ -69,7 +68,7 @@ label {
 */
 
 .btn-custom {
-  color: #21252b;
+  color: #262b35;
   background-color: transparent;
   border: 3px solid transparent;
   border-radius: 0.25rem;
@@ -96,7 +95,7 @@ label {
 }
 
 .btn-custom:hover {
-  color: #21252b;
+  color: #262b35;
   text-decoration: none;
 }
 
@@ -118,39 +117,39 @@ fieldset:disabled a.btn-custom {
 }
 
 .btn-custom-light {
-  color: #282c34;
+  color: #2d333f;
   background-color: #d8dee9;
   border-color: #d8dee9;
 }
 
 .btn-custom-light:hover {
   color: #d8dee9;
-  background-color: #282c34;
+  background-color: #2d333f;
   border-color: #d8dee9;
 }
 
 .btn-custom-light.disabled, .btn-custom-light:disabled {
-  color: #282c34;
+  color: #2d333f;
   background-color: transparent;
 }
 
 .btn-custom-light:not(:disabled):not(.disabled):active, .btn-custom-light:not(:disabled):not(.disabled).active,
 .show > .btn-custom-light.dropdown-toggle {
-  color: #282c34;
+  color: #2d333f;
   background-color: #d8dee963;
   border-color: #d8dee963;
 }
 
 .btn-custom-dark {
   color: #d8dee9;
-  background-color: #282c34;
-  border-color: #282c34;
+  background-color: #2d333f;
+  border-color: #2d333f;
 }
 
 .btn-custom-dark:hover {
-  color: #282c34;
+  color: #2d333f;
   background-color: #d8dee9;
-  border-color: #282c34;
+  border-color: #2d333f;
 }
 
 .btn-custom-dark.disabled, .btn-custom-dark:disabled {
@@ -161,8 +160,8 @@ fieldset:disabled a.btn-custom {
 .btn-custom-dark:not(:disabled):not(.disabled):active, .btn-custom-dark:not(:disabled):not(.disabled).active,
 .show > .btn-custom-dark.dropdown-toggle {
   color: #d8dee9;
-  background-color: #282c3463;
-  border-color: #282c3463;
+  background-color: #2d333f63;
+  border-color: #2d333f63;
 }
 
 /*
@@ -178,7 +177,7 @@ fieldset:disabled a.btn-custom {
   font-size: 2rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #21252b;
+  color: #262b35;
   background-color: #eceff4;
   background-clip: padding-box;
   border: 5px solid #eceff4;

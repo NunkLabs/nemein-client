@@ -144,7 +144,7 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
         )}
         <button
           type="submit"
-          className="mb-2 btn-custom btn-custom-light btn-block"
+          className="mb-2 btn-custom btn-custom-dark btn-block"
           onClick={(): void => {
             restartGame();
             this.setState({
@@ -166,14 +166,14 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
     return openForm ? (
       <button
         type="submit"
-        className="btn-custom btn-custom-light btn-block"
+        className="btn-custom btn-custom-dark btn-block"
         onClick={(): void => openForm()}
       >
         Log In
       </button>
     ) : (
       <a
-        className="btn-custom btn-custom-light btn-block"
+        className="btn-custom btn-custom-dark btn-block"
         href="/logout"
       >
         Log Out

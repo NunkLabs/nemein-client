@@ -7,7 +7,7 @@
   background-color: #282c34;
   border: 5px solid #d8dee9;
   border-radius: 0.5rem;
-  box-shadow: 1rem 0 2rem #1d1f23;
+  box-shadow: 1rem 0 2rem #282c34;
   display: grid;
   grid-template-columns: minmax(175px, 25%) 1fr;
   margin-bottom: 10px;

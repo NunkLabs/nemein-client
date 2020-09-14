@@ -19,7 +19,7 @@
 }
 
 .form-separator {
-  color: #282c34;
+  color: #262b35;
   font-family: 'Kanit', sans-serif;
   font-size: 1.75em;
   font-weight: 500;
@@ -27,7 +27,7 @@
 }
 
 .bm-cross {
-  background: #d8dee9;
+  background: #262b35;
 }
 
 .bm-menu-wrap {
@@ -37,8 +37,7 @@
 
 .bm-menu {
   background: #d8dee9;
-  box-shadow: 1rem 0 2rem #1d1f23;
-  padding: 2.5em 1.5em 0;
+  box-shadow: 1rem 0 2rem #191b20;
 }
 
 .bm-item {
@@ -47,5 +46,5 @@
 }
 
 .bm-overlay {
-  background: #1d1f2363 !important;
+  background: #262b3563 !important;
 }
