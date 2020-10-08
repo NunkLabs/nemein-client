@@ -10,6 +10,9 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
+  plugins: [
+    "import"
+  ],
   rules: {
     "@typescript-eslint/no-misused-promises": [
       "error",
@@ -19,6 +22,16 @@ module.exports = {
     ],
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
     "class-methods-use-this": [
       "error",
       { 

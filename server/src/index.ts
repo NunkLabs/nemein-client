@@ -61,7 +61,7 @@ class LoggerStream {
 app.use(morgan('combined', { stream: new LoggerStream() }));
 
 /* Listen for requests */
-const PORT = env.PORT || 8080;
+const PORT: number = env.PORT || 8080;
 
 app.listen(PORT, () => {
   logger.info(`Launched in ${env.PRODUCTION_MODE ? 'production' : 'development'} mode on port ${PORT}!`);
