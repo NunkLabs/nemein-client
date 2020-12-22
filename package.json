@@ -6,7 +6,7 @@
   "author": "Junwei Chen <jwchen1259@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "bson-ext": "^2.0.5",
     "connect-mongo": "^3.2.0",
     "cors": "^2.8.5",
