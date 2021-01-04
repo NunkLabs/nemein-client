@@ -1,5 +1,3 @@
-import React from 'react';
-
 import * as TetrisConsts from './TetrisConsts';
 
 /**
@@ -42,7 +40,9 @@ export function fieldToJsxElement(field: number[][]): JSX.Element[] {
   const retField: JSX.Element[] = [];
 
   field.forEach((col) => {
+    // eslint-disable-next-line react/react-in-jsx-scope
     const rows = col.map((row: number) => <div className={`row-${row}`} />);
+    // eslint-disable-next-line react/react-in-jsx-scope
     retField.push(<div className="tetris-col">{rows}</div>);
   });
 
