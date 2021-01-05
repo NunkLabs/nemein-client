@@ -94,6 +94,28 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
   }
 
   /**
+   * @brief: setGameInterval: Set the pace/speed of the game
+   * @param[in]: interval(ms) - The 'pace' of the game to be set;
+   * the lower the value is, the faster the game becomes
+   */
+  setGameInterval(interval: number): void {
+    const {
+      timerId,
+    } = this.state;
+
+    window.clearInterval(timerId);
+
+    const newTimerId = window.setInterval(
+      () => this.handleBoardUpdate(TetrisConsts.Command.Down),
+      interval,
+    );
+
+    this.setState(() => ({
+      timerId: newTimerId,
+    }));
+  }
+
+  /**
    * @brief: handleNewGameClick: Callback for the event of the new game
    * button being clicked on
    */
@@ -322,6 +344,93 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
   }
 
   /**
+   * @brief: keyboardInputHandle: Callback for the event of keyboard
+   * input being received; translate the event keycode to the corresponding
+   * command
+   * @param[in]: event - The keyboard event received
+   */
+  async keyboardInputHandle(event: KeyboardEvent): Promise<void> {
+    switch (event.key) {
+      case TetrisConsts.ARROW_DOWN:
+        await this.handleBoardUpdate(TetrisConsts.Command.Down);
+        break;
+      case TetrisConsts.ARROW_LEFT:
+        await this.handleBoardUpdate(TetrisConsts.Command.Left);
+        break;
+      case TetrisConsts.ARROW_UP:
+        await this.handleBoardUpdate(TetrisConsts.Command.Rotate);
+        break;
+      case TetrisConsts.ARROW_RIGHT:
+        await this.handleBoardUpdate(TetrisConsts.Command.Right);
+        break;
+      case TetrisConsts.SPACE:
+        await this.handleBoardUpdate(TetrisConsts.Command.HardDrop);
+        break;
+      case TetrisConsts.C_KEY:
+        await this.handleBoardUpdate(TetrisConsts.Command.HoldTile);
+        break;
+      default:
+    }
+  }
+
+  /**
+   * @brief: isMoveValid: Check if this next move is being valid
+   * or not:
+   *  Does it go out of the board?
+   *  Is is blocked by other tiles?
+   * @param[in]: activeTileX - Current x value
+   * @param[in]: addX - Amount of x to be added
+   * @param[in]: activeTileY - Current y value
+   * @param[in]: addY - Amount of y to be added
+   * @param[in]: activeTile - Current tile type
+   * @param[in]: activeTileRotate - Current rotation
+   * @param[in]: addRotate - Amount of rotation to be added
+   * @return: True if the move is valid, false otw
+   */
+  isMoveValid(activeTileX: number,
+    addX: number,
+    activeTileY: number,
+    addY: number,
+    activeTile: TetrisConsts.Tile,
+    activeTileRotate: TetrisConsts.Rotation,
+    addRotate: number): boolean {
+    const { field } = this.state;
+    const { boardWidth, boardHeight } = this.props;
+
+    const tiles = TetrisConsts.TILES_COORDS_ARR;
+
+    const newX = addX ? (activeTileX + addX) : activeTileX;
+    const newY = addY ? (activeTileY + addY) : activeTileY;
+    const newRotate = activeTileRotate + addRotate === TetrisConsts.MAX_ROTATE
+      ? TetrisConsts.Rotation.Up : (activeTileRotate + addRotate);
+
+    /* We scan through each pixel of the tile to determine if the move is valid */
+    for (let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL; pixelIter += 1) {
+      /* Check to see if any pixel goes out of the board */
+      /* HACK - We check pixels' y coords first to safely render tiles
+      pixel by pixel initially */
+      const yToCheck = newY + tiles[activeTile][newRotate][pixelIter][TetrisConsts.Y_INDEX];
+      const xToCheck = newX + tiles[activeTile][newRotate][pixelIter][TetrisConsts.X_INDEX];
+      const xValid = xToCheck >= 0 && xToCheck < boardWidth;
+      if (yToCheck >= 0) {
+        const yValid = yToCheck < boardHeight;
+        if (xValid && yValid) {
+          /* Check for any overlap */
+          const pixelOverlapped = field[xToCheck].colArr[yToCheck] !== 0;
+          if (pixelOverlapped) {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else if (!xValid) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
    * @brief: handleBlockedMovement: Handle for blocked movements
    * @param[in]: activeTileX: Rendered X coord
    * @param[in]: activeTileY: Rendered Y coord
@@ -439,115 +548,6 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       newField: retField,
       newTiles: retTiles,
     };
-  }
-
-  /**
-   * @brief: setGameInterval: Set the pace/speed of the game
-   * @param[in]: interval(ms) - The 'pace' of the game to be set;
-   * the lower the value is, the faster the game becomes
-   */
-  setGameInterval(interval: number): void {
-    const {
-      timerId,
-    } = this.state;
-
-    window.clearInterval(timerId);
-
-    const newTimerId = window.setInterval(
-      () => this.handleBoardUpdate(TetrisConsts.Command.Down),
-      interval,
-    );
-
-    this.setState(() => ({
-      timerId: newTimerId,
-    }));
-  }
-
-  /**
-   * @brief: keyboardInputHandle: Callback for the event of keyboard
-   * input being received; translate the event keycode to the corresponding
-   * command
-   * @param[in]: event - The keyboard event received
-   */
-  async keyboardInputHandle(event: KeyboardEvent): Promise<void> {
-    switch (event.key) {
-      case TetrisConsts.ARROW_DOWN:
-        await this.handleBoardUpdate(TetrisConsts.Command.Down);
-        break;
-      case TetrisConsts.ARROW_LEFT:
-        await this.handleBoardUpdate(TetrisConsts.Command.Left);
-        break;
-      case TetrisConsts.ARROW_UP:
-        await this.handleBoardUpdate(TetrisConsts.Command.Rotate);
-        break;
-      case TetrisConsts.ARROW_RIGHT:
-        await this.handleBoardUpdate(TetrisConsts.Command.Right);
-        break;
-      case TetrisConsts.SPACE:
-        await this.handleBoardUpdate(TetrisConsts.Command.HardDrop);
-        break;
-      case TetrisConsts.C_KEY:
-        await this.handleBoardUpdate(TetrisConsts.Command.HoldTile);
-        break;
-      default:
-    }
-  }
-
-  /**
-   * @brief: isMoveValid: Check if this next move is being valid
-   * or not:
-   *  Does it go out of the board?
-   *  Is is blocked by other tiles?
-   * @param[in]: activeTileX - Current x value
-   * @param[in]: addX - Amount of x to be added
-   * @param[in]: activeTileY - Current y value
-   * @param[in]: addY - Amount of y to be added
-   * @param[in]: activeTile - Current tile type
-   * @param[in]: activeTileRotate - Current rotation
-   * @param[in]: addRotate - Amount of rotation to be added
-   * @return: True if the move is valid, false otw
-   */
-  isMoveValid(activeTileX: number,
-    addX: number,
-    activeTileY: number,
-    addY: number,
-    activeTile: TetrisConsts.Tile,
-    activeTileRotate: TetrisConsts.Rotation,
-    addRotate: number): boolean {
-    const { field } = this.state;
-    const { boardWidth, boardHeight } = this.props;
-
-    const tiles = TetrisConsts.TILES_COORDS_ARR;
-
-    const newX = addX ? (activeTileX + addX) : activeTileX;
-    const newY = addY ? (activeTileY + addY) : activeTileY;
-    const newRotate = activeTileRotate + addRotate === TetrisConsts.MAX_ROTATE
-      ? TetrisConsts.Rotation.Up : (activeTileRotate + addRotate);
-
-    /* We scan through each pixel of the tile to determine if the move is valid */
-    for (let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL; pixelIter += 1) {
-      /* Check to see if any pixel goes out of the board */
-      /* HACK - We check pixels' y coords first to safely render tiles
-      pixel by pixel initially */
-      const yToCheck = newY + tiles[activeTile][newRotate][pixelIter][TetrisConsts.Y_INDEX];
-      const xToCheck = newX + tiles[activeTile][newRotate][pixelIter][TetrisConsts.X_INDEX];
-      const xValid = xToCheck >= 0 && xToCheck < boardWidth;
-      if (yToCheck >= 0) {
-        const yValid = yToCheck < boardHeight;
-        if (xValid && yValid) {
-          /* Check for any overlap */
-          const pixelOverlapped = field[xToCheck].colArr[yToCheck] !== 0;
-          if (pixelOverlapped) {
-            return false;
-          }
-        } else {
-          return false;
-        }
-      } else if (!xValid) {
-        return false;
-      }
-    }
-    return true;
   }
 
   /**
