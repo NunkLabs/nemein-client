@@ -5,6 +5,7 @@
   "repository": "https://github.com/NunkuGemu/TetriBASS.git",
   "author": "Junwei Chen <jwchen1259@gmail.com>",
   "license": "MIT",
+  "homepage": "https://nunkugemu.github.io/TetriBASS",
   "dependencies": {
     "axios": "^0.21.1",
     "bson-ext": "^2.0.5",
