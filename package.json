@@ -42,7 +42,7 @@
     "start": "yarn run build && yarn run server"
   },
   "devDependencies": {
-    "@types/express": "^4.17.9",
+    "@types/express": "^4.17.10",
     "@types/express-session": "^1.17.3",
     "@types/mongodb": "^3.6.3",
     "@types/mongoose": "^5.10.3",
