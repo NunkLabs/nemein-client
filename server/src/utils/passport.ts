@@ -3,16 +3,16 @@ import google from 'passport-google-oauth20';
 import moment from 'moment';
 
 import logger from './logger';
-import User from '../models/User';
+import User, { IUser } from '../models/User';
 import { keys } from '../configs/config';
 
 const GoogleStrategy = google.Strategy;
 
 const googleStrategy = (passport: PassportStatic): void => {
-  passport.serializeUser(({ id }, done) => done(null, id));
+  passport.serializeUser((user, done) => done(null, user));
 
   passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => done(err, user))
+    User.findById(id, (err: Error, user: IUser) => done(err, user))
       .catch((err) => logger.error(err));
   });
 

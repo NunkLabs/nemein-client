@@ -7,7 +7,7 @@ import Landing from './pages/Landing/Landing';
 import Home from './pages/Home/Home';
 import Profile from './pages/Profile/Profile';
 
-const App = (): JSX.Element => (
+const App: React.FC = () => (
   <Router>
     <Switch>
       <Route exact path="/">

@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       if (req.session) {
-        const { user } = req.session.passport;
+        const { user } = req;
 
         const dbUser = await User.findOne({ _id: user });
         if (dbUser) {
@@ -39,7 +39,7 @@ router.get('/scores', async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       if (req.session) {
-        const { user } = req.session.passport;
+        const { user } = req;
 
         const dbUser = await User.findOne({ _id: user });
         if (dbUser) {
@@ -65,9 +65,8 @@ router.put('/update', async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       if (req.session) {
-        const { user } = req.session.passport;
+        const { user } = req;
         const dbUser = await User.findOne({ _id: user });
-
         if (dbUser) {
           const { newEmail, newName, newProfilePic } = req.body;
 
@@ -97,9 +96,9 @@ router.put('/update/scores', async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       if (req.session) {
-        const { user } = req.session.passport;
-        const dbUser = await User.findOne({ _id: user });
+        const { user } = req;
 
+        const dbUser = await User.findOne({ _id: user });
         if (dbUser) {
           const { newScore } = req.body;
 

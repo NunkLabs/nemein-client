@@ -18,51 +18,51 @@ mongoose.connect(env.MONGO_URI || 'mongodb://localhost:27017/tetribass', {
   useUnifiedTopology: true,
 }).then(
   /* Handle initial connection to MongoDB */
-  () => logger.info(`Connected to MongoDB (${mongoose.connection.host})!`),
+  () => {
+    logger.info(`Connected to MongoDB (${mongoose.connection.host})!`);
+
+    /* Initialize Express server */
+    const app = express();
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: false }));
+
+    /* Serve up static route */
+    app.use(express.static(path.join(__dirname, '../../client/build')));
+
+    /* Configure session */
+    app.use(session({
+      secret: 'nunkugemu',
+      resave: false,
+      saveUninitialized: false,
+      store: mongo.create({ mongoUrl: env.MONGO_URI || 'mongodb://localhost:27017/tetribass' }),
+    }));
+
+    /* Initialize Passport with Google OAuth */
+    googleStrategy(passport);
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    /* Add routes */
+    app.use(routes);
+
+    /* Setup morgan to pass its HTTP request logs to winston */
+    class LoggerStream {
+      write(message: string) {
+        logger.info(message.substring(0, message.lastIndexOf('\n')));
+      }
+    }
+
+    app.use(morgan('combined', { stream: new LoggerStream() }));
+
+    /* Listen for requests */
+    const PORT: number = env.PORT || 8080;
+
+    app.listen(PORT, () => {
+      logger.info(`Launched in ${env.PRODUCTION_MODE ? 'production' : 'development'} mode on port ${PORT}!`);
+    });
+  },
   (err) => logger.error(err),
 );
 
 /* Listen for errors after MongoDB is connected */
 mongoose.connection.on('error', (err) => logger.error(err));
-
-/* Initialize Express server */
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-/* Serve up static route */
-app.use(express.static(path.join(__dirname, '../../client/build')));
-
-/* Configure session */
-const MongoStore = mongo(session);
-
-app.use(session({
-  secret: 'nunkugemu',
-  resave: false,
-  saveUninitialized: false,
-  store: new MongoStore({ mongooseConnection: mongoose.connection }),
-}));
-
-/* Initialize Passport with Google OAuth */
-googleStrategy(passport);
-app.use(passport.initialize());
-app.use(passport.session());
-
-/* Add routes */
-app.use(routes);
-
-/* Setup morgan to pass its HTTP request logs to winston */
-class LoggerStream {
-  write(message: string) {
-    logger.info(message.substring(0, message.lastIndexOf('\n')));
-  }
-}
-
-app.use(morgan('combined', { stream: new LoggerStream() }));
-
-/* Listen for requests */
-const PORT: number = env.PORT || 8080;
-
-app.listen(PORT, () => {
-  logger.info(`Launched in ${env.PRODUCTION_MODE ? 'production' : 'development'} mode on port ${PORT}!`);
-});
