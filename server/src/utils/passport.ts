@@ -1,6 +1,7 @@
 import { PassportStatic } from 'passport';
 import google from 'passport-google-oauth20';
 import moment from 'moment';
+import mongoose from 'mongoose';
 
 import logger from './logger';
 import User, { IUser } from '../models/User';
@@ -12,7 +13,7 @@ const googleStrategy = (passport: PassportStatic): void => {
   passport.serializeUser((user, done) => done(null, user));
 
   passport.deserializeUser((id, done) => {
-    User.findById(id, (err: Error, user: IUser) => done(err, user))
+    User.findById(id, (err: Error, user: IUser & mongoose.Document) => done(err, user))
       .catch((err) => logger.error(err));
   });
 
