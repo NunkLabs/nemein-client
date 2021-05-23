@@ -42,8 +42,12 @@ router.get('/logout', (req, res) => {
 });
 
 /* Handle any requests that don't match any routes */
-router.get('*', (_req, res) => {
-  res.sendFile(path.join(__dirname, '../../../client/build/index.html'));
+router.get('*', (req, res) => {
+  if (req.isAuthenticated()) {
+    res.sendFile(path.join(__dirname, '../../../client/build/index.html'));
+  } else {
+    res.redirect('/');
+  }
 });
 
 export default router;
