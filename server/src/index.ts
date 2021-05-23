@@ -12,7 +12,9 @@ import googleStrategy from './utils/passport';
 import { env } from './configs/config';
 
 /* Connect server to MongoDB */
-mongoose.connect(env.MONGO_URI || 'mongodb://localhost:27017/tetribass', {
+const mongoURI = env.MONGO_URI || 'mongodb://localhost:27017/tetribass';
+
+mongoose.connect(mongoURI, {
   useFindAndModify: false,
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -23,6 +25,7 @@ mongoose.connect(env.MONGO_URI || 'mongodb://localhost:27017/tetribass', {
 
     /* Initialize Express server */
     const app = express();
+
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
 
@@ -31,14 +34,25 @@ mongoose.connect(env.MONGO_URI || 'mongodb://localhost:27017/tetribass', {
 
     /* Configure session */
     app.use(session({
-      secret: 'nunkugemu',
+      cookie: {
+        maxAge: 86400000, // 24 hours (24 * 60 * 60 * 1000)
+        secure: true,
+      },
       resave: false,
       saveUninitialized: false,
-      store: mongo.create({ mongoUrl: env.MONGO_URI || 'mongodb://localhost:27017/tetribass' }),
+      store: mongo.create({
+        mongoUrl: mongoURI,
+        mongoOptions: {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        },
+      }),
+      secret: 'nunkugemu',
     }));
 
     /* Initialize Passport with Google OAuth */
     googleStrategy(passport);
+
     app.use(passport.initialize());
     app.use(passport.session());
 
@@ -61,7 +75,9 @@ mongoose.connect(env.MONGO_URI || 'mongodb://localhost:27017/tetribass', {
       logger.info(`Launched in ${env.PRODUCTION_MODE ? 'production' : 'development'} mode on port ${PORT}!`);
     });
   },
-  (err) => logger.error(err),
+  (err) => {
+    logger.error(err);
+  },
 );
 
 /* Listen for errors after MongoDB is connected */
