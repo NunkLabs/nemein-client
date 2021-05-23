@@ -6,6 +6,7 @@ import GameControl from '../../components/Prompt/GameControl';
 import Tetris from '../../components/Game/Tetris';
 
 type LandingState = {
+  boardGrid: boolean;
   formOpened: boolean;
   gamePaused: boolean;
   gameRestart: boolean;
@@ -21,6 +22,7 @@ class Landing extends React.Component<Record<string, unknown>, LandingState> {
     this.handleFormState = this.handleFormState.bind(this);
 
     this.state = {
+      boardGrid: false,
       formOpened: false,
       gamePaused: true,
       gameRestart: false,
@@ -42,7 +44,7 @@ class Landing extends React.Component<Record<string, unknown>, LandingState> {
 
   render(): JSX.Element {
     const {
-      formOpened, gamePaused, gameRestart, gameOver, firstGameStart, userAuth,
+      boardGrid, formOpened, gamePaused, gameRestart, gameOver, firstGameStart, userAuth,
     } = this.state;
 
     return (
@@ -70,10 +72,12 @@ class Landing extends React.Component<Record<string, unknown>, LandingState> {
               gamePaused: !gamePaused,
               firstGameStart: true,
             })}
+            toggleBoardGrid={(): void => this.setState({ boardGrid: !boardGrid })}
           />
           <Tetris
             boardWidth={14}
             boardHeight={23}
+            boardGrid={boardGrid}
             gamePaused={gamePaused}
             gameRestart={gameRestart}
             gameState={(isOver: boolean): void => this.setState({ gameOver: isOver })}

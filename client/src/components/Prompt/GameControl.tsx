@@ -8,9 +8,11 @@ type GameControlProps = {
   restartGame: () => void;
   openForm?: () => void;
   toggleFirstGame: () => void;
+  toggleBoardGrid: () => void;
 };
 
 type GameControlState = {
+  gridVisible: boolean;
   initialState: boolean;
   needRestart: boolean;
   promptVisible: boolean;
@@ -24,6 +26,7 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
     this.handleUnfocus = this.handleUnfocus.bind(this);
 
     this.state = {
+      gridVisible: false,
       initialState: true,
       needRestart: false,
       promptVisible: true,
@@ -122,7 +125,10 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   }
 
   renderPrompt(): JSX.Element {
-    const { isOver, toggleGame, restartGame } = this.props;
+    const {
+      isOver, toggleGame, restartGame, toggleBoardGrid,
+    } = this.props;
+    const { gridVisible } = this.state;
 
     const logInButton = this.renderLoginButton();
 
@@ -156,6 +162,16 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
           Restart
         </button>
         { logInButton }
+        <button
+          type="submit"
+          className="mb-2 btn-custom btn-custom-dark btn-block"
+          onClick={(): void => {
+            toggleBoardGrid();
+            this.setState({ gridVisible: !gridVisible });
+          }}
+        >
+          {gridVisible ? 'Grid: ON' : 'Grid: OFF'}
+        </button>
       </div>
     );
   }
@@ -166,14 +182,14 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
     return openForm ? (
       <button
         type="submit"
-        className="btn-custom btn-custom-dark btn-block"
+        className="mb-2 btn-custom btn-custom-dark btn-block"
         onClick={(): void => openForm()}
       >
         Log In
       </button>
     ) : (
       <a
-        className="btn-custom btn-custom-dark btn-block"
+        className="mb-2 btn-custom btn-custom-dark btn-block"
         href="/logout"
       >
         Log Out

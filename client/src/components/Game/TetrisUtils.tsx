@@ -36,12 +36,12 @@ export function getNewTile(spawnedTiles: TetrisConsts.Tile[]): {
  * @param[in]: field - Field to render
  * @return: JSX element of field
  */
-export function fieldToJsxElement(field: number[][]): JSX.Element[] {
+export function fieldToJsxElement(field: number[][], grid: boolean): JSX.Element[] {
   const retField: JSX.Element[] = [];
 
   field.forEach((col) => {
     // eslint-disable-next-line react/react-in-jsx-scope
-    const rows = col.map((row: number) => <div className={`row-${row}`} />);
+    const rows = col.map((row: number) => <div className={`row${grid ? '-wgrid' : ''}-${row}`} />);
     // eslint-disable-next-line react/react-in-jsx-scope
     retField.push(<div className="tetris-col">{rows}</div>);
   });

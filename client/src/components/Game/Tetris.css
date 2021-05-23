@@ -43,7 +43,7 @@
   display: flex;
 }
 
-/* Styles for tiles */
+/* Styles for default tiles */
 div[class*=row-] {
   border: 1px solid transparent;
   padding: 12.5px;
@@ -84,6 +84,57 @@ div[class*=row-] {
 }
 
 .row-8 {
+  background-color: #eceff4;
+  opacity: 0.25;
+}
+
+/* Styles for tiles with grid */
+div[class*=row-wgrid-] {
+  border: 1px solid #525761;
+  padding: 12.5px;
+}
+
+.row-wgrid-0 {
+  background-color: #262b35;
+}
+
+.row-wgrid-1 {
+  border: 1px solid transparent !important;
+  background-color: #a3be8c;
+}
+
+.row-wgrid-2 {
+  border: 1px solid transparent !important;
+  background-color: #5e81ac;
+}
+
+.row-wgrid-3 {
+  border: 1px solid transparent !important;
+  background-color: #d08770;
+}
+
+.row-wgrid-4 {
+  border: 1px solid transparent !important;
+  background-color: #88c0d0;
+}
+
+.row-wgrid-5 {
+  border: 1px solid transparent !important;
+  background-color: #b48ead;
+}
+
+.row-wgrid-6 {
+  border: 1px solid transparent !important;
+  background-color: #bf616a;
+}
+
+.row-wgrid-7 {
+  border: 1px solid transparent !important;
+  background-color: #ebcb8b;
+}
+
+.row-wgrid-8 {
+  border: 1px solid transparent !important;
   background-color: #eceff4;
   opacity: 0.25;
 }

@@ -4,6 +4,7 @@ import GameControl from '../../components/Prompt/GameControl';
 import Tetris from '../../components/Game/Tetris';
 
 type HomeState = {
+  boardGrid: boolean;
   gamePaused: boolean;
   gameRestart: boolean;
   gameOver: boolean;
@@ -16,6 +17,7 @@ class Home extends React.Component<Record<string, unknown>, HomeState> {
     super(props);
 
     this.state = {
+      boardGrid: false,
       gamePaused: true,
       gameRestart: false,
       gameOver: false,
@@ -26,7 +28,7 @@ class Home extends React.Component<Record<string, unknown>, HomeState> {
 
   render(): JSX.Element {
     const {
-      gamePaused, gameRestart, gameOver, firstGameStart, userAuth,
+      boardGrid, gamePaused, gameRestart, gameOver, firstGameStart, userAuth,
     } = this.state;
 
     return (
@@ -43,10 +45,12 @@ class Home extends React.Component<Record<string, unknown>, HomeState> {
               gamePaused: !gamePaused,
               firstGameStart: true,
             })}
+            toggleBoardGrid={(): void => this.setState({ boardGrid: !boardGrid })}
           />
           <Tetris
             boardWidth={14}
             boardHeight={23}
+            boardGrid={boardGrid}
             gamePaused={gamePaused}
             gameRestart={gameRestart}
             gameState={(isOver: boolean): void => this.setState({ gameOver: isOver })}

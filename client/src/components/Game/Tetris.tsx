@@ -12,6 +12,7 @@ import * as TetrisUtils from './TetrisUtils';
 type TetrisProps = {
   boardWidth: number;
   boardHeight: number;
+  boardGrid: boolean;
   gamePaused: boolean;
   gameRestart: boolean; /* We now use the newGame prop as a 'switch' to toggle a new game
   instead of polling its' value to determine whether or not a new game should start */
@@ -558,6 +559,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @return: Object containing the init value for states
    */
   initNewGame(): { initGame: boolean;
+    initGrid: boolean;
     initGameOver: boolean;
     initOnHold: boolean;
     initActiveTileX: number;
@@ -573,7 +575,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     initField: TetrisCol[];
     initSpawnedTiles: TetrisConsts.Tile[];
   } {
-    const { boardWidth, boardHeight } = this.props;
+    const { boardWidth, boardHeight, boardGrid } = this.props;
 
     const retTiles = [];
     /* Add an additional tile to pop in init */
@@ -602,6 +604,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
     return {
       initGame: true,
+      initGrid: boardGrid,
       initGameOver: false,
       initOnHold: false,
       initActiveTileX: Math.floor(boardWidth / 2),
@@ -757,7 +760,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
   render(): JSX.Element {
     const {
-      boardHeight, boardWidth, firstGameStart,
+      boardHeight, boardWidth, boardGrid, firstGameStart,
     } = this.props;
     const {
       score, level, heldTile, field, spawnedTiles,
@@ -782,6 +785,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
           spawnedTiles={spawnedTiles}
           heldTile={heldTile}
           firstGameStart={firstGameStart}
+          displayGrid={boardGrid}
         />
       </div>
     );
