@@ -1,42 +1,46 @@
 import * as TetrisConsts from './TetrisConsts';
 
 /**
- * @brief: getNewTile: Get a tile from the spawned tiles queue.
+ * @brief: getNewTetromino: Get a tetromino from the spawned tetrominos queue.
  * If the queue's size is less than the maximum size, we add to it
- * a new tile.
- * @param[in]: tiles - Spawned tiles queue
- * @return: newTile - Tile pop from the queue
- *          newTiles - Updated queue
+ * a new tetromino.
+ * @param[in]: tetrominos - Spawned tetrominos queue
+ * @return: newTetromino - Tetromino pop from the queue
+ *          newTetrominos - Updated queue
  */
-export function getNewTile(spawnedTiles: TetrisConsts.Tile[]): {
-  newTile: TetrisConsts.Tile;
-  newTiles: TetrisConsts.Tile[];
+export function getNewTetromino(spawnedTetrominos: TetrisConsts.Tetromino[]): {
+  newTetromino: TetrisConsts.Tetromino;
+  newTetrominos: TetrisConsts.Tetromino[];
 } {
-  const retTiles = spawnedTiles;
-  const retTile = retTiles.shift();
+  const retTetrominos = spawnedTetrominos;
+  const retTetromino = retTetrominos.shift();
   /* Shift method might return undefined */
-  if (retTile === undefined) {
-    throw new Error('Cannot fetch a new tile from tile array');
+  if (retTetromino === undefined) {
+    throw new Error('Cannot fetch a new tetromino from queue');
   }
 
-  /* Add a new tile to spawned tiles queue if size is less than max size */
-  if (retTiles.length < TetrisConsts.MAX_SPAWNED_TILES) {
-    retTiles.push(Math.floor(Math.random()
-    * (TetrisConsts.MAX_TILE_INDEX - TetrisConsts.MIN_TILE_INDEX + 1)) + 1);
+  /* Add a new tetromino to spawned tetrominos queue if size is less than max
+  size */
+  if (retTetrominos.length < TetrisConsts.MAX_SPAWNED_TETROMINOS) {
+    retTetrominos.push(Math.floor(Math.random()
+    * (TetrisConsts.MAX_TETROMINO_INDEX - TetrisConsts.MIN_TETROMINO_INDEX
+    + 1)) + 1);
   }
 
   return {
-    newTile: retTile,
-    newTiles: retTiles,
+    newTetromino: retTetromino,
+    newTetrominos: retTetrominos,
   };
 }
 
 /**
- * @brief: fieldToJsxElement: Convert a field of coords to a JSX element for render
+ * @brief: fieldToJsxElement: Convert a field of coords to a JSX element for
+ * render
  * @param[in]: field - Field to render
  * @return: JSX element of field
  */
-export function fieldToJsxElement(field: number[][], grid: boolean): JSX.Element[] {
+export function fieldToJsxElement(field: number[][], grid: boolean)
+  : JSX.Element[] {
   const retField: JSX.Element[] = [];
 
   field.forEach((col) => {
@@ -50,6 +54,6 @@ export function fieldToJsxElement(field: number[][], grid: boolean): JSX.Element
 }
 
 export default {
-  getNewTile,
+  getNewTetromino,
   fieldToJsxElement,
 };

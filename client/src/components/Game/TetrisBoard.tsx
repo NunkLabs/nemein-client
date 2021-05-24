@@ -8,34 +8,40 @@ type TetrisBoardProps =
   field: number[][];
   score: number;
   level: number;
-  spawnedTiles: TetrisConsts.Tile[];
-  heldTile: TetrisConsts.Tile;
+  spawnedTetrominos: TetrisConsts.Tetromino[];
+  heldTetromino: TetrisConsts.Tetromino;
   firstGameStart: boolean;
   displayGrid: boolean;
 };
 
 const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
   const {
-    field, score, level, spawnedTiles, heldTile, firstGameStart, displayGrid,
+    field, score, level, spawnedTetrominos, heldTetromino, firstGameStart,
+    displayGrid,
   } = props;
-  const renderTiles = TetrisConsts.RENDER_TILES_ARR;
+  const renderTetrominos = TetrisConsts.RENDER_TETROMINOS_ARR;
 
   /* Prepare an HTML element for the main game board */
   const gameBoard = TetrisUtils.fieldToJsxElement(field, displayGrid);
 
-  /* Prepare HTML elements for the tile queue */
-  const spawnedTilesFieldsRender: JSX.Element[][] = [];
-  spawnedTiles.forEach((tile) => {
-    const spawnedTileField = firstGameStart ? renderTiles[tile]
-      : renderTiles[TetrisConsts.Tile.Blank];
-    const spawnedTileFieldRender = TetrisUtils.fieldToJsxElement(spawnedTileField, displayGrid);
-    spawnedTilesFieldsRender.push(spawnedTileFieldRender);
+  /* Prepare HTML elements for the tetromino queue */
+  const spawnedTetrominosFieldsRender: JSX.Element[][] = [];
+  spawnedTetrominos.forEach((tetromino) => {
+    const spawnedTetrominoField = firstGameStart ? renderTetrominos[tetromino]
+      : renderTetrominos[TetrisConsts.Tetromino.Blank];
+    const spawnedTetrominoFieldRender = TetrisUtils.fieldToJsxElement(
+      spawnedTetrominoField, displayGrid,
+    );
+    spawnedTetrominosFieldsRender.push(spawnedTetrominoFieldRender);
   });
-  const tileRenderFields = spawnedTilesFieldsRender.map((tile) => <div className="tetris-next">{tile}</div>);
 
-  /* Prepare an HTML element for the currently held tile */
-  const heldTileField = renderTiles[heldTile];
-  const heldTileFieldRender = TetrisUtils.fieldToJsxElement(heldTileField, displayGrid);
+  const tetrominoRenderFields = spawnedTetrominosFieldsRender.map((tetromino) => <div className="tetris-next">{tetromino}</div>);
+
+  /* Prepare an HTML element for the currently held tetromino */
+  const heldTetrominoField = renderTetrominos[heldTetromino];
+  const heldTetrominoFieldRender = TetrisUtils.fieldToJsxElement(
+    heldTetrominoField, displayGrid,
+  );
 
   return (
     <div>
@@ -62,13 +68,13 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
       <div className="tetris-gamespace">
         <div className="row">
           <div className="col">
-            <div className="tetris-held">{heldTileFieldRender}</div>
+            <div className="tetris-held">{heldTetrominoFieldRender}</div>
           </div>
           <div className="col">
             <div className="tetris-board">{gameBoard}</div>
           </div>
           <div className="col">
-            <div>{tileRenderFields}</div>
+            <div>{tetrominoRenderFields}</div>
           </div>
         </div>
       </div>
