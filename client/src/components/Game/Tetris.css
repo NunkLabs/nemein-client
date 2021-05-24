@@ -43,7 +43,7 @@
   display: flex;
 }
 
-/* Styles for default tiles */
+/* Styles for default tetrominos */
 div[class*=row-] {
   border: 1px solid transparent;
   padding: 12.5px;
@@ -54,7 +54,7 @@ div[class*=row-] {
   background-color: #262b35;
 }
 
-/* Colors for tiles */
+/* Colors for tetrominos */
 .row-1 {
   background-color: #a3be8c;
 }
@@ -88,7 +88,7 @@ div[class*=row-] {
   opacity: 0.25;
 }
 
-/* Styles for tiles with grid */
+/* Styles for tetrominos with grid */
 div[class*=row-wgrid-] {
   border: 1px solid #525761;
   padding: 12.5px;
