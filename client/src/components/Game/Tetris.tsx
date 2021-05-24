@@ -256,9 +256,15 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       }
       case TetrisConsts.Command.Rotate: {
         rotateAdd = 1;
-        if (this.isMoveValid(newX, 0, newY, 0, newTile, newRotate, rotateAdd)) {
-          newRotate = newRotate + rotateAdd === TetrisConsts.MAX_ROTATE
-            ? TetrisConsts.Rotation.Up : (newRotate + rotateAdd);
+
+        newRotate = newRotate + rotateAdd === TetrisConsts.MAX_ROTATE
+          ? TetrisConsts.Rotation.Up : (newRotate + rotateAdd);
+        const tileOffset = this.getTileOnEdgeOffset(newX, newTile, newRotate);
+        newX += tileOffset;
+
+        if (!this.isMoveValid(newX, tileOffset, newY, 0, newTile, newRotate, rotateAdd)) {
+          newRotate = activeTileRotate;
+          newX = activeTileX;
         }
         break;
       }
@@ -723,6 +729,39 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     const pixelsToPivot = tiles[tile][tileRotate][
       TetrisConsts.UPPER_Y_INDEX][TetrisConsts.Y_INDEX];
     return boardHeight - 1 - pixelsToPivot;
+  }
+
+  /**
+   * @brief: getTileOnEdgeOffset: Get X offset if the tile is on the edges
+   * (2 sides) of the board
+   * @param[in]: tileX - Actual tile's x
+   * @param[in]: tile - Actual tile type
+   * @param[in]: tileRotate - Actual tile's rotation
+   * @return: Tile offset:
+   *          - Postive value if tile's on the left edge of board
+   *          - Negative value if tile's on the right edge of board
+   *          - 0 if tile is not on edge
+   */
+  getTileOnEdgeOffset(tileX: number,
+    tile: TetrisConsts.Tile,
+    tileRotate: TetrisConsts.Rotation): number {
+    const { boardWidth } = this.props;
+    const tiles = TetrisConsts.TILES_COORDS_ARR;
+
+    let retOffset = 0;
+
+    tiles[tile][tileRotate].forEach((coord) => {
+      const xToCheck = tileX + coord[TetrisConsts.X_INDEX];
+      if (xToCheck >= boardWidth) {
+        const offset = xToCheck + 1 - boardWidth;
+        retOffset = retOffset < offset ? -offset : retOffset;
+      } else if (xToCheck < 0) {
+        const offset = 0 - xToCheck;
+        retOffset = offset > retOffset ? offset : retOffset;
+      }
+    });
+
+    return retOffset;
   }
 
   /**
