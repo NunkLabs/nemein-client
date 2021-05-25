@@ -1,16 +1,17 @@
-{
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": "./tsconfig.json",
-    "ecmaVersion": 2020
+module.exports = {
+  parser: "@typescript-eslint/parser",
+  parserOptions: {
+    project: "./tsconfig.json",
+    tsconfigRootDir: __dirname,
+    ecmaVersion: 2020
   },
-  "extends": [
+  extends: [
     "airbnb-typescript",
     "airbnb/hooks",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
-  "rules": {
+  rules: {
     "@typescript-eslint/no-misused-promises": [
       "error",
       {
