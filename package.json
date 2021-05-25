@@ -14,7 +14,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "gh-pages": "^3.1.0",
+    "gh-pages": "^3.2.0",
     "logform": "^2.2.0",
     "moment": "^2.29.1",
     "mongodb": "^3.6.8",
