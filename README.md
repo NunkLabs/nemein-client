@@ -16,27 +16,42 @@ yarn global add typescript serve dotenv eslint nodemon concurrently
 
 First make sure you are using Yarn! Second make sure you install with `yarn install --frozen-lockfile` to avoid making unnecessary changes to the **yarn.lock** file.
 
+It is recommended to run this every time after you do a pull from `master`.
+
+
 **To install**
 
 ```
 yarn install --frozen-lockfile
 ```
 
-**To clean**
+
+**To clean your working directory**
 
 ```
 yarn clean
 ```
 
+
 ## Building & contributing
 
 For the project to launch properly, make sure you make a copy of **config.ts.example** and rename it to **config.ts**, and fill it out, see [config.ts.example](server/src/configs/config.ts.example).
 
+
 **Build & start in development mode**
 
+Client
+
 ```
-yarn dev
+yarn dev:client
 ```
+
+Server
+
+```
+yarn dev:server
+```
+
 
 **Build & start in production mode**
 
@@ -44,13 +59,17 @@ yarn dev
 yarn start
 ```
 
+
+**Coding standards**
+
 This project uses [ESLint](https://eslint.org/) as a linter to ensure proper JavaScript/TypeScript coding style. We are currently using [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) as our base ESLint config. Make sure to have ESLint set up in your development environment, see [Getting Started with ESLint](https://eslint.org/docs/user-guide/getting-started).
 
-**To lint**
+Remember to run the linter before a push!
 
 ```
 yarn lint
 ```
+
 
 ## Project structure
 
@@ -61,7 +80,7 @@ TetriBASS
 │   └── src
 │       └── index.tsx
 └── server
-    ├── dist // Server compiled output
+    ├── build // Server compiled output
     └── src
         ├── configs
         │   └── config.ts // Server config file with API keys, credentials, etc
