@@ -238,8 +238,12 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     }
 
     /* Remove current tetromino from field for next logic */
-    this.renderTetromino(newCorX, newGhostCorY, newTetromino, newTetrominoRotate, 0);
-    this.renderTetromino(newCorX, newCorY, newTetromino, newTetrominoRotate, 0);
+    this.renderTetromino(
+      newCorX, newGhostCorY, newTetromino, newTetrominoRotate, 0,
+    );
+    this.renderTetromino(
+      newCorX, newCorY, newTetromino, newTetrominoRotate, 0,
+    );
 
     /* Determine which value to be modified (x - y - rotate ?) */
     switch (command) {
@@ -501,7 +505,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       if (isLineComplete) {
         for (let detectedRow = row; detectedRow > 0; detectedRow -= 1) {
           for (let col = 0; col < boardWidth; col += 1) {
-            retField[col].colArr[detectedRow] = retField[col].colArr[detectedRow - 1];
+            retField[col].colArr[detectedRow] = retField[col]
+              .colArr[detectedRow - 1];
           }
         }
         row += 1;
@@ -527,7 +532,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     /* Check if game is over. If not, update score + spawn a new tetromino
     + set new time interval and continue */
     let isGameOver = false;
-    for (let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL; pixelIter += 1) {
+    for (
+      let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL; pixelIter += 1
+    ) {
       const coord = tetrominos[retTetromino][retTetrominoRotate][pixelIter];
       const yToCheck = retCorY + coord[TetrisConsts.Y_INDEX];
       const xToCheck = retCorX + coord[TetrisConsts.X_INDEX];
@@ -658,7 +665,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     const { field } = this.state;
     const tetrominos = TetrisConsts.TETROMINOS_COORDS_ARR;
 
-    /* First we find the lowest Y among the number of cols this tetromino spans */
+    /* First we find the lowest Y among the number of cols this tetromino
+    spans */
     let yHigherThanCmp = false;
     const yToCmpArr: number[] = [];
     for (let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL;

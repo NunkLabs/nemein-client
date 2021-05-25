@@ -44,7 +44,8 @@ class Landing extends React.Component<Record<string, unknown>, LandingState> {
 
   render(): JSX.Element {
     const {
-      boardGrid, formOpened, gamePaused, gameRestart, gameOver, firstGameStart, userAuth,
+      boardGrid, formOpened, gamePaused, gameRestart, gameOver,
+      firstGameStart, userAuth,
     } = this.state;
 
     return (
@@ -62,17 +63,33 @@ class Landing extends React.Component<Record<string, unknown>, LandingState> {
         <div id="game-container">
           <GameControl
             isOver={gameOver}
-            toggleGame={(): void => this.setState({ gamePaused: !gamePaused })}
-            restartGame={(): void => this.setState({
-              gamePaused: false,
-              gameRestart: !gameRestart,
-            })}
-            openForm={(): void => this.setState({ formOpened: true })}
-            toggleFirstGame={(): void => this.setState({
-              gamePaused: !gamePaused,
-              firstGameStart: true,
-            })}
-            toggleBoardGrid={(): void => this.setState({ boardGrid: !boardGrid })}
+            toggleGame={(): void => {
+              this.setState({
+                gamePaused: !gamePaused,
+              });
+            }}
+            restartGame={(): void => {
+              this.setState({
+                gamePaused: false,
+                gameRestart: !gameRestart,
+              });
+            }}
+            openForm={(): void => {
+              this.setState({
+                formOpened: true,
+              });
+            }}
+            toggleFirstGame={(): void => {
+              this.setState({
+                gamePaused: !gamePaused,
+                firstGameStart: true,
+              });
+            }}
+            toggleBoardGrid={(): void => {
+              this.setState({
+                boardGrid: !boardGrid,
+              });
+            }}
           />
           <Tetris
             boardWidth={14}
@@ -80,7 +97,11 @@ class Landing extends React.Component<Record<string, unknown>, LandingState> {
             boardGrid={boardGrid}
             gamePaused={gamePaused}
             gameRestart={gameRestart}
-            gameState={(isOver: boolean): void => this.setState({ gameOver: isOver })}
+            gameState={(isOver: boolean): void => {
+              this.setState({
+                gameOver: isOver,
+              });
+            }}
             firstGameStart={firstGameStart}
             userAuth={userAuth}
           />

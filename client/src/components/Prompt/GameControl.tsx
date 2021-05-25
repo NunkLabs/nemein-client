@@ -68,8 +68,8 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   }
 
   /**
-   * @brief: handleEscKey: Callback for the event of the Escape key being received; pause the game
-   * and pull up the game control prompt
+   * @brief: handleEscKey: Callback for the event of the Escape key being
+   * received; pause the game and pull up the game control prompt
    * @param[in]: event - The keyboard event received
    */
   handleEscKey(event: KeyboardEvent): void {
@@ -86,8 +86,9 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   }
 
   /**
-   * @brief: handleUnfocus: Callback for the event of visibility status of the document being
-   * changed; key being received; pause the game and pull up the game control prompt
+   * @brief: handleUnfocus: Callback for the event of visibility status of the
+   * document being changed; key being received; pause the game and pull up the
+   * game control prompt
    */
   handleUnfocus(): void {
     const { toggleGame } = this.props;
@@ -200,7 +201,8 @@ class GameControl extends React.Component<GameControlProps, GameControlState> {
   render(): JSX.Element {
     const { initialState, promptVisible } = this.state;
 
-    const prompt = initialState ? this.renderInitialPrompt() : this.renderPrompt();
+    const prompt = initialState
+      ? this.renderInitialPrompt() : this.renderPrompt();
 
     return (
       <div className="game-control-wrap">

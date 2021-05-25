@@ -35,7 +35,8 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
     spawnedTetrominosFieldsRender.push(spawnedTetrominoFieldRender);
   });
 
-  const tetrominoRenderFields = spawnedTetrominosFieldsRender.map((tetromino) => <div className="tetris-next">{tetromino}</div>);
+  const tetrominoRenderFields = spawnedTetrominosFieldsRender
+    .map((tetromino) => <div className="tetris-next">{tetromino}</div>);
 
   /* Prepare an HTML element for the currently held tetromino */
   const heldTetrominoField = renderTetrominos[heldTetromino];

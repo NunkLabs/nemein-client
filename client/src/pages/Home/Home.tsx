@@ -36,16 +36,28 @@ class Home extends React.Component<Record<string, unknown>, HomeState> {
         <div id="game-container">
           <GameControl
             isOver={gameOver}
-            toggleGame={(): void => this.setState({ gamePaused: !gamePaused })}
-            restartGame={(): void => this.setState({
-              gamePaused: false,
-              gameRestart: !gameRestart,
-            })}
-            toggleFirstGame={(): void => this.setState({
-              gamePaused: !gamePaused,
-              firstGameStart: true,
-            })}
-            toggleBoardGrid={(): void => this.setState({ boardGrid: !boardGrid })}
+            toggleGame={(): void => {
+              this.setState({
+                gamePaused: !gamePaused,
+              });
+            }}
+            restartGame={(): void => {
+              this.setState({
+                gamePaused: false,
+                gameRestart: !gameRestart,
+              });
+            }}
+            toggleFirstGame={(): void => {
+              this.setState({
+                gamePaused: !gamePaused,
+                firstGameStart: true,
+              });
+            }}
+            toggleBoardGrid={(): void => {
+              this.setState({
+                boardGrid: !boardGrid,
+              });
+            }}
           />
           <Tetris
             boardWidth={14}
@@ -53,7 +65,11 @@ class Home extends React.Component<Record<string, unknown>, HomeState> {
             boardGrid={boardGrid}
             gamePaused={gamePaused}
             gameRestart={gameRestart}
-            gameState={(isOver: boolean): void => this.setState({ gameOver: isOver })}
+            gameState={(isOver: boolean): void => {
+              this.setState({
+                gameOver: isOver,
+              });
+            }}
             firstGameStart={firstGameStart}
             userAuth={userAuth}
           />

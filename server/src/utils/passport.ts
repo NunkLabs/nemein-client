@@ -13,8 +13,11 @@ const googleStrategy = (passport: PassportStatic): void => {
   passport.serializeUser((user, done) => done(null, user));
 
   passport.deserializeUser((id, done) => {
-    User.findById(id, (err: Error, user: IUser & mongoose.Document) => done(err, user))
-      .catch((err) => logger.error(err));
+    User.findById(id, (err: Error, user: IUser & mongoose.Document) => {
+      done(err, user);
+    }).catch((err) => {
+      logger.error(err);
+    });
   });
 
   passport.use(

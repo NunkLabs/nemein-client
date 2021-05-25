@@ -13,7 +13,8 @@ type ProfileCardState = {
   }>;
 };
 
-class ProfileCard extends React.Component<Record<string, unknown>, ProfileCardState> {
+class ProfileCard
+  extends React.Component<Record<string, unknown>, ProfileCardState> {
   constructor(props: Record<string, unknown>) {
     super(props);
 
