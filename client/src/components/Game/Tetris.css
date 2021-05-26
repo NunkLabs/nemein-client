@@ -1,5 +1,19 @@
+@media only screen and (min-height: 720px) {
+  .game-wrap {
+    height: 680px !important;
+  }
+
+  .tetris-next {
+    margin-bottom: 10px !important;
+  }
+
+  div[class*=row-] {
+    padding: 10px !important;
+  }
+}
+
 .game-wrap {
-  height: 800px;
+  height: 540px;
   width: 1000px;
   margin: auto;
   display: flex;
@@ -30,7 +44,7 @@
   border: 5px solid #d8dee9;
   border-radius: 0.5rem;
   box-shadow: 1rem 0 2rem #191b20;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .tetris-board {
@@ -46,7 +60,7 @@
 /* Styles for default tetrominos */
 div[class*=row-] {
   border: 1px solid transparent;
-  padding: 12.5px;
+  padding: 8px;
 }
 
 /* Default (empty) board column */

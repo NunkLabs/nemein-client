@@ -1,18 +1,26 @@
+@media only screen and (min-height: 720px) {
+  .game-control {
+    width: 280px !important;
+    top: 40% !important;
+  }
+}
+
 .game-control-wrap {
-  height: 800px;
+  height: 720px;
   width: 100%;
+  min-width: 1000px;
   position: absolute;
 }
 
 .game-control {
-  width: 300px;
+  width: 240px;
   background: transparent;
   border: 5px solid transparent;
   border-radius: 0.5rem;
   margin: auto;
   position: relative;
   padding: 5px;
-  top: 45%;
+  top: 30%;
   z-index: 1;
 }
 
