@@ -8,7 +8,7 @@
   "homepage": "https://nunkugemu.github.io/TetriBASS",
   "dependencies": {
     "axios": "^0.21.1",
-    "bson-ext": "^2.0.5",
+    "bson-ext": "^4.0.0",
     "connect-mongo": "^4.4.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
