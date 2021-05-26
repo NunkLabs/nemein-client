@@ -10,7 +10,9 @@ import { keys } from '../configs/config';
 const GoogleStrategy = google.Strategy;
 
 const googleStrategy = (passport: PassportStatic): void => {
-  passport.serializeUser((user, done) => done(null, user));
+  passport.serializeUser((user, done) => {
+    done(null, user.id);
+  });
 
   passport.deserializeUser((id, done) => {
     User.findById(id, (err: Error, user: IUser & mongoose.Document) => {

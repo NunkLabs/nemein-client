@@ -34,10 +34,6 @@ mongoose.connect(mongoURI, {
 
     /* Configure session */
     app.use(session({
-      cookie: {
-        maxAge: 86400000, // 24 hours (24 * 60 * 60 * 1000)
-        secure: true,
-      },
       resave: false,
       saveUninitialized: false,
       store: mongo.create({

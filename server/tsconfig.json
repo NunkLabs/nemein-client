@@ -25,7 +25,11 @@
     "strict": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
-    "target": "es2020"
+    "target": "es2020",
+    "typeRoots": [
+      "./src/types/",
+      "../node_modules/@types",
+    ]
   },
   "exclude": ["node_modules"],
   "include": [
