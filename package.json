@@ -45,7 +45,7 @@
     "@types/express": "^4.17.12",
     "@types/express-session": "^1.17.3",
     "@types/mongodb": "^3.6.16",
-    "@types/mongoose": "^5.10.3",
+    "@types/mongoose": "^5.11.17",
     "@types/morgan": "^1.9.2",
     "@types/node": "^15.6.1",
     "@types/passport": "^1.0.5",
