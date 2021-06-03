@@ -12,6 +12,16 @@
   }
 }
 
+@media only screen and (min-height: 1440px) {
+  .game-wrap {
+    height: 820px !important;
+  }
+
+  div[class*=row-] {
+    padding: 12px !important;
+  }
+}
+
 .game-wrap {
   height: 540px;
   width: 1000px;
