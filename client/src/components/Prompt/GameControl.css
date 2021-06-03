@@ -5,6 +5,13 @@
   }
 }
 
+@media only screen and (min-height: 1440px) {
+  .game-control {
+    width: 320px !important;
+    top: 50% !important;
+  }
+}
+
 .game-control-wrap {
   height: 720px;
   width: 100%;
