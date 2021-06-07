@@ -140,17 +140,7 @@
   dependencies:
     "@types/express" "*"
 
-"@types/express@*":
-  version "4.17.11"
-  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.11.tgz#debe3caa6f8e5fcda96b47bd54e2f40c4ee59545"
-  integrity sha512-no+R6rW60JEc59977wIxreQVsIEOAYwgCqldrA/vkpCnbD7MqTefO97lmoBe4WE0F156bC4uLSP1XHDOySnChg==
-  dependencies:
-    "@types/body-parser" "*"
-    "@types/express-serve-static-core" "^4.17.18"
-    "@types/qs" "*"
-    "@types/serve-static" "*"
-
-"@types/express@^4.17.12":
+"@types/express@*", "@types/express@^4.17.12":
   version "4.17.12"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.12.tgz#4bc1bf3cd0cfe6d3f6f2853648b40db7d54de350"
   integrity sha512-pTYas6FrP15B1Oa0bkN5tQMNqOcVXa9j4FTFtO8DWI9kppKib+6NJtfTOOLcwxuuYvcX2+dVG6et1SxW/Kc17Q==
@@ -228,10 +218,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/passport-google-oauth20@^2.0.6":
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/@types/passport-google-oauth20/-/passport-google-oauth20-2.0.7.tgz#0d97b7a886a0c0d2158682145cd949b29f8efe86"
-  integrity sha512-0HPVSqDmOWk5fRLb+bqGal+6iWsERiEco/Mli77yy5NEy22IfkoRoqZTSZ8UtXDWY9DCZlpS1Jqq56iWx2torw==
+"@types/passport-google-oauth20@^2.0.8":
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/@types/passport-google-oauth20/-/passport-google-oauth20-2.0.8.tgz#1054e51dc26b4d06a79db2b0f756ed280f0225f1"
+  integrity sha512-Lc+DYCCFeMVbodISydQLT6PjIlL0TcLup3HMiJ8RHHHBltArA3oC4qocyQH1OsEq5ovQ19PaKlpGqsNT8NYz1w==
   dependencies:
     "@types/express" "*"
     "@types/passport" "*"
