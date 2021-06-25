@@ -1,23 +1,29 @@
-import winston from 'winston';
-import logform from 'logform';
+import { DateTime } from 'luxon';
+import { createLogger, transports } from 'winston';
+import { format } from 'logform';
 
-const {
-  colorize, combine, printf, simple, timestamp,
-} = logform.format;
+const sessionTimestamp: string = DateTime.now().toISO();
 
-const logger = winston.createLogger({
+const logger = createLogger({
   exitOnError: false,
-  format: combine(
-    printf((info: logform.TransformableInfo) => `${String(info.timestamp)} ${String(info.level)}: ${String(info.message)}`),
-    simple(),
-    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+  format: format.combine(
+    format.printf((info) => `${String(info.timestamp)} ${String(info.level)}: ${String(info.message)}`),
+    format.simple(),
+    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   ),
   transports: [
-    new winston.transports.Console({
-      format: combine(colorize({ all: true })),
+    new transports.Console({
+      format: format.combine(
+        format.colorize({ all: true }),
+      ),
     }),
-    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'logs/combined.log' }),
+    new transports.File({
+      filename: `logs/${sessionTimestamp}/combined.log`,
+    }),
+    new transports.File({
+      filename: `logs/${sessionTimestamp}/errors.log`,
+      level: 'error',
+    }),
   ],
 });
 
