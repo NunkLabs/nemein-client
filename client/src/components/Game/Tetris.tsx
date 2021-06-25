@@ -2,7 +2,7 @@
 
 import React from 'react';
 import axios from 'axios';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 
 import TetrisBoard from './TetrisBoard';
 import './Tetris.css';
@@ -189,7 +189,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
         await axios.put('/api/user/update/scores', JSON.stringify({
           newScore: {
             score,
-            timestamp: moment().format('MMMM Do, YYYY'),
+            timestamp: DateTime.now().setZone('America/Los_Angeles').toFormat('ff'),
           },
         }), {
           headers: {

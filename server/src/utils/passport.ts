@@ -1,6 +1,6 @@
 import { PassportStatic } from 'passport';
+import { DateTime } from 'luxon';
 import google from 'passport-google-oauth20';
-import moment from 'moment';
 import mongoose from 'mongoose';
 
 import logger from './logger';
@@ -33,7 +33,7 @@ const googleStrategy = (passport: PassportStatic): void => {
         emailAddress: profile.emails ? profile.emails[0].value : '',
         displayName: profile.displayName,
         profilePic: profile.photos ? profile.photos[0].value : '',
-        createdAt: moment().format('MMMM Do, YYYY'),
+        createdAt: DateTime.now().setZone('America/Los_Angeles').toFormat('ff'),
         scores: [],
       };
 
