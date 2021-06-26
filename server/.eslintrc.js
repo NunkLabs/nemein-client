@@ -13,7 +13,7 @@ module.exports = {
   plugins: [
     "import"
   ],
-  ignorePatterns: ["**/build/*.js", "**/build/*.ts", "**/src/types/**/*.ts"],
+  ignorePatterns: [".eslintrc.js", "build/*", "/src/types/*"],
   rules: {
     "@typescript-eslint/no-misused-promises": [
       "error",

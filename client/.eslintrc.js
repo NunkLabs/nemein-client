@@ -11,7 +11,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
-  ignorePatterns: ["**/build/*.js", "**/build/*.ts", "**/src/types/**/*.ts"],
+  ignorePatterns: [".eslintrc.js", "build/*"],
   rules: {
     "@typescript-eslint/no-misused-promises": [
       "error",

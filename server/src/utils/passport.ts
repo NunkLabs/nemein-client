@@ -5,6 +5,8 @@ import mongoose from 'mongoose';
 
 import logger from './logger';
 import User, { IUser } from '../models/User';
+
+// eslint-disable-next-line import/extensions
 import { keys } from '../configs/config';
 
 const GoogleStrategy = google.Strategy;

@@ -9,6 +9,8 @@ import passport from 'passport';
 import logger from './utils/logger';
 import routes from './routes/index';
 import googleStrategy from './utils/passport';
+
+// eslint-disable-next-line import/extensions
 import { env } from './configs/config';
 
 /* Connect server to MongoDB */
