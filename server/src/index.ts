@@ -10,17 +10,12 @@ import logger from './utils/logger';
 import routes from './routes/index';
 import googleStrategy from './utils/passport';
 
-// eslint-disable-next-line import/extensions
 import { env } from './configs/config';
 
 /* Connect server to MongoDB */
 const mongoURI = env.MONGO_URI || 'mongodb://localhost:27017/tetribass';
 
-mongoose.connect(mongoURI, {
-  useFindAndModify: false,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(
+mongoose.connect(mongoURI).then(
   /* Handle initial connection to MongoDB */
   () => {
     logger.info(`Connected to MongoDB (${mongoose.connection.host})!`);
@@ -40,10 +35,6 @@ mongoose.connect(mongoURI, {
       saveUninitialized: false,
       store: mongo.create({
         mongoUrl: mongoURI,
-        mongoOptions: {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-        },
       }),
       secret: 'nunkugemu',
     }));
