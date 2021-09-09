@@ -6,6 +6,7 @@ module.exports = {
     ecmaVersion: 2020
   },
   extends: [
+    "airbnb",
     "airbnb-typescript",
     "airbnb/hooks",
     "plugin:@typescript-eslint/recommended",
@@ -29,6 +30,5 @@ module.exports = {
       "ignoreStrings": true,
       "ignoreTemplateLiterals": true
     }],
-    "no-shadow": "off"
   }
 }
