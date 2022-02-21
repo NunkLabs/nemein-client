@@ -17,12 +17,9 @@ jobs:
 
       - name: Install Yarn
         run: npm install -g yarn
-
-      - name: Install global dependencies
-        run: yarn global add concurrently dotenv eslint nodemon serve typescript 
         
       - name: Install project dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Run ESLint
         run: yarn lint
