@@ -1,10 +1,7 @@
-import React from 'react';
-
 import * as TetrisConsts from './TetrisConsts';
 import * as TetrisUtils from './TetrisUtils';
 
-type TetrisBoardProps =
-{
+type TetrisBoardProps = {
   field: number[][];
   score: number;
   level: number;
@@ -16,7 +13,12 @@ type TetrisBoardProps =
 
 const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
   const {
-    field, score, level, spawnedTetrominos, heldTetromino, firstGameStart,
+    field,
+    score,
+    level,
+    spawnedTetrominos,
+    heldTetromino,
+    firstGameStart,
     displayGrid,
   } = props;
   const renderTetrominos = TetrisConsts.RENDER_TETROMINOS_ARR;
@@ -27,56 +29,48 @@ const TetrisBoard: React.FC<TetrisBoardProps> = (props: TetrisBoardProps) => {
   /* Prepare HTML elements for the tetromino queue */
   const spawnedTetrominosFieldsRender: JSX.Element[][] = [];
   spawnedTetrominos.forEach((tetromino) => {
-    const spawnedTetrominoField = firstGameStart ? renderTetrominos[tetromino]
+    const spawnedTetrominoField = firstGameStart
+      ? renderTetrominos[tetromino]
       : renderTetrominos[TetrisConsts.Tetromino.Blank];
     const spawnedTetrominoFieldRender = TetrisUtils.fieldToJsxElement(
-      spawnedTetrominoField, displayGrid,
+      spawnedTetrominoField,
+      displayGrid
     );
     spawnedTetrominosFieldsRender.push(spawnedTetrominoFieldRender);
   });
 
   const tetrominoRenderFields = spawnedTetrominosFieldsRender
+    // eslint-disable-next-line react/jsx-key
     .map((tetromino) => <div className="tetris-next">{tetromino}</div>);
 
   /* Prepare an HTML element for the currently held tetromino */
   const heldTetrominoField = renderTetrominos[heldTetromino];
   const heldTetrominoFieldRender = TetrisUtils.fieldToJsxElement(
-    heldTetrominoField, displayGrid,
+    heldTetrominoField,
+    displayGrid
   );
 
   return (
-    <div>
+    <div className="grid place-items-center">
       <div className="tetris-info">
-        <div className="row">
-          <div className="col">
-            <p>
-              LEVEL
-            </p>
-            <p>
-              {level}
-            </p>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <p>LEVEL</p>
+            <p>{level}</p>
           </div>
-          <div className="col">
-            <p>
-              SCORE
-            </p>
-            <p>
-              {score}
-            </p>
+          <div>
+            <p>SCORE</p>
+            <p>{score}</p>
           </div>
         </div>
       </div>
-      <div className="tetris-gamespace">
-        <div className="row">
-          <div className="col">
-            <div className="tetris-held">{heldTetrominoFieldRender}</div>
-          </div>
-          <div className="col">
-            <div className="tetris-board">{gameBoard}</div>
-          </div>
-          <div className="col">
-            <div>{tetrominoRenderFields}</div>
-          </div>
+      <div className="flex gap-3">
+        <div className="tetris-held place-self-start">
+          {heldTetrominoFieldRender}
+        </div>
+        <div className="tetris-board">{gameBoard}</div>
+        <div className="tetris-queue grid grid-rows-4 gap-3">
+          {tetrominoRenderFields}
         </div>
       </div>
     </div>

@@ -1,11 +1,7 @@
-/* eslint-disable react/sort-comp */
-
 import React from 'react';
-import axios from 'axios';
-import { DateTime } from 'luxon';
 
 import TetrisBoard from './TetrisBoard';
-import './Tetris.css';
+
 import * as TetrisConsts from './TetrisConsts';
 import * as TetrisUtils from './TetrisUtils';
 
@@ -14,11 +10,11 @@ type TetrisProps = {
   boardHeight: number;
   boardGrid: boolean;
   gamePaused: boolean;
-  gameRestart: boolean; /* We now use the newGame prop as a 'switch' to toggle a
+  gameRestart: boolean /* We now use the newGame prop as a 'switch' to toggle a
   new game instead of polling its' value to determine whether or not a new game
-  should start */
-  gameState: (arg0: boolean) => void; /* We use a callback as another switch to
-  let the parent component know whether the game is over */
+  should start */;
+  gameState: (arg0: boolean) => void /* We use a callback as another switch to
+  let the parent component know whether the game is over */;
   firstGameStart: boolean;
   userAuth: boolean;
 };
@@ -34,7 +30,7 @@ type TetrisState = {
   newGameSwitch: boolean;
   onHold: boolean;
   /* cor = Center of rotation */
-  corX : number;
+  corX: number;
   corY: number;
   ghostCorY: number;
   heldTetromino: TetrisConsts.Tetromino;
@@ -91,8 +87,10 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     const { keyboardInputHandle } = this;
     const { timerId } = this.state;
 
-    document.removeEventListener(TetrisConsts.KEYBOARD_EVENT,
-      keyboardInputHandle);
+    document.removeEventListener(
+      TetrisConsts.KEYBOARD_EVENT,
+      keyboardInputHandle
+    );
 
     window.clearInterval(timerId);
   }
@@ -103,15 +101,13 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * the lower the value is, the faster the game becomes
    */
   setGameInterval(interval: number): void {
-    const {
-      timerId,
-    } = this.state;
+    const { timerId } = this.state;
 
     window.clearInterval(timerId);
 
     const newTimerId = window.setInterval(
       () => this.handleBoardUpdate(TetrisConsts.Command.Down),
-      interval,
+      interval
     );
 
     this.setState(() => ({
@@ -124,9 +120,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * button being clicked on
    */
   handleNewGameClick(): void {
-    const {
-      gameRestart, gameState,
-    } = this.props;
+    const { gameRestart, gameState } = this.props;
 
     /* Call gameState callback to reset parent's gameOver prop */
     gameState(false);
@@ -163,14 +157,24 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * always 'Down' for each tick of the game
    */
   async handleBoardUpdate(command: TetrisConsts.Command): Promise<void> {
-    const {
-      gamePaused, gameRestart, gameState, boardWidth, userAuth,
-    } = this.props;
+    const { gamePaused, gameRestart, gameState, boardWidth, userAuth } =
+      this.props;
 
     const {
-      init, gameOver, newGameSwitch, onHold, corX, corY, ghostCorY,
-      heldTetromino, activeTetromino, tetrominoRotate, score, field,
-      progressSaved, spawnedTetrominos,
+      init,
+      gameOver,
+      newGameSwitch,
+      onHold,
+      corX,
+      corY,
+      ghostCorY,
+      heldTetromino,
+      activeTetromino,
+      tetrominoRotate,
+      score,
+      field,
+      progressSaved,
+      spawnedTetrominos,
     } = this.state;
 
     /* Call new game handler and return if the new game/restart button was
@@ -184,23 +188,6 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     /* Call gameState callback, save user's score and return if game is over */
     if (gameOver) {
       gameState(true);
-
-      if (userAuth && !progressSaved) {
-        await axios.put('/api/user/update/scores', JSON.stringify({
-          newScore: {
-            score,
-            timestamp: DateTime.now().setZone('America/Los_Angeles').toFormat('ff'),
-          },
-        }), {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        this.setState({
-          progressSaved: true,
-        });
-      }
 
       return;
     }
@@ -225,11 +212,20 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
     /* Handling init - We only render the newly spawned tetromino */
     if (init) {
-      this.renderTetromino(newCorX, newGhostCorY, newTetromino,
+      this.renderTetromino(
+        newCorX,
+        newGhostCorY,
+        newTetromino,
         newTetrominoRotate,
-        TetrisConsts.GHOST_TETROMINO_INDEX);
-      this.renderTetromino(newCorX, newCorY, newTetromino, newTetrominoRotate,
-        newTetromino);
+        TetrisConsts.GHOST_TETROMINO_INDEX
+      );
+      this.renderTetromino(
+        newCorX,
+        newCorY,
+        newTetromino,
+        newTetrominoRotate,
+        newTetromino
+      );
       this.setState(() => ({
         init: false,
       }));
@@ -239,39 +235,49 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
     /* Remove current tetromino from field for next logic */
     this.renderTetromino(
-      newCorX, newGhostCorY, newTetromino, newTetrominoRotate, 0,
+      newCorX,
+      newGhostCorY,
+      newTetromino,
+      newTetrominoRotate,
+      0
     );
-    this.renderTetromino(
-      newCorX, newCorY, newTetromino, newTetrominoRotate, 0,
-    );
+    this.renderTetromino(newCorX, newCorY, newTetromino, newTetrominoRotate, 0);
 
     /* Determine which value to be modified (x - y - rotate ?) */
     switch (command) {
       case TetrisConsts.Command.Left: {
         newCorX -= 1;
-        if (!this.isMoveValid(newCorX, newCorY, newTetromino,
-          newTetrominoRotate)) {
+        if (
+          !this.isMoveValid(newCorX, newCorY, newTetromino, newTetrominoRotate)
+        ) {
           newCorX = corX;
         }
         break;
       }
       case TetrisConsts.Command.Right: {
         newCorX += 1;
-        if (!this.isMoveValid(newCorX, newCorY, newTetromino,
-          newTetrominoRotate)) {
+        if (
+          !this.isMoveValid(newCorX, newCorY, newTetromino, newTetrominoRotate)
+        ) {
           newCorX = corX;
         }
         break;
       }
       case TetrisConsts.Command.Rotate: {
-        newTetrominoRotate = newTetrominoRotate + 1 === TetrisConsts.MAX_ROTATE
-          ? TetrisConsts.Rotation.Up : (newTetrominoRotate + 1);
-        const corXOffset = this.getTetrominoOnEdgeOffset(newCorX, newTetromino,
-          newTetrominoRotate);
+        newTetrominoRotate =
+          newTetrominoRotate + 1 === TetrisConsts.MAX_ROTATE
+            ? TetrisConsts.Rotation.Up
+            : newTetrominoRotate + 1;
+        const corXOffset = this.getTetrominoOnEdgeOffset(
+          newCorX,
+          newTetromino,
+          newTetrominoRotate
+        );
         newCorX += corXOffset;
 
-        if (!this.isMoveValid(newCorX, newCorY, newTetromino,
-          newTetrominoRotate)) {
+        if (
+          !this.isMoveValid(newCorX, newCorY, newTetromino, newTetrominoRotate)
+        ) {
           newTetrominoRotate = tetrominoRotate;
           newCorX = corX;
         }
@@ -279,8 +285,12 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       }
       case TetrisConsts.Command.Down: {
         newCorY += 1;
-        yAddValid = this.isMoveValid(newCorX, newCorY, newTetromino,
-          newTetrominoRotate);
+        yAddValid = this.isMoveValid(
+          newCorX,
+          newCorY,
+          newTetromino,
+          newTetrominoRotate
+        );
         if (!yAddValid) {
           newCorY = corY;
         }
@@ -318,18 +328,35 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     }
 
     /* Render new tetromino after the new coords are updated */
-    newGhostCorY = this.findGhostTetrominoY(newCorX, newCorY, newTetromino,
-      newTetrominoRotate);
-    this.renderTetromino(newCorX, newGhostCorY, newTetromino,
+    newGhostCorY = this.findGhostTetrominoY(
+      newCorX,
+      newCorY,
+      newTetromino,
+      newTetrominoRotate
+    );
+    this.renderTetromino(
+      newCorX,
+      newGhostCorY,
+      newTetromino,
       newTetrominoRotate,
-      TetrisConsts.GHOST_TETROMINO_INDEX);
-    this.renderTetromino(newCorX, newCorY, newTetromino, newTetrominoRotate,
-      newTetromino);
+      TetrisConsts.GHOST_TETROMINO_INDEX
+    );
+    this.renderTetromino(
+      newCorX,
+      newCorY,
+      newTetromino,
+      newTetrominoRotate,
+      newTetromino
+    );
 
     /* Handling blocked movement */
     if (!yAddValid) {
-      const newStates = this.handleBlockedMovement(newCorX, newCorY,
-        newTetromino, newTetrominoRotate);
+      const newStates = this.handleBlockedMovement(
+        newCorX,
+        newCorY,
+        newTetromino,
+        newTetrominoRotate
+      );
       /* Game over */
       if (newStates === undefined) {
         return;
@@ -340,11 +367,15 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       newCorY = newStates.newCorY;
       newTetromino = newStates.newTetromino;
       newTetrominoRotate = newStates.newTetrominoRotate;
-      newGhostCorY = this.findGhostTetrominoY(newCorX, newCorY, newTetromino,
-        newTetrominoRotate);
+      newGhostCorY = this.findGhostTetrominoY(
+        newCorX,
+        newCorY,
+        newTetromino,
+        newTetrominoRotate
+      );
       newField = newStates.newField;
       newTetrominos = newStates.newTetrominos;
-      newOnHold = (newOnHold === true) ? false : newOnHold;
+      newOnHold = newOnHold === true ? false : newOnHold;
     }
 
     /* Update new states */
@@ -411,10 +442,12 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @param[in]: tetrominoRotate: Current rotation of tetromino
    * @return: True if the move is valid, false otw
    */
-  isMoveValid(corX: number,
+  isMoveValid(
+    corX: number,
     corY: number,
     tetromino: TetrisConsts.Tetromino,
-    tetrominoRotate: TetrisConsts.Rotation): boolean {
+    tetrominoRotate: TetrisConsts.Rotation
+  ): boolean {
     const { field } = this.state;
     const { boardWidth, boardHeight } = this.props;
 
@@ -422,8 +455,11 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
     /* We scan through each pixel of the tetromino to determine if the move is
     valid */
-    for (let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL;
-      pixelIter += 1) {
+    for (
+      let pixelIter = 0;
+      pixelIter < TetrisConsts.MAX_PIXEL;
+      pixelIter += 1
+    ) {
       /* Check to see if any pixel goes out of the board */
       /* HACK - We check pixels' y coords first to safely render tetrominos
       pixel by pixel initially */
@@ -460,26 +496,33 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @return: Object containing the updated value for states; returning
    * undefined if game is over
    */
-  handleBlockedMovement(corX: number,
+  handleBlockedMovement(
+    corX: number,
     corY: number,
     tetromino: TetrisConsts.Tetromino,
-    tetrominoRotate: TetrisConsts.Rotation): {
-      newInit: boolean;
-      newCorX: number;
-      newCorY: number;
-      newTetromino: TetrisConsts.Tetromino;
-      newTetrominoRotate: TetrisConsts.Rotation;
-      newField: TetrisCol[];
-      newTetrominos: TetrisConsts.Tetromino[];
-    } | undefined {
+    tetrominoRotate: TetrisConsts.Rotation
+  ):
+    | {
+        newInit: boolean;
+        newCorX: number;
+        newCorY: number;
+        newTetromino: TetrisConsts.Tetromino;
+        newTetrominoRotate: TetrisConsts.Rotation;
+        newField: TetrisCol[];
+        newTetrominos: TetrisConsts.Tetromino[];
+      }
+    | undefined {
     const { field, spawnedTetrominos, level } = this.state;
     const { boardWidth, boardHeight } = this.props;
     const tetrominos = TetrisConsts.TETROMINOS_COORDS_ARR;
     const retField = field;
 
     /* Update the lowest pixel for each column */
-    for (let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL;
-      pixelIter += 1) {
+    for (
+      let pixelIter = 0;
+      pixelIter < TetrisConsts.MAX_PIXEL;
+      pixelIter += 1
+    ) {
       const coord = tetrominos[tetromino][tetrominoRotate][pixelIter];
       const xToRender = corX + coord[TetrisConsts.X_INDEX];
       const yToRender = corY + coord[TetrisConsts.Y_INDEX];
@@ -505,8 +548,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       if (isLineComplete) {
         for (let detectedRow = row; detectedRow > 0; detectedRow -= 1) {
           for (let col = 0; col < boardWidth; col += 1) {
-            retField[col].colArr[detectedRow] = retField[col]
-              .colArr[detectedRow - 1];
+            retField[col].colArr[detectedRow] =
+              retField[col].colArr[detectedRow - 1];
           }
         }
         row += 1;
@@ -533,7 +576,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     + set new time interval and continue */
     let isGameOver = false;
     for (
-      let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL; pixelIter += 1
+      let pixelIter = 0;
+      pixelIter < TetrisConsts.MAX_PIXEL;
+      pixelIter += 1
     ) {
       const coord = tetrominos[retTetromino][retTetrominoRotate][pixelIter];
       const yToCheck = retCorY + coord[TetrisConsts.Y_INDEX];
@@ -559,12 +604,13 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
       level: 1 + Math.floor(prev.tetrominosCount / 10),
     }));
 
-    const newGameInterval = level * TetrisConsts.EARLY_LEVEL_MULTIPLIER
-    > TetrisConsts.INTERVAL_CAP
-      ? (TetrisConsts.INTERVAL_CAP + level * TetrisConsts.LATE_LEVEL_MULTIPLIER)
-      : (level * TetrisConsts.EARLY_LEVEL_MULTIPLIER);
-    this.setGameInterval(TetrisConsts.DEFAULT_TIME_INTERVAL_MS
-      - newGameInterval);
+    const newGameInterval =
+      level * TetrisConsts.EARLY_LEVEL_MULTIPLIER > TetrisConsts.INTERVAL_CAP
+        ? TetrisConsts.INTERVAL_CAP + level * TetrisConsts.LATE_LEVEL_MULTIPLIER
+        : level * TetrisConsts.EARLY_LEVEL_MULTIPLIER;
+    this.setGameInterval(
+      TetrisConsts.DEFAULT_TIME_INTERVAL_MS - newGameInterval
+    );
 
     return {
       newInit: true,
@@ -582,7 +628,8 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * and randomizing the new tetromino
    * @return: Object containing the init value for states
    */
-  initNewGame(): { initGame: boolean;
+  initNewGame(): {
+    initGame: boolean;
     initGrid: boolean;
     initGameOver: boolean;
     initOnHold: boolean;
@@ -603,18 +650,27 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
     const retTetrominos = [];
     /* Add an additional tetromino to pop in init */
-    for (let spawn = 0; spawn < TetrisConsts.MAX_SPAWNED_TETROMINOS + 1;
-      spawn += 1) {
-      const spawnedTetromino = Math.floor(Math.random()
-        * (TetrisConsts.MAX_TETROMINO_INDEX - TetrisConsts.MIN_TETROMINO_INDEX
-      + 1)) + 1;
+    for (
+      let spawn = 0;
+      spawn < TetrisConsts.MAX_SPAWNED_TETROMINOS + 1;
+      spawn += 1
+    ) {
+      const spawnedTetromino =
+        Math.floor(
+          Math.random() *
+            (TetrisConsts.MAX_TETROMINO_INDEX -
+              TetrisConsts.MIN_TETROMINO_INDEX +
+              1)
+        ) + 1;
       retTetrominos.push(spawnedTetromino);
     }
     const getTetrominoRet = TetrisUtils.getNewTetromino(retTetrominos);
     const retTetromino = getTetrominoRet.newTetromino;
     const retTetrominoRotation = TetrisConsts.Rotation.Up;
-    const retGhostCorY = this.prepareGhostTetrominoY(retTetromino,
-      retTetrominoRotation);
+    const retGhostCorY = this.prepareGhostTetrominoY(
+      retTetromino,
+      retTetrominoRotation
+    );
 
     const retField: TetrisCol[] = [];
     for (let x = 0; x < boardWidth; x += 1) {
@@ -657,10 +713,12 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @param[in]: tetrominoRotate: Current rotation of tetromino
    * @return: Optimal Y for the ghost tetromino
    */
-  findGhostTetrominoY(corX: number,
+  findGhostTetrominoY(
+    corX: number,
     corY: number,
     tetromino: TetrisConsts.Tetromino,
-    tetrominoRotate: TetrisConsts.Rotation): number {
+    tetrominoRotate: TetrisConsts.Rotation
+  ): number {
     const { boardWidth, boardHeight } = this.props;
     const { field } = this.state;
     const tetrominos = TetrisConsts.TETROMINOS_COORDS_ARR;
@@ -669,8 +727,11 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     spans */
     let yHigherThanCmp = false;
     const yToCmpArr: number[] = [];
-    for (let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL;
-      pixelIter += 1) {
+    for (
+      let pixelIter = 0;
+      pixelIter < TetrisConsts.MAX_PIXEL;
+      pixelIter += 1
+    ) {
       const coord = tetrominos[tetromino][tetrominoRotate][pixelIter];
       const xToCheck = corX + coord[TetrisConsts.X_INDEX];
       const yToCheck = corY + coord[TetrisConsts.Y_INDEX];
@@ -706,16 +767,19 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
 
     const lowestY = Math.min.apply(null, yToCmpArr);
     /* We find the correct starting point for the pivot */
-    const pixelsToPivot = tetrominos[tetromino][tetrominoRotate][
-      TetrisConsts.UPPER_Y_INDEX][TetrisConsts.Y_INDEX];
+    const pixelsToPivot =
+      tetrominos[tetromino][tetrominoRotate][TetrisConsts.UPPER_Y_INDEX][
+        TetrisConsts.Y_INDEX
+      ];
     retGhostCorY = lowestY - 1 - pixelsToPivot;
 
     /* Since we might change the pivot for the tetrominos in the future,
       it is best to try to find the best fit for the tetromino starting from
       the lowest Y we just found. We first try to go upwards (Y increases) */
     let upperBoundAttempts = 0;
-    while (this.isMoveValid(corX, retGhostCorY + 1, tetromino,
-      tetrominoRotate)) {
+    while (
+      this.isMoveValid(corX, retGhostCorY + 1, tetromino, tetrominoRotate)
+    ) {
       retGhostCorY += 1;
       upperBoundAttempts += 1;
     }
@@ -727,8 +791,7 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     }
 
     /* Otherwise, it is in the lower region */
-    while (!this.isMoveValid(corX, retGhostCorY, tetromino,
-      tetrominoRotate)) {
+    while (!this.isMoveValid(corX, retGhostCorY, tetromino, tetrominoRotate)) {
       retGhostCorY -= 1;
     }
 
@@ -747,13 +810,17 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @param[in]: tetrominoRotate: Current rotation of tetromino
    * @return: Center of rotation's ghost Y value of a newly spawned tetromino
    */
-  prepareGhostTetrominoY(tetromino: TetrisConsts.Tetromino,
-    tetrominoRotate: TetrisConsts.Rotation): number {
+  prepareGhostTetrominoY(
+    tetromino: TetrisConsts.Tetromino,
+    tetrominoRotate: TetrisConsts.Rotation
+  ): number {
     const { boardHeight } = this.props;
     const tetrominos = TetrisConsts.TETROMINOS_COORDS_ARR;
 
-    const pixelsToPivot = tetrominos[tetromino][tetrominoRotate][
-      TetrisConsts.UPPER_Y_INDEX][TetrisConsts.Y_INDEX];
+    const pixelsToPivot =
+      tetrominos[tetromino][tetrominoRotate][TetrisConsts.UPPER_Y_INDEX][
+        TetrisConsts.Y_INDEX
+      ];
 
     return boardHeight - 1 - pixelsToPivot;
   }
@@ -769,16 +836,21 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    *          - Negative value if tetromino's on the right edge of board
    *          - 0 if tetromino is not on edge
    */
-  getTetrominoOnEdgeOffset(corX: number,
+  getTetrominoOnEdgeOffset(
+    corX: number,
     tetromino: TetrisConsts.Tetromino,
-    tetrominoRotate: TetrisConsts.Rotation): number {
+    tetrominoRotate: TetrisConsts.Rotation
+  ): number {
     const { boardWidth } = this.props;
     const tetrominos = TetrisConsts.TETROMINOS_COORDS_ARR;
 
     let retOffset = 0;
 
-    for (let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL;
-      pixelIter += 1) {
+    for (
+      let pixelIter = 0;
+      pixelIter < TetrisConsts.MAX_PIXEL;
+      pixelIter += 1
+    ) {
       const coord = tetrominos[tetromino][tetrominoRotate][pixelIter];
       const xToCheck = corX + coord[TetrisConsts.X_INDEX];
       if (xToCheck >= boardWidth) {
@@ -802,17 +874,22 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
    * @param[in]: tetrominoRotate - Current rotation of tetromino
    * @param[in]: renderValue - Render value (color of tetromino)
    */
-  renderTetromino(corX: number,
+  renderTetromino(
+    corX: number,
     corY: number,
     tetromino: TetrisConsts.Tetromino,
     tetrominoRotate: TetrisConsts.Rotation,
-    renderValue: number): void {
+    renderValue: number
+  ): void {
     const { field } = this.state;
     const tetrominos = TetrisConsts.TETROMINOS_COORDS_ARR;
     const newField = field;
 
-    for (let pixelIter = 0; pixelIter < TetrisConsts.MAX_PIXEL;
-      pixelIter += 1) {
+    for (
+      let pixelIter = 0;
+      pixelIter < TetrisConsts.MAX_PIXEL;
+      pixelIter += 1
+    ) {
       const coord = tetrominos[tetromino][tetrominoRotate][pixelIter];
       const xToRender = corX + coord[TetrisConsts.X_INDEX];
       const yToRender = corY + coord[TetrisConsts.Y_INDEX];
@@ -827,12 +904,9 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
   }
 
   render(): JSX.Element {
-    const {
-      boardHeight, boardWidth, boardGrid, firstGameStart,
-    } = this.props;
-    const {
-      score, level, heldTetromino, field, spawnedTetrominos,
-    } = this.state;
+    const { boardHeight, boardWidth, boardGrid, firstGameStart } = this.props;
+    const { score, level, heldTetromino, field, spawnedTetrominos } =
+      this.state;
 
     const renderField: number[][] = [];
 
@@ -845,17 +919,15 @@ class Tetris extends React.Component<TetrisProps, TetrisState> {
     }
 
     return (
-      <div className="game-wrap">
-        <TetrisBoard
-          field={renderField}
-          score={score}
-          level={level}
-          spawnedTetrominos={spawnedTetrominos}
-          heldTetromino={heldTetromino}
-          firstGameStart={firstGameStart}
-          displayGrid={boardGrid}
-        />
-      </div>
+      <TetrisBoard
+        field={renderField}
+        score={score}
+        level={level}
+        spawnedTetrominos={spawnedTetrominos}
+        heldTetromino={heldTetromino}
+        firstGameStart={firstGameStart}
+        displayGrid={boardGrid}
+      />
     );
   }
 }
