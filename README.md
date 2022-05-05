@@ -4,7 +4,6 @@
 
 The minimum version of Node.js required is **Node.js LTS 16.x**.
 
-
 **To install**
 
 ```
@@ -17,14 +16,12 @@ yarn install
 yarn dev
 ```
 
-
 **Build & start in production mode**
 
 ```
 yarn build
 yarn start
 ```
-
 
 **Coding standards**
 
