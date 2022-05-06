@@ -1,6 +1,5 @@
 {
-  "name": "tetribass-next",
-  "private": true,
+  "name": "tetribass-client",
   "scripts": {
     "build": "next build",
     "dev": "next dev",
