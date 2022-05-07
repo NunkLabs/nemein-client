@@ -24,7 +24,7 @@ const Tetris = () => {
     ws.current = new WebSocket('ws://localhost:8080');
 
     const validKeyboardKeys = [
-      'ArrowDowm',
+      'ArrowDown',
       'ArrowLeft',
       'ArrowRight',
       'ArrowUp',
