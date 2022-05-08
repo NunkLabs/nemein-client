@@ -1,11 +1,9 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 import * as TetrisConsts from './TetrisConsts';
 import { fieldToJsxElement } from './TetrisUtils';
 
-const Tetris = () => {
-  const ws = useRef<WebSocket | null>(null);
-
+const Tetris = ({ tetrisData }: MessageEvent['data']) => {
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
 
@@ -18,81 +16,45 @@ const Tetris = () => {
   );
 
   useEffect(() => {
-    ws.current = new WebSocket('ws://localhost:8080');
+    if (!tetrisData) return;
 
-    const validKeyboardKeys = [
-      'ArrowDown',
-      'ArrowLeft',
-      'ArrowRight',
-      'ArrowUp',
-      ' ',
-      'c',
-    ];
+    const { field, heldTetromino, spawnedTetrominos } = tetrisData;
 
-    const keydownHandler = ({ key }: { key: string }) => {
-      if (!validKeyboardKeys.includes(key)) return;
+    /* Prepare an HTML element for the main game board */
+    const renderField: number[][] = [];
 
-      ws.current?.send(key);
-    };
+    for (let y = 0; y < 23; y += 1) {
+      const row = [];
 
-    ws.current.onopen = () => {
-      document.addEventListener('keydown', keydownHandler);
-    };
-
-    ws.current.onclose = () => {
-      document.removeEventListener('keydown', keydownHandler);
-    };
-
-    ws.current.onmessage = (event) => {
-      const { field, heldTetromino, spawnedTetrominos } = JSON.parse(
-        event.data
-      );
-
-      const renderTetrominos = TetrisConsts.RENDER_TETROMINOS_ARR;
-
-      /* Prepare an HTML element for the main game board */
-      const renderField: number[][] = [];
-
-      for (let y = 0; y < 23; y += 1) {
-        const row = [];
-
-        for (let x = 0; x < 14; x += 1) {
-          row.push(field[x].colArr[y]);
-        }
-
-        renderField.push(row);
+      for (let x = 0; x < 14; x += 1) {
+        row.push(field[x].colArr[y]);
       }
 
-      setGameField(renderField);
+      renderField.push(row);
+    }
 
-      /* Prepare an HTML element for the currently held tetromino */
-      setHeldField(renderTetrominos[heldTetromino]);
+    setGameField(renderField);
 
-      /* Prepare HTML elements for the tetromino queue */
-      const spawnedTetrominosFieldsRender: JSX.Element[][] = [];
+    /* Prepare an HTML element for the currently held tetromino */
+    setHeldField(TetrisConsts.RENDER_TETROMINOS_ARR[heldTetromino]);
 
-      spawnedTetrominos.forEach((tetromino: TetrisConsts.Tetromino) => {
-        const spawnedTetrominoFieldRender = fieldToJsxElement(
-          renderTetrominos[tetromino]
-        );
+    /* Prepare HTML elements for the tetromino queue */
+    const spawnedTetrominosFieldsRender: JSX.Element[][] = [];
 
-        spawnedTetrominosFieldsRender.push(spawnedTetrominoFieldRender);
-      });
+    spawnedTetrominos.forEach((tetromino: TetrisConsts.Tetromino) => {
+      const spawnedTetrominoFieldRender = fieldToJsxElement(
+        TetrisConsts.RENDER_TETROMINOS_ARR[tetromino]
+      );
 
-      const spawnedTetrominosFields = spawnedTetrominosFieldsRender
-        // eslint-disable-next-line react/jsx-key
-        .map((tetromino) => <div className="tetris-next">{tetromino}</div>);
+      spawnedTetrominosFieldsRender.push(spawnedTetrominoFieldRender);
+    });
 
-      setSpawnedFields(spawnedTetrominosFields);
-    };
+    const spawnedTetrominosFields = spawnedTetrominosFieldsRender
+      // eslint-disable-next-line react/jsx-key
+      .map((tetromino) => <div className="tetris-next">{tetromino}</div>);
 
-    const wsCurrent = ws.current;
-
-    return () => {
-      /* Clean up on component unmount */
-      wsCurrent.close();
-    };
-  }, [ws]);
+    setSpawnedFields(spawnedTetrominosFields);
+  }, [tetrisData]);
 
   return (
     <div className="grid place-items-center">
