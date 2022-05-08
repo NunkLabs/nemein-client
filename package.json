@@ -2,24 +2,24 @@
   "name": "tetribass-client",
   "scripts": {
     "build": "next build",
+    "clean": "rm -rf node_modules && yarn cache clean",
     "dev": "next dev",
     "format": "next lint && yarn prettier --write .",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "update": "yarn update-interactive --latest"
   },
   "dependencies": {
-    "luxon": "^2.3.2",
-    "next": "12.1.5",
+    "next": "12.1.6",
     "react": "18.1.0",
     "react-dom": "18.1.0"
   },
   "devDependencies": {
-    "@types/luxon": "^2.3.1",
-    "@types/node": "17.0.30",
-    "@types/react": "18.0.8",
-    "autoprefixer": "^10.4.5",
-    "eslint": "8.14.0",
-    "eslint-config-next": "12.1.5",
+    "@types/node": "17.0.31",
+    "@types/react": "18.0.9",
+    "autoprefixer": "^10.4.7",
+    "eslint": "8.15.0",
+    "eslint-config-next": "12.1.6",
     "eslint-config-prettier": "^8.5.0",
     "postcss": "^8.4.13",
     "prettier": "^2.6.2",
