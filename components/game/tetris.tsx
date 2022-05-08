@@ -5,8 +5,9 @@ import * as TetrisConsts from 'constants/tetris';
 /**
  * @brief: fieldToJsxElement: Convert a field of coords to a JSX element for
  * render
- * @param[in]: field - Field to render
- * @return: JSX element of field
+ * @param  {number[][]}     field  Field to render
+ * @param  {boolean}        grid   Toggle for the game grid
+ * @return {JSX.Element[]}         JSX element of field
  */
 const fieldToJsxElement = (
   field: number[][],
@@ -17,9 +18,7 @@ const fieldToJsxElement = (
   field.forEach((col, colIndex) => {
     const rows = col.map((row, rowIndex) => (
       <div
-        className={`
-          row${grid ? '-wgrid' : ''} row${grid ? '-wgrid' : ''}-${row}
-        `}
+        className={`row${grid ? `-wgrid row-wgrid-${row}`: `row-${row}`}`}
         key={`row-${rowIndex}`}
       />
     ));
@@ -57,10 +56,10 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
     /* Prepare an HTML element for the main game board */
     const renderField: number[][] = [];
 
-    for (let y = 0; y < 23; y += 1) {
+    for (let y = 0; y < TetrisConsts.DEFAULT_BOARD_HEIGHT; y += 1) {
       const row = [];
 
-      for (let x = 0; x < 14; x += 1) {
+      for (let x = 0; x < TetrisConsts.DEFAULT_BOARD_WIDTH; x += 1) {
         row.push(tetrisData.field[x].colArr[y]);
       }
 
