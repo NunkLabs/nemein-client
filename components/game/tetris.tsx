@@ -14,17 +14,21 @@ const fieldToJsxElement = (
 ): JSX.Element[] => {
   const retField: JSX.Element[] = [];
 
-  field.forEach((col) => {
-    const rows = col.map((row: number) => (
-      // eslint-disable-next-line react/jsx-key
+  field.forEach((col, colIndex) => {
+    const rows = col.map((row, rowIndex) => (
       <div
         className={`
           row${grid ? '-wgrid' : ''} row${grid ? '-wgrid' : ''}-${row}
         `}
+        key={`row-${rowIndex}`}
       />
     ));
 
-    retField.push(<div className="flex">{rows}</div>);
+    retField.push(
+      <div className="flex" key={`col-${colIndex}`}>
+        {rows}
+      </div>
+    );
   });
 
   return retField;
@@ -39,7 +43,9 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
     TetrisConsts.RENDER_TETROMINOS_ARR[0]
   );
   const [spawnedFields, setSpawnedFields] = useState<JSX.Element[]>(
-    Array(TetrisConsts.MAX_SPAWNED_FIELDS).fill(<div className="tetris-next" />)
+    Array(TetrisConsts.MAX_SPAWNED_FIELDS).map((_, index) => (
+      <div className="tetris-next" key={`next-${index}`} />
+    ))
   );
 
   useEffect(() => {
@@ -76,9 +82,13 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
       spawnedTetrominosFieldsRender.push(spawnedTetrominoFieldRender);
     });
 
-    const spawnedTetrominosFields = spawnedTetrominosFieldsRender
-      // eslint-disable-next-line react/jsx-key
-      .map((tetromino) => <div className="tetris-next">{tetromino}</div>);
+    const spawnedTetrominosFields = spawnedTetrominosFieldsRender.map(
+      (tetromino, index) => (
+        <div className="tetris-next" key={`next-${index}`}>
+          {tetromino}
+        </div>
+      )
+    );
 
     setSpawnedFields(spawnedTetrominosFields);
   }, [tetrisData]);
