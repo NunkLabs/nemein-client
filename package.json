@@ -1,5 +1,7 @@
 {
   "name": "tetribass-client",
+  "repository": "https://github.com/NunkuGemu/tetribass-client",
+  "license": "MIT",
   "scripts": {
     "build": "next build",
     "clean": "rm -rf node_modules && yarn cache clean",

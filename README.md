@@ -1,4 +1,4 @@
-# TetriBASS
+# TetriBASS Client
 
 ## Getting started
 
@@ -11,6 +11,12 @@ yarn install
 ```
 
 **Build & start in development mode**
+
+Install these global packages for dev scripts to work
+
+```
+yarn global add typescript eslint
+```
 
 ```
 yarn dev
