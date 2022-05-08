@@ -3,11 +3,6 @@ import { useEffect, useState, useRef } from 'react';
 import * as TetrisConsts from './TetrisConsts';
 import { fieldToJsxElement } from './TetrisUtils';
 
-type TetrisCol = {
-  colArr: number[];
-  lowestY: number;
-};
-
 const Tetris = () => {
   const ws = useRef<WebSocket | null>(null);
 
