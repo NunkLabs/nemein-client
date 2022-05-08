@@ -1,9 +1,36 @@
 import { useEffect, useState } from 'react';
 
-import * as TetrisConsts from './TetrisConsts';
-import { fieldToJsxElement } from './TetrisUtils';
+import * as TetrisConsts from 'constants/tetris';
 
-const Tetris = ({ tetrisData }: MessageEvent['data']) => {
+/**
+ * @brief: fieldToJsxElement: Convert a field of coords to a JSX element for
+ * render
+ * @param[in]: field - Field to render
+ * @return: JSX element of field
+ */
+const fieldToJsxElement = (
+  field: number[][],
+  grid: boolean = false
+): JSX.Element[] => {
+  const retField: JSX.Element[] = [];
+
+  field.forEach((col) => {
+    const rows = col.map((row: number) => (
+      // eslint-disable-next-line react/jsx-key
+      <div
+        className={`
+          row${grid ? '-wgrid' : ''} row${grid ? '-wgrid' : ''}-${row}
+        `}
+      />
+    ));
+
+    retField.push(<div className="flex">{rows}</div>);
+  });
+
+  return retField;
+};
+
+export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
 
@@ -82,5 +109,3 @@ const Tetris = ({ tetrisData }: MessageEvent['data']) => {
     </div>
   );
 };
-
-export default Tetris;

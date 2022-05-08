@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
 
-import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
-import Tetris from 'components';
+import { useEffect, useState, useRef } from 'react';
+import { Tetris } from 'components';
 
 const Home: NextPage = () => {
   const ws = useRef<WebSocket | null>(null);
