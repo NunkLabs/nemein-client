@@ -21,9 +21,9 @@ a {
 }
 
 .tetris-info {
-  width: 480px;
+  width: 280px;
   color: #f3f4f6;
-  font-size: 2em;
+  font-size: 1.5em;
   font-weight: 700;
   text-align: center;
   text-shadow: 1rem 0 1rem #111827;
@@ -35,6 +35,17 @@ a {
   border: 5px solid #f3f4f6;
   border-radius: 0.25rem;
   box-shadow: 1rem 0 3rem #111827;
+}
+
+.tetris-board {
+  min-height: 506px;
+  min-width: 308px;
+}
+
+.tetris-held,
+.tetris-next {
+  min-height: 110px;
+  min-width: 110px;
 }
 
 /* Styles for default tetrominos */

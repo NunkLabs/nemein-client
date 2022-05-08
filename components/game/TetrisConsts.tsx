@@ -1,3 +1,7 @@
+/* Misc consts */
+export const MAX_SPAWNED_FIELDS = 4;
+
+/* Tetrominos coords consts */
 export const RENDER_TETROMINOS_ARR = [
   [
     /* Blank */
