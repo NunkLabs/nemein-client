@@ -18,7 +18,9 @@ const Tetris = () => {
   const [heldField, setHeldField] = useState<number[][]>(
     TetrisConsts.RENDER_TETROMINOS_ARR[0]
   );
-  const [spawnedFields, setSpawnedFields] = useState<JSX.Element[]>([]);
+  const [spawnedFields, setSpawnedFields] = useState<JSX.Element[]>(
+    Array(TetrisConsts.MAX_SPAWNED_FIELDS).fill(<div className="tetris-next" />)
+  );
 
   useEffect(() => {
     ws.current = new WebSocket('ws://localhost:8080');
