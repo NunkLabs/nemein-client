@@ -51,7 +51,8 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
   useEffect(() => {
     if (!tetrisData) return;
 
-    const { field, heldTetromino, spawnedTetrominos } = tetrisData;
+    setLevel(tetrisData.level);
+    setScore(tetrisData.score);
 
     /* Prepare an HTML element for the main game board */
     const renderField: number[][] = [];
@@ -60,7 +61,7 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
       const row = [];
 
       for (let x = 0; x < 14; x += 1) {
-        row.push(field[x].colArr[y]);
+        row.push(tetrisData.field[x].colArr[y]);
       }
 
       renderField.push(row);
@@ -69,20 +70,22 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
     setGameField(renderField);
 
     /* Prepare an HTML element for the currently held tetromino */
-    setHeldField(TetrisConsts.RENDER_TETROMINOS_ARR[heldTetromino]);
+    setHeldField(TetrisConsts.RENDER_TETROMINOS_ARR[tetrisData.heldTetromino]);
 
     /* Prepare HTML elements for the tetromino queue */
-    const spawnedTetrominosFieldsRender: JSX.Element[][] = [];
+    const spawnedFieldsRender: JSX.Element[][] = [];
 
-    spawnedTetrominos.forEach((tetromino: TetrisConsts.Tetromino) => {
-      const spawnedTetrominoFieldRender = fieldToJsxElement(
-        TetrisConsts.RENDER_TETROMINOS_ARR[tetromino]
-      );
+    tetrisData.spawnedTetrominos.forEach(
+      (tetromino: TetrisConsts.Tetromino) => {
+        const spawnedFieldRender = fieldToJsxElement(
+          TetrisConsts.RENDER_TETROMINOS_ARR[tetromino]
+        );
 
-      spawnedTetrominosFieldsRender.push(spawnedTetrominoFieldRender);
-    });
+        spawnedFieldsRender.push(spawnedFieldRender);
+      }
+    );
 
-    const spawnedTetrominosFields = spawnedTetrominosFieldsRender.map(
+    const spawnedTetrominosFields = spawnedFieldsRender.map(
       (tetromino, index) => (
         <div className="tetris-next" key={`next-${index}`}>
           {tetromino}
