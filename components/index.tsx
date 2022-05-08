@@ -1,3 +1,1 @@
-import Tetris from './game/Tetris';
-
-export default Tetris;
+export { Tetris } from './game/tetris';
