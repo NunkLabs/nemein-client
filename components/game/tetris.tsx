@@ -18,7 +18,7 @@ const fieldToJsxElement = (
   field.forEach((col, colIndex) => {
     const rows = col.map((row, rowIndex) => (
       <div
-        className={`row${grid ? `-wgrid row-wgrid-${row}`: `row-${row}`}`}
+        className={`row${grid ? `-wgrid row-wgrid-${row}`: ` row-${row}`}`}
         key={`row-${rowIndex}`}
       />
     ));
