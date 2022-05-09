@@ -18,7 +18,7 @@ const fieldToJsxElement = (
   field.forEach((col, colIndex) => {
     const rows = col.map((row, rowIndex) => (
       <div
-        className={`row${grid ? `-wgrid row-wgrid-${row}`: ` row-${row}`}`}
+        className={`row${grid ? `-wgrid row-wgrid-${row}` : ` row-${row}`}`}
         key={`row-${rowIndex}`}
       />
     ));
@@ -42,9 +42,9 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
     TetrisConsts.RENDER_TETROMINOS_ARR[0]
   );
   const [spawnedFields, setSpawnedFields] = useState<JSX.Element[]>(
-    Array(TetrisConsts.MAX_SPAWNED_FIELDS).map((_, index) => (
-      <div className="tetris-next" key={`next-${index}`} />
-    ))
+    Array(TetrisConsts.MAX_SPAWNED_FIELDS)
+      .fill(<div className="tetris-next" />)
+      .map((_, index) => <div className="tetris-next" key={`next-${index}`} />)
   );
 
   useEffect(() => {
