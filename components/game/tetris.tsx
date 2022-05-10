@@ -99,9 +99,9 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
   }, [tetrisData]);
 
   return (
-    <div className="grid place-items-center">
+    <div className="grid place-items-center px-5 py-5">
       <div className={styles.info}>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-x-3">
           <div>
             <p>LEVEL</p>
             <p>{level}</p>
@@ -112,7 +112,7 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
           </div>
         </div>
       </div>
-      <div className="flex gap-3">
+      <div className="flex gap-x-3">
         <div className={styles.held}>{fieldToJsxElement(heldField)}</div>
         <div className={styles.game}>{fieldToJsxElement(gameField)}</div>
         <div className={styles.queue}>{spawnedFields}</div>
