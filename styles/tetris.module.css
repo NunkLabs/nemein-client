@@ -3,16 +3,33 @@
   color: #f3f4f6;
   font-size: 1.5em;
   font-weight: 700;
+  opacity: 0;
   text-align: center;
-  text-shadow: 1rem 0 1rem #111827;
+
+  @apply grid grid-cols-2 gap-x-3;
 }
 
-.game,
-.held,
-.next {
-  border: 5px solid #f3f4f6;
-  border-radius: 0.25rem;
-  box-shadow: 1rem 0 3rem #111827;
+.transform-info {
+  animation-duration: 1.75s;
+  animation-fill-mode: forwards;
+  animation-name: info-fade-in;
+  animation-timing-function: ease-out;
+}
+
+@keyframes info-fade-in {
+  0% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.queue {
+  @apply grid grid-rows-4 gap-3;
 }
 
 .held,
@@ -21,17 +38,80 @@
   min-width: 110px;
 }
 
+.held {
+  opacity: 0;
+  place-self: start;
+}
+
+.transform-held {
+  animation-duration: 1.75s;
+  animation-fill-mode: forwards;
+  animation-name: held-fade-in;
+  animation-timing-function: ease-out;
+}
+
+@keyframes held-fade-in {
+  0% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    border: 5px solid #f3f4f6;
+    border-radius: 0.25rem;
+    opacity: 1;
+  }
+}
+
 .game {
+  border: 5px solid #f3f4f6;
+  border-radius: 0.25rem;
   min-height: 506px;
   min-width: 308px;
+  opacity: 0;
 }
 
-.held {
-  @apply place-self-start;
+.transform-game {
+  animation-duration: 1.75s;
+  animation-fill-mode: forwards;
+  animation-name: game-fade-in;
+  animation-timing-function: ease-out;
 }
 
-.queue {
-  @apply grid grid-rows-4 gap-3;
+@keyframes game-fade-in {
+  0% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    border: 5px solid #f3f4f6;
+    border-radius: 0.25rem;
+    opacity: 1;
+  }
+}
+
+.transform-queue > .next {
+  animation-duration: 1.75s;
+  animation-fill-mode: forwards;
+  animation-name: queue-fade-in;
+  animation-timing-function: ease-out;
+}
+
+@keyframes queue-fade-in {
+  0% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    border: 5px solid #f3f4f6;
+    border-radius: 0.25rem;
+    opacity: 1;
+  }
 }
 
 /* Styles for default tetrominos */

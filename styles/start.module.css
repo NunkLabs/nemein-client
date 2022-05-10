@@ -1,9 +1,13 @@
 .outer {
+  height: 100%;
+  width: 100%;
+  position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  z-index: 100;
 
-  @apply absolute bg-gray-800 h-full w-full z-50
+  @apply bg-gray-800;
 }
 
 .transform-outer-wrapper {
@@ -28,12 +32,14 @@
 .inner {
   border: 5px solid #f3f4f6;
   border-radius: 0.25rem;
-
+  box-sizing: border-box;
+  place-items: center;
+  position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 
-  @apply absolute box-border grid place-items-center h-12 w-56
+  @apply grid h-12 w-56;
 }
 
 .transform-inner-wrapper {
@@ -59,17 +65,20 @@
 }
 
 .logo {
+  position: absolute;
   left: 50%;
   top: 40%;
   transform: translate(-50%, -50%);
 
-  @apply absolute text-slate-100 text-5xl font-bold
+  @apply text-slate-100 text-5xl font-bold;
 }
 
 .start {
+  box-sizing: border-box;
+  position: absolute;
   left: 50%;
   top: 47.5%;
   transform: translate(-50%, -50%);
 
-  @apply absolute box-border h-12 w-56
+  @apply h-12 w-56;
 }
