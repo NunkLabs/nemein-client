@@ -34,9 +34,10 @@ a {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
-  @apply bg-slate-700 bg-transparent
+  @apply bg-slate-700 bg-transparent;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -48,14 +49,16 @@ a {
 .button:hover {
   text-decoration: none;
 
-  @apply bg-slate-600 bg-transparent
+  @apply bg-slate-600 bg-transparent;
 }
 
-.button:focus, .button.focus {
+.button:focus,
+.button.focus {
   outline: none;
 }
 
-.button.disabled, .button:disabled {
+.button.disabled,
+.button:disabled {
   opacity: 0.65;
 }
 
@@ -69,35 +72,39 @@ fieldset:disabled a.button {
 }
 
 .button-light {
-  @apply text-gray-800 bg-slate-100 border-slate-100
+  @apply text-gray-800 bg-slate-100 border-slate-100;
 }
 
 .button-light:hover {
-  @apply text-slate-100 bg-gray-800 border-slate-100
+  @apply text-slate-100 bg-gray-800 border-slate-100;
 }
 
-.button-light.disabled, .button-light:disabled {
-  @apply text-gray-800 bg-transparent
+.button-light.disabled,
+.button-light:disabled {
+  @apply text-gray-800 bg-transparent;
 }
 
-.button-light:not(:disabled):not(.disabled):active, .button-light:not(:disabled):not(.disabled).active,
+.button-light:not(:disabled):not(.disabled):active,
+.button-light:not(:disabled):not(.disabled).active,
 .show > .button-light.dropdown-toggle {
-  @apply text-gray-800 bg-slate-100/50 border-slate-100/50
+  @apply text-gray-800 bg-slate-100/50 border-slate-100/50;
 }
 
 .button-dark {
-  @apply text-slate-100 bg-gray-800 border-gray-800
+  @apply text-slate-100 bg-gray-800 border-gray-800;
 }
 
 .button-dark:hover {
-  @apply text-gray-800 bg-slate-100 border-gray-800
+  @apply text-gray-800 bg-slate-100 border-gray-800;
 }
 
-.button-dark.disabled, .button-dark:disabled {
-  @apply text-slate-100 bg-transparent
+.button-dark.disabled,
+.button-dark:disabled {
+  @apply text-slate-100 bg-transparent;
 }
 
-.button-dark:not(:disabled):not(.disabled):active, .button-dark:not(:disabled):not(.disabled).active,
+.button-dark:not(:disabled):not(.disabled):active,
+.button-dark:not(:disabled):not(.disabled).active,
 .show > .button-dark.dropdown-toggle {
-  @apply text-slate-100 bg-gray-800/50 border-gray-800/50
+  @apply text-slate-100 bg-gray-800/50 border-gray-800/50;
 }

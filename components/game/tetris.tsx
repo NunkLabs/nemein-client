@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from "react";
 
-import * as TetrisConsts from 'constants/tetris';
-import styles from '../../styles/tetris.module.css';
+import { StartPrompt } from "components";
+import * as TetrisConsts from "constants/tetris";
+import styles from "../../styles/tetris.module.css";
 
 /**
  * @brief: fieldToJsxElement: Convert a field of coords to a JSX element for
@@ -36,7 +37,12 @@ const fieldToJsxElement = (
   return retField;
 };
 
-export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
+export const Tetris = () => {
+  const ws = useRef<WebSocket | null>(null);
+
+  const [init, setInit] = useState(false);
+  const [animate, setAnimate] = useState(false);
+
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
 
@@ -51,71 +57,132 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
   );
 
   useEffect(() => {
-    if (!tetrisData) return;
+    if (!init) return;
 
-    setLevel(tetrisData.level);
-    setScore(tetrisData.score);
+    ws.current = new WebSocket("ws://localhost:8080");
 
-    /* Prepare an HTML element for the main game board */
-    const renderField: number[][] = [];
+    const validKeyboardKeys = [
+      "ArrowDown",
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowUp",
+      " ",
+      "c",
+    ];
 
-    for (let y = 0; y < TetrisConsts.DEFAULT_BOARD_HEIGHT; y += 1) {
-      const row = [];
+    const keydownHandler = ({ key }: { key: string }) => {
+      if (!validKeyboardKeys.includes(key)) return;
 
-      for (let x = 0; x < TetrisConsts.DEFAULT_BOARD_WIDTH; x += 1) {
-        row.push(tetrisData.field[x].colArr[y]);
+      ws.current?.send(key);
+    };
+
+    ws.current.onopen = () => {
+      document.addEventListener("keydown", keydownHandler);
+    };
+
+    ws.current.onclose = () => {
+      document.removeEventListener("keydown", keydownHandler);
+    };
+
+    ws.current.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      setLevel(data.level);
+      setScore(data.score);
+
+      /* Prepare an HTML element for the main game board */
+      const renderField: number[][] = [];
+
+      for (let y = 0; y < TetrisConsts.DEFAULT_BOARD_HEIGHT; y += 1) {
+        const row = [];
+
+        for (let x = 0; x < TetrisConsts.DEFAULT_BOARD_WIDTH; x += 1) {
+          row.push(data.field[x].colArr[y]);
+        }
+
+        renderField.push(row);
       }
 
-      renderField.push(row);
-    }
+      setGameField(renderField);
 
-    setGameField(renderField);
+      /* Prepare an HTML element for the currently held tetromino */
+      setHeldField(TetrisConsts.RENDER_TETROMINOS_ARR[data.heldTetromino]);
 
-    /* Prepare an HTML element for the currently held tetromino */
-    setHeldField(TetrisConsts.RENDER_TETROMINOS_ARR[tetrisData.heldTetromino]);
+      /* Prepare HTML elements for the tetromino queue */
+      const spawnedFieldsRender: JSX.Element[][] = [];
 
-    /* Prepare HTML elements for the tetromino queue */
-    const spawnedFieldsRender: JSX.Element[][] = [];
-
-    tetrisData.spawnedTetrominos.forEach(
-      (tetromino: TetrisConsts.Tetromino) => {
+      data.spawnedTetrominos.forEach((tetromino: TetrisConsts.Tetromino) => {
         const spawnedFieldRender = fieldToJsxElement(
           TetrisConsts.RENDER_TETROMINOS_ARR[tetromino]
         );
 
         spawnedFieldsRender.push(spawnedFieldRender);
-      }
-    );
+      });
 
-    const spawnedTetrominosFields = spawnedFieldsRender.map(
-      (tetromino, index) => (
-        <div className={styles.next} key={`next-${index}`}>
-          {tetromino}
-        </div>
-      )
-    );
+      const spawnedTetrominosFields = spawnedFieldsRender.map(
+        (tetromino, index) => (
+          <div
+            className={`
+              ${styles.next} ${styles[init ? "transform-next" : ""]}
+            `}
+            key={`next-${index}`}
+          >
+            {tetromino}
+          </div>
+        )
+      );
 
-    setSpawnedFields(spawnedTetrominosFields);
-  }, [tetrisData]);
+      setSpawnedFields(spawnedTetrominosFields);
+    };
+
+    const wsCurrent = ws.current;
+
+    return () => {
+      /* Clean up on component unmount */
+      wsCurrent.close();
+    };
+  }, [init, ws]);
 
   return (
     <div className="grid place-items-center px-5 py-5">
-      <div className={styles.info}>
-        <div className="grid grid-cols-2 gap-x-3">
-          <div>
-            <p>LEVEL</p>
-            <p>{level}</p>
-          </div>
-          <div>
-            <p>SCORE</p>
-            <p>{score}</p>
-          </div>
+      <div
+        className={`${styles.info} ${styles[animate ? "transform-info" : ""]}`}
+        onAnimationEnd={() => setInit(true)}
+      >
+        <div>
+          <p>LEVEL</p>
+          <p>{level}</p>
+        </div>
+        <div>
+          <p>SCORE</p>
+          <p>{score}</p>
         </div>
       </div>
-      <div className="flex gap-x-3">
-        <div className={styles.held}>{fieldToJsxElement(heldField)}</div>
-        <div className={styles.game}>{fieldToJsxElement(gameField)}</div>
-        <div className={styles.queue}>{spawnedFields}</div>
+      <div className="relative">
+        <StartPrompt animationStart={useCallback(() => setAnimate(true), [])} />
+        <div className="flex gap-x-3">
+          <div
+            className={`
+            ${styles.held} ${styles[animate ? "transform-held" : ""]}
+          `}
+          >
+            {fieldToJsxElement(heldField)}
+          </div>
+          <div
+            className={`
+            ${styles.game} ${styles[animate ? "transform-game" : ""]}
+          `}
+          >
+            {fieldToJsxElement(gameField)}
+          </div>
+          <div
+            className={`
+            ${styles.queue} ${styles[animate ? "transform-queue" : ""]}
+          `}
+          >
+            {spawnedFields}
+          </div>
+        </div>
       </div>
     </div>
   );
