@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import * as TetrisConsts from 'constants/tetris';
+import styles from '../../styles/tetris.module.css';
 
 /**
  * @brief: fieldToJsxElement: Convert a field of coords to a JSX element for
@@ -18,7 +19,9 @@ const fieldToJsxElement = (
   field.forEach((col, colIndex) => {
     const rows = col.map((row, rowIndex) => (
       <div
-        className={`row${grid ? `-wgrid row-wgrid-${row}` : ` row-${row}`}`}
+        className={`
+          ${styles.row} ${styles[grid ? `row-wgrid-${row}` : `row-${row}`]}
+        `}
         key={`row-${rowIndex}`}
       />
     ));
@@ -43,8 +46,8 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
   );
   const [spawnedFields, setSpawnedFields] = useState<JSX.Element[]>(
     Array(TetrisConsts.MAX_SPAWNED_FIELDS)
-      .fill(<div className="tetris-next" />)
-      .map((_, index) => <div className="tetris-next" key={`next-${index}`} />)
+      .fill(<div className={styles.next} />)
+      .map((_, index) => <div className={styles.next} key={`next-${index}`} />)
   );
 
   useEffect(() => {
@@ -86,7 +89,7 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
 
     const spawnedTetrominosFields = spawnedFieldsRender.map(
       (tetromino, index) => (
-        <div className="tetris-next" key={`next-${index}`}>
+        <div className={styles.next} key={`next-${index}`}>
           {tetromino}
         </div>
       )
@@ -97,7 +100,7 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
 
   return (
     <div className="grid place-items-center">
-      <div className="tetris-info">
+      <div className={styles.info}>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <p>LEVEL</p>
@@ -110,13 +113,9 @@ export const Tetris = ({ tetrisData }: MessageEvent['data']) => {
         </div>
       </div>
       <div className="flex gap-3">
-        <div className="tetris-held place-self-start">
-          {fieldToJsxElement(heldField)}
-        </div>
-        <div className="tetris-board">{fieldToJsxElement(gameField)}</div>
-        <div className="tetris-queue grid grid-rows-4 gap-3">
-          {spawnedFields}
-        </div>
+        <div className={styles.held}>{fieldToJsxElement(heldField)}</div>
+        <div className={styles.game}>{fieldToJsxElement(gameField)}</div>
+        <div className={styles.queue}>{spawnedFields}</div>
       </div>
     </div>
   );
