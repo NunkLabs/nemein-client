@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 
-import { StartPrompt } from "components";
+import { CountdownPrompt, StartPrompt } from "components";
 import * as TetrisConsts from "constants/tetris";
 import styles from "../../styles/tetris.module.css";
 
@@ -42,6 +42,8 @@ export const Tetris = () => {
 
   const [init, setInit] = useState(false);
   const [animate, setAnimate] = useState(false);
+  const [countdown, setCountdown] = useState(false);
+
 
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
@@ -121,12 +123,7 @@ export const Tetris = () => {
 
       const spawnedTetrominosFields = spawnedFieldsRender.map(
         (tetromino, index) => (
-          <div
-            className={`
-              ${styles.next} ${styles[init ? "transform-next" : ""]}
-            `}
-            key={`next-${index}`}
-          >
+          <div className={styles.next} key={`next-${index}`}>
             {tetromino}
           </div>
         )
@@ -143,11 +140,14 @@ export const Tetris = () => {
     };
   }, [init, ws]);
 
+  const startAnimation = useCallback(() => setAnimate(true), []);
+  const startGame = useCallback(() => setInit(true), []);
+
   return (
     <div className="grid place-items-center px-5 py-5">
       <div
         className={`${styles.info} ${styles[animate ? "transform-info" : ""]}`}
-        onAnimationEnd={() => setInit(true)}
+        onAnimationEnd={() => setCountdown(true)}
       >
         <div>
           <p>LEVEL</p>
@@ -159,26 +159,27 @@ export const Tetris = () => {
         </div>
       </div>
       <div className="relative">
-        <StartPrompt animationStart={useCallback(() => setAnimate(true), [])} />
+        <StartPrompt startAnimation={startAnimation} />
+        {!init && countdown ? <CountdownPrompt startGame={startGame} /> : null}
         <div className="flex gap-x-3">
           <div
             className={`
-            ${styles.held} ${styles[animate ? "transform-held" : ""]}
-          `}
+              ${styles.held} ${styles[animate ? "transform-held" : ""]}
+            `}
           >
             {fieldToJsxElement(heldField)}
           </div>
           <div
             className={`
-            ${styles.game} ${styles[animate ? "transform-game" : ""]}
-          `}
+              ${styles.game} ${styles[animate ? "transform-game" : ""]}
+            `}
           >
             {fieldToJsxElement(gameField)}
           </div>
           <div
             className={`
-            ${styles.queue} ${styles[animate ? "transform-queue" : ""]}
-          `}
+              ${styles.queue} ${styles[animate ? "transform-queue" : ""]}
+            `}
           >
             {spawnedFields}
           </div>

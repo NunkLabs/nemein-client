@@ -10,14 +10,14 @@
   @apply bg-gray-800;
 }
 
-.transform-outer-wrapper {
+.transform-outer {
   animation-duration: 1.75s;
   animation-fill-mode: forwards;
-  animation-name: outer-wrapper-stretch;
+  animation-name: outer-stretch;
   animation-timing-function: ease-in;
 }
 
-@keyframes outer-wrapper-stretch {
+@keyframes outer-stretch {
   0% {
     opacity: 1;
   }
@@ -42,14 +42,14 @@
   @apply grid h-12 w-48;
 }
 
-.transform-inner-wrapper {
+.transform-inner {
   animation-duration: 1.75s;
   animation-fill-mode: forwards;
-  animation-name: inner-wrapper-stretch;
+  animation-name: inner-stretch;
   animation-timing-function: ease-out;
 }
 
-@keyframes inner-wrapper-stretch {
+@keyframes inner-stretch {
   0% {
     height: 48px;
     width: 192px;
