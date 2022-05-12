@@ -1,26 +1,24 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import styles from "../../styles/start.module.css";
 
 type props = {
-  animationStart: () => void;
+  startAnimation: () => void;
 };
 
-export const StartPrompt = ({ animationStart }: props) => {
+export const StartPrompt = ({ startAnimation }: props) => {
   const [animate, setAnimate] = useState(false);
 
   return (
     <div
-      className={`
-        ${styles.outer} ${styles[animate ? "transform-outer-wrapper" : ""]}
-      `}
-      onAnimationStart={animationStart}
+      className={`${styles.outer} ${styles[animate ? "transform-outer" : ""]}`}
+      onAnimationStart={startAnimation}
     >
       {animate ? null : <p className={styles.logo}>TetriBASS</p>}
       <div
-        className={`
-        ${styles.inner} ${styles[animate ? "transform-inner-wrapper" : ""]}
-      `}
+        className={`${styles.inner} ${
+          styles[animate ? "transform-inner" : ""]
+        }`}
       >
         {animate ? null : (
           <button
