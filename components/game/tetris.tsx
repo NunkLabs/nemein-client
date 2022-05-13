@@ -1,8 +1,17 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 
-import { CountdownPrompt, StartPrompt } from "components";
+import { ControlPrompt, CountdownPrompt, StartPrompt } from "components";
 import * as TetrisConsts from "constants/tetris";
 import styles from "../../styles/tetris.module.css";
+
+const VALID_KEYS = [
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "c",
+  " ",
+];
 
 /**
  * @brief: fieldToJsxElement: Convert a field of coords to a JSX element for
@@ -38,12 +47,15 @@ const fieldToJsxElement = (
 };
 
 export const Tetris = () => {
-  const ws = useRef<WebSocket | null>(null);
+  const socket = useRef<WebSocket | null>(null);
+  const isPaused = useRef(false);
+  const isOver = useRef(false);
 
-  const [init, setInit] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [active, setActive] = useState(false);
+  const [over, setOver] = useState(false);
   const [animate, setAnimate] = useState(false);
   const [countdown, setCountdown] = useState(false);
-
 
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
@@ -53,41 +65,73 @@ export const Tetris = () => {
     TetrisConsts.RENDER_TETROMINOS_ARR[0]
   );
   const [spawnedFields, setSpawnedFields] = useState<JSX.Element[]>(
-    Array(TetrisConsts.MAX_SPAWNED_FIELDS)
+    Array(TetrisConsts.MAX_SPAWNED_FIELDS)  
       .fill(<div className={styles.next} />)
       .map((_, index) => <div className={styles.next} key={`next-${index}`} />)
   );
 
+  const startAnimation = useCallback(() => setAnimate(true), []);
+  const startCountdown = useCallback((restart: boolean) => {
+    if (restart) {
+      socket.current?.send("Restart");
+    }
+
+    setCountdown(true);
+  }, []);
+  const startGame = useCallback(() => {
+    setCountdown(false);
+
+    if (!ready) {
+      setReady(true);
+    }
+
+    if (!active || over) {
+      socket.current?.send("ToggleGame");
+    }
+
+    setActive(true);
+    setOver(false);
+
+    isOver.current = false;
+    isPaused.current = false;
+  }, [ready, active, over]);
+
   useEffect(() => {
-    if (!init) return;
+    if (!ready) return;
 
-    ws.current = new WebSocket("ws://localhost:8080");
+    socket.current = new WebSocket("ws://localhost:8080");
 
-    const validKeyboardKeys = [
-      "ArrowDown",
-      "ArrowLeft",
-      "ArrowRight",
-      "ArrowUp",
-      " ",
-      "c",
-    ];
+    const handleKeydown = ({ key }: { key: string }) => {
+      if (isOver.current) return;
+    
+      if (key === "Escape") {
+        if (isPaused.current) {
+          return startCountdown(false);
+        }
 
-    const keydownHandler = ({ key }: { key: string }) => {
-      if (!validKeyboardKeys.includes(key)) return;
+        setActive(false);
 
-      ws.current?.send(key);
+        isPaused.current = true;
+
+        return socket.current?.send("ToggleGame");
+      }
+
+      if (!VALID_KEYS.includes(key)) return;
+
+      return socket.current?.send(key);
     };
 
-    ws.current.onopen = () => {
-      document.addEventListener("keydown", keydownHandler);
-    };
+    socket.current.onopen = () =>
+      document.addEventListener("keydown", handleKeydown);
 
-    ws.current.onclose = () => {
-      document.removeEventListener("keydown", keydownHandler);
-    };
-
-    ws.current.onmessage = (event) => {
+    socket.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+
+      if (data.gameOver) {
+        setOver(true)
+
+        isOver.current = true;
+      }
 
       setLevel(data.level);
       setScore(data.score);
@@ -132,22 +176,21 @@ export const Tetris = () => {
       setSpawnedFields(spawnedTetrominosFields);
     };
 
-    const wsCurrent = ws.current;
+    const currentSocket = socket.current;
 
     return () => {
       /* Clean up on component unmount */
-      wsCurrent.close();
-    };
-  }, [init, ws]);
+      currentSocket.close();
 
-  const startAnimation = useCallback(() => setAnimate(true), []);
-  const startGame = useCallback(() => setInit(true), []);
+      document.removeEventListener("keydown", handleKeydown);
+    };
+  }, [socket, ready, startCountdown]);
 
   return (
     <div className="grid place-items-center px-5 py-5">
       <div
         className={`${styles.info} ${styles[animate ? "transform-info" : ""]}`}
-        onAnimationEnd={() => setCountdown(true)}
+        onAnimationEnd={() => startCountdown(false)}
       >
         <div>
           <p>LEVEL</p>
@@ -159,8 +202,13 @@ export const Tetris = () => {
         </div>
       </div>
       <div className="relative">
-        <StartPrompt startAnimation={startAnimation} />
-        {!init && countdown ? <CountdownPrompt startGame={startGame} /> : null}
+        {!ready ? <StartPrompt startAnimation={startAnimation} /> : null}
+        {ready && (!active || over) && !countdown  ? (
+          <ControlPrompt gameOver={over} startCountdown={startCountdown} />
+        ) : null}
+        {(!active || over) && countdown ? (
+          <CountdownPrompt startGame={startGame} />
+        ) : null}
         <div className="flex gap-x-3">
           <div
             className={`

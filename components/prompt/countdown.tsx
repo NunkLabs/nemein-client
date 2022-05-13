@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { DEFAULT_MAX_COUNTDOWN, DEFAULT_COUNTDOWN_INTERVAL } from "constants/tetris";
 import styles from "../../styles/countdown.module.css";
 
 type props = {
@@ -7,15 +8,15 @@ type props = {
 };
 
 export const CountdownPrompt = ({ startGame }: props) => {
-  const [remainingTime, setRemainingTime] = useState(3);
+  const [remainingTime, setRemainingTime] = useState(DEFAULT_MAX_COUNTDOWN);
 
   useEffect(() => {
     let interval: NodeJS.Timer | null = null;
 
     if (remainingTime) {
       interval = setInterval(() => {
-        setRemainingTime(remainingTime => remainingTime - 1);
-      }, 1000);
+        setRemainingTime((remainingTime) => remainingTime - 1);
+      }, DEFAULT_COUNTDOWN_INTERVAL);
     } else {
       startGame();
     }
@@ -24,7 +25,7 @@ export const CountdownPrompt = ({ startGame }: props) => {
       if (interval) {
         clearInterval(interval);
       }
-    }
+    };
   });
 
   return (
