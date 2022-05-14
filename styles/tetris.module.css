@@ -67,8 +67,8 @@
 .game {
   border: 5px solid #f3f4f6;
   border-radius: 0.25rem;
-  min-height: 506px;
-  min-width: 308px;
+  height: 440px;
+  width: 220px;
   opacity: 0;
 }
 
