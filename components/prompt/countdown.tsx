@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { DEFAULT_MAX_COUNTDOWN, DEFAULT_COUNTDOWN_INTERVAL } from "constants/tetris";
+import {
+  DEFAULT_MAX_COUNTDOWN,
+  DEFAULT_COUNTDOWN_INTERVAL,
+} from "constants/tetris";
 import styles from "../../styles/countdown.module.css";
 
 type props = {
