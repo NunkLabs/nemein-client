@@ -1,17 +1,17 @@
 import styles from "../../styles/control.module.css";
 
 type props = {
-  gameOver: boolean;
+  isOver: boolean;
   startCountdown: (restart: boolean) => void;
 };
 
-export const ControlPrompt = ({ gameOver, startCountdown }: props) => {
+export const ControlPrompt = ({ isOver, startCountdown }: props) => {
   return (
     <div className={styles.control}>
       <p className="text-slate-100 text-3xl font-bold">
-        {gameOver ? "Game Over" : "Paused"}
+        {isOver ? "Game Over" : "Paused"}
       </p>
-      {!gameOver ? (
+      {!isOver ? (
         <button
           className={`button button-light h-12 w-52`}
           onClick={() => startCountdown(false)}
@@ -23,7 +23,7 @@ export const ControlPrompt = ({ gameOver, startCountdown }: props) => {
         className={`button button-light h-12 w-52`}
         onClick={() => startCountdown(true)}
       >
-        {gameOver ? "New Game" : "Restart"}
+        {isOver ? "New Game" : "Restart"}
       </button>
     </div>
   );
