@@ -1,4 +1,4 @@
-export { ControlPrompt } from "./prompt/control";
-export { CountdownPrompt } from "./prompt/countdown";
-export { StartPrompt } from "./prompt/start";
-export { Tetris } from "./game/tetris";
+export { ControlPrompt } from "./prompt/ControlPrompt";
+export { CountdownPrompt } from "./prompt/CountdownPrompt";
+export { StartPrompt } from "./prompt/StartPrompt";
+export { Tetris } from "./game/Tetris";

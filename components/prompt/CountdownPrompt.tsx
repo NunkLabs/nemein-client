@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import {
   DEFAULT_MAX_COUNTDOWN,
   DEFAULT_COUNTDOWN_INTERVAL,
-} from "constants/tetris";
-import styles from "../../styles/countdown.module.css";
+} from "constants/Tetris";
+import styles from "styles/components/Countdown.module.css";
 
 type props = {
   startGame: () => void;
