@@ -10,7 +10,7 @@
 .countdown p {
   animation: zoom 1s ease-out 3;
 
-  @apply text-slate-100 text-7xl font-bold;
+  @apply text-slate-100 text-5xl font-bold;
 }
 
 @keyframes zoom {

@@ -3,16 +3,14 @@ import { useState } from "react";
 import styles from "styles/components/Start.module.css";
 
 type props = {
+  animate: boolean;
   startAnimation: () => void;
 };
 
-export const StartPrompt = ({ startAnimation }: props) => {
-  const [animate, setAnimate] = useState(false);
-
+export const StartPrompt = ({ animate, startAnimation }: props) => {
   return (
     <div
       className={`${styles.outer} ${styles[animate ? "transform-outer" : ""]}`}
-      onAnimationStart={startAnimation}
     >
       {animate ? null : <p className={styles.logo}>TetriBASS</p>}
       <div
@@ -23,7 +21,7 @@ export const StartPrompt = ({ startAnimation }: props) => {
         {animate ? null : (
           <button
             className={`${styles.start} button button-light`}
-            onClick={() => setAnimate(true)}
+            onClick={startAnimation}
           >
             Play
           </button>
