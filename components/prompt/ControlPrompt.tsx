@@ -1,4 +1,4 @@
-import styles from "../../styles/control.module.css";
+import styles from "styles/components/Control.module.css";
 
 type props = {
   isOver: boolean;

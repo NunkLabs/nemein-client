@@ -1,8 +1,14 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 
 import { ControlPrompt, CountdownPrompt, StartPrompt } from "components";
-import * as TetrisConsts from "constants/tetris";
-import styles from "../../styles/tetris.module.css";
+import {
+  DEFAULT_BOARD_HEIGHT,
+  DEFAULT_BOARD_WIDTH,
+  MAX_SPAWNED_FIELDS,
+  RENDER_TETROMINOS_ARR,
+  Tetromino,
+} from "constants/Tetris";
+import styles from "styles/components/Tetris.module.css";
 
 const VALID_KEYS = [
   "ArrowDown",
@@ -61,10 +67,10 @@ export const Tetris = () => {
 
   const [gameField, setGameField] = useState<number[][]>([]);
   const [heldField, setHeldField] = useState<number[][]>(
-    TetrisConsts.RENDER_TETROMINOS_ARR[0]
+    RENDER_TETROMINOS_ARR[0]
   );
   const [spawnedFields, setSpawnedFields] = useState<JSX.Element[]>(
-    Array(TetrisConsts.MAX_SPAWNED_FIELDS)
+    Array(MAX_SPAWNED_FIELDS)
       .fill(<div className={styles.next} />)
       .map((_, index) => <div className={styles.next} key={`next-${index}`} />)
   );
@@ -130,10 +136,10 @@ export const Tetris = () => {
     /* Prepare an HTML element for the main game board */
     const renderField: number[][] = [];
 
-    for (let y = 0; y < TetrisConsts.DEFAULT_BOARD_HEIGHT; y += 1) {
+    for (let y = 0; y < DEFAULT_BOARD_HEIGHT; y += 1) {
       const row = [];
 
-      for (let x = 0; x < TetrisConsts.DEFAULT_BOARD_WIDTH; x += 1) {
+      for (let x = 0; x < DEFAULT_BOARD_WIDTH; x += 1) {
         row.push(gameState.field[x].colArr[y]);
       }
 
@@ -143,14 +149,14 @@ export const Tetris = () => {
     setGameField(renderField);
 
     /* Prepare an HTML element for the currently held tetromino */
-    setHeldField(TetrisConsts.RENDER_TETROMINOS_ARR[gameState.heldTetromino]);
+    setHeldField(RENDER_TETROMINOS_ARR[gameState.heldTetromino]);
 
     /* Prepare HTML elements for the tetromino queue */
     const spawnedFieldsRender: JSX.Element[][] = [];
 
-    gameState.spawnedTetrominos.forEach((tetromino: TetrisConsts.Tetromino) => {
+    gameState.spawnedTetrominos.forEach((tetromino: Tetromino) => {
       const spawnedFieldRender = fieldToJsxElement(
-        TetrisConsts.RENDER_TETROMINOS_ARR[tetromino]
+        RENDER_TETROMINOS_ARR[tetromino]
       );
 
       spawnedFieldsRender.push(spawnedFieldRender);

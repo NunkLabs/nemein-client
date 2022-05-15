@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import styles from "../../styles/start.module.css";
+import styles from "styles/components/Start.module.css";
 
 type props = {
   startAnimation: () => void;
