@@ -13,14 +13,14 @@ export const ControlPrompt = ({ isOver, startCountdown }: props) => {
       </p>
       {!isOver ? (
         <button
-          className={`button button-light h-12 w-52`}
+          className={`button button-light h-10 w-44`}
           onClick={() => startCountdown(false)}
         >
           Resume
         </button>
       ) : null}
       <button
-        className={`button button-light h-12 w-52`}
+        className={`button button-light h-10 w-44`}
         onClick={() => startCountdown(true)}
       >
         {isOver ? "New Game" : "Restart"}

@@ -210,7 +210,10 @@ export const Tetris = () => {
       </div>
       <div className="relative">
         {!ready ? (
-          <StartPrompt startAnimation={() => setAnimate(true)} />
+          <StartPrompt
+            animate={animate}
+            startAnimation={() => setAnimate(true)}
+          />
         ) : null}
         {ready && !active && !countdown ? (
           <ControlPrompt
