@@ -37,7 +37,9 @@ const fieldToJsxElement = (
     const rows = col.map((row, rowIndex) => (
       <div
         className={`
-          ${styles.row} ${styles[grid ? `row-wgrid-${row}` : `row-${row}`]} ${styles[queue ? 'row-test' : '']}
+          ${styles.row} ${styles[grid ? `row-wgrid-${row}` : `row-${row}`]} ${
+          styles[queue ? "row-queue" : ""]
+        }
         `}
         key={`row-${rowIndex}`}
       />
@@ -157,7 +159,9 @@ export const Tetris = () => {
 
     gameState.spawnedTetrominos.forEach((tetromino: Tetromino) => {
       const spawnedFieldRender = fieldToJsxElement(
-        RENDER_TETROMINOS_ARR[tetromino], false, true
+        RENDER_TETROMINOS_ARR[tetromino],
+        false,
+        true
       );
 
       spawnedFieldsRender.push(spawnedFieldRender);
