@@ -34,8 +34,8 @@
 
 .held,
 .next {
-  min-height: 33px;
-  min-width: 33px;
+  min-height: 60px;
+  min-width: 60px;
 }
 
 .held {
@@ -120,7 +120,7 @@
   padding: 10px;
 }
 
-.row-test {
+.row-queue {
   border: 1px solid transparent;
   padding: 5px;
 }
