@@ -29,13 +29,13 @@
 }
 
 .queue {
-  @apply grid grid-rows-4 gap-3;
+  @apply grid grid-rows-6 gap-1;
 }
 
 .held,
 .next {
-  min-height: 110px;
-  min-width: 110px;
+  min-height: 33px;
+  min-width: 33px;
 }
 
 .held {
@@ -118,6 +118,11 @@
 .row {
   border: 1px solid transparent;
   padding: 10px;
+}
+
+.row-test {
+  border: 1px solid transparent;
+  padding: 5px;
 }
 
 /* Default (empty) board column */

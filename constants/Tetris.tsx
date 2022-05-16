@@ -3,7 +3,7 @@ export const DEFAULT_BOARD_HEIGHT = 20;
 export const DEFAULT_BOARD_WIDTH = 10;
 export const DEFAULT_COUNTDOWN_INTERVAL = 1000;
 export const DEFAULT_MAX_COUNTDOWN = 3;
-export const MAX_SPAWNED_FIELDS = 4;
+export const MAX_SPAWNED_FIELDS = 6;
 
 /* Tetrominos coords consts */
 export const RENDER_TETROMINOS_ARR = [

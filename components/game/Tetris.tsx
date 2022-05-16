@@ -28,7 +28,8 @@ const VALID_KEYS = [
  */
 const fieldToJsxElement = (
   field: number[][],
-  grid: boolean = false
+  grid: boolean = false,
+  queue: boolean = false
 ): JSX.Element[] => {
   const retField: JSX.Element[] = [];
 
@@ -36,7 +37,7 @@ const fieldToJsxElement = (
     const rows = col.map((row, rowIndex) => (
       <div
         className={`
-          ${styles.row} ${styles[grid ? `row-wgrid-${row}` : `row-${row}`]}
+          ${styles.row} ${styles[grid ? `row-wgrid-${row}` : `row-${row}`]} ${styles[queue ? 'row-test' : '']}
         `}
         key={`row-${rowIndex}`}
       />
@@ -156,7 +157,7 @@ export const Tetris = () => {
 
     gameState.spawnedTetrominos.forEach((tetromino: Tetromino) => {
       const spawnedFieldRender = fieldToJsxElement(
-        RENDER_TETROMINOS_ARR[tetromino]
+        RENDER_TETROMINOS_ARR[tetromino], false, true
       );
 
       spawnedFieldsRender.push(spawnedFieldRender);
