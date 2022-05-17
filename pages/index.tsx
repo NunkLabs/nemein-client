@@ -1,7 +1,8 @@
 import type { NextPage } from "next";
 
 import Head from "next/head";
-import { Tetris } from "components";
+
+import { Tetris } from "components/Tetris";
 
 const Home: NextPage = () => {
   return (

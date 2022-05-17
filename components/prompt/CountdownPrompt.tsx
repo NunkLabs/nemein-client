@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 
-import {
-  DEFAULT_MAX_COUNTDOWN,
-  DEFAULT_COUNTDOWN_INTERVAL,
-} from "constants/Tetris";
-import styles from "styles/components/Countdown.module.css";
+import styles from "styles/components/prompt/Countdown.module.css";
 
 type props = {
   startGame: () => void;
 };
+
+const DEFAULT_COUNTDOWN_INTERVAL = 1000;
+const DEFAULT_MAX_COUNTDOWN = 3;
 
 export const CountdownPrompt = ({ startGame }: props) => {
   const [remainingTime, setRemainingTime] = useState(DEFAULT_MAX_COUNTDOWN);
@@ -25,9 +24,9 @@ export const CountdownPrompt = ({ startGame }: props) => {
     }
 
     return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
+      if (!interval) return;
+
+      clearInterval(interval);
     };
   });
 

@@ -1,4 +1,4 @@
-import styles from "styles/components/Control.module.css";
+import styles from "styles/components/prompt/Control.module.css";
 
 type props = {
   isOver: boolean;
@@ -14,7 +14,7 @@ export const ControlPrompt = ({ isOver, startCountdown }: props) => {
       {!isOver ? (
         <button
           className={`button button-light h-10 w-44`}
-          onClick={() => startCountdown(false)}
+          onClick={() => startCountdown(true)}
         >
           Resume
         </button>
