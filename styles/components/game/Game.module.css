@@ -1,0 +1,26 @@
+.game {
+  border: 5px solid transparent;
+  border-radius: 0.25rem;
+  place-items: center;
+  height: 440px;
+  width: 220px;
+}
+
+.transform-game {
+  animation-duration: 1.75s;
+  animation-fill-mode: forwards;
+  animation-name: game-fade-in;
+  animation-timing-function: ease-out;
+}
+
+@keyframes game-fade-in {
+  0% {
+    border: 5px solid transparent;
+  }
+  75% {
+    border: 5px solid transparent;
+  }
+  100% {
+    border: 5px solid #f3f4f6;
+  }
+}

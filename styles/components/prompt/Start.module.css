@@ -1,44 +1,20 @@
 .outer {
+  background-color: transparent;
   height: 100%;
   width: 100%;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 100;
-
-  @apply bg-gray-800;
-}
-
-.transform-outer {
-  animation-duration: 1.75s;
-  animation-fill-mode: forwards;
-  animation-name: outer-stretch;
-  animation-timing-function: ease-in;
-}
-
-@keyframes outer-stretch {
-  0% {
-    opacity: 1;
-  }
-  75% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+  position: relative;
 }
 
 .inner {
   border: 5px solid #f3f4f6;
   border-radius: 0.25rem;
-  place-items: center;
   position: absolute;
   left: 50%;
-  top: 43.5%;
+  top: 50%;
   transform: translate(-50%, -50%);
+  z-index: 50;
 
-  @apply grid h-10 w-44;
+  @apply h-10 w-44;
 }
 
 .transform-inner {
@@ -66,7 +42,7 @@
 .logo {
   position: absolute;
   left: 50%;
-  top: 33.5%;
+  top: 37.5%;
   transform: translate(-50%, -50%);
 
   @apply text-slate-100 text-3xl font-bold;

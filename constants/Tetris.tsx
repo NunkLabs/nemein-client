@@ -1,10 +1,3 @@
-/* Misc consts */
-export const DEFAULT_BOARD_HEIGHT = 20;
-export const DEFAULT_BOARD_WIDTH = 10;
-export const DEFAULT_COUNTDOWN_INTERVAL = 1000;
-export const DEFAULT_MAX_COUNTDOWN = 3;
-export const MAX_SPAWNED_FIELDS = 6;
-
 /* Tetrominos coords consts */
 export const RENDER_TETROMINOS_ARR = [
   [
@@ -73,8 +66,8 @@ export const RENDER_TETROMINOS_ARR = [
   ],
 ];
 
-/* Enum 'types' */
-export enum Tetromino {
+/* Enum types */
+export enum TetrominoType {
   Blank,
   Square,
   I,
@@ -83,4 +76,14 @@ export enum Tetromino {
   L,
   Z,
   S,
+  Ghost,
+  NumTetrominoTypes,
+}
+
+export enum TetrominoRotation {
+  O,
+  R,
+  Z,
+  L,
+  NumTetrominoRotations,
 }
