@@ -11,11 +11,32 @@ import {
 import styles from "styles/components/Tetris.module.css";
 
 const VALID_KEYS = [
-  "ArrowDown",
+  /* Left */
+  "0",
   "ArrowLeft",
+  /* Right */
+  "6",
   "ArrowRight",
+  /* Down */
+  "2",
+  "ArrowDown",
+  /* Clockwise rotate */
+  "1",
+  "5",
+  "9",
+  "x",
   "ArrowUp",
+  /* Counterclockwise rotate */
+  "3",
+  "7",
+  "z",
+  "Control",
+  /* Hold */
+  "0",
   "c",
+  "Shift",
+  /* Hard drop */
+  "8",
   " ",
 ];
 
