@@ -132,23 +132,23 @@
 
 /* Colors for tetrominos */
 .row-1 {
-  background-color: #86efac;
+  background-color: #fef08a;
 }
 
 .row-2 {
-  background-color: #a5b4fc;
-}
-
-.row-3 {
-  background-color: #fdba74;
-}
-
-.row-4 {
   background-color: #93c5fd;
 }
 
-.row-5 {
+.row-3 {
   background-color: #d8b4fe;
+}
+
+.row-4 {
+  background-color: #a5b4fc;
+}
+
+.row-5 {
+  background-color: #fdba74;
 }
 
 .row-6 {
@@ -156,7 +156,7 @@
 }
 
 .row-7 {
-  background-color: #fef08a;
+  background-color: #86efac;
 }
 
 .row-8 {
@@ -171,23 +171,23 @@
 }
 
 .row-wgrid-1 {
-  background-color: #86efac;
+  background-color: #fef08a;
 }
 
 .row-wgrid-2 {
-  background-color: #a5b4fc;
-}
-
-.row-wgrid-3 {
-  background-color: #fdba74;
-}
-
-.row-wgrid-4 {
   background-color: #93c5fd;
 }
 
-.row-wgrid-5 {
+.row-wgrid-3 {
   background-color: #d8b4fe;
+}
+
+.row-wgrid-4 {
+  background-color: #a5b4fc;
+}
+
+.row-wgrid-5 {
+  background-color: #fdba74;
 }
 
 .row-wgrid-6 {
@@ -195,7 +195,7 @@
 }
 
 .row-wgrid-7 {
-  background-color: #fef08a;
+  background-color: #86efac;
 }
 
 .row-wgrid-8 {
