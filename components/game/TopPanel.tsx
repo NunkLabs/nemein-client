@@ -22,13 +22,13 @@ export const TopPanel = ({ isAnimated, gameState }: props) => {
     <div
       className={`${styles.info} ${styles[isAnimated ? "transform-info" : ""]}`}
     >
-      <div>
-        <p>LEVEL</p>
-        <p>{level}</p>
+      <div className="text-slate-100 text-xl">
+        <p className="font-bold">LEVEL</p>
+        <p className="font-medium">{level}</p>
       </div>
-      <div>
-        <p>SCORE</p>
-        <p>{score}</p>
+      <div className="text-slate-100 text-xl">
+        <p className="font-bold">SCORE</p>
+        <p className="font-medium">{score}</p>
       </div>
     </div>
   );

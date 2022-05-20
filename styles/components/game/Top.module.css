@@ -1,12 +1,9 @@
 .info {
-  width: 280px;
-  color: #f3f4f6;
-  font-size: 1.5em;
-  font-weight: 700;
+  width: 220px;
   opacity: 0;
   text-align: center;
 
-  @apply grid grid-cols-2 gap-x-3;
+  @apply grid grid-cols-2 gap-x-1 p-3;
 }
 
 .transform-info {

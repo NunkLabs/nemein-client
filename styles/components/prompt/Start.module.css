@@ -6,15 +6,13 @@
 }
 
 .inner {
-  border: 5px solid #f3f4f6;
-  border-radius: 0.25rem;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 50;
 
-  @apply h-10 w-44;
+  @apply h-8 w-44 border-4 border-slate-100 rounded;
 }
 
 .transform-inner {
@@ -42,10 +40,10 @@
 .logo {
   position: absolute;
   left: 50%;
-  top: 37.5%;
+  top: 40%;
   transform: translate(-50%, -50%);
 
-  @apply text-slate-100 text-3xl font-bold;
+  @apply font-bold text-slate-100 text-3xl;
 }
 
 .start {
@@ -54,5 +52,5 @@
   top: 50%;
   transform: translate(-50%, -50%);
 
-  @apply h-10 w-44;
+  @apply h-8 w-44;
 }
