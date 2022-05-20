@@ -21,12 +21,7 @@ a {
 }
 
 .button {
-  border: 3px solid transparent;
-  border-radius: 0.25rem;
   display: inline-block;
-  font-size: 1.5em;
-  font-weight: 400;
-  line-height: 1.65;
   text-align: center;
   text-decoration: none;
   vertical-align: middle;
@@ -37,7 +32,7 @@ a {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
-  @apply bg-slate-700 bg-transparent;
+  @apply bg-transparent border-4 border-transparent font-medium text-lg rounded;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -49,7 +44,7 @@ a {
 .button:hover {
   text-decoration: none;
 
-  @apply bg-slate-600 bg-transparent;
+  @apply bg-transparent;
 }
 
 .button:focus,

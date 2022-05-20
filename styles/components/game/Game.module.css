@@ -1,9 +1,9 @@
 .game {
-  border: 5px solid transparent;
-  border-radius: 0.25rem;
   place-items: center;
   height: 440px;
   width: 220px;
+
+  @apply border-4 border-transparent rounded
 }
 
 .transform-game {
@@ -15,12 +15,12 @@
 
 @keyframes game-fade-in {
   0% {
-    border: 5px solid transparent;
+    @apply border-4 border-transparent
   }
   75% {
-    border: 5px solid transparent;
+    @apply border-4 border-transparent
   }
   100% {
-    border: 5px solid #f3f4f6;
+    @apply border-4 border-slate-100
   }
 }

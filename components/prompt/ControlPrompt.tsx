@@ -8,19 +8,19 @@ type props = {
 export const ControlPrompt = ({ isOver, startCountdown }: props) => {
   return (
     <div className={styles.control}>
-      <p className="text-slate-100 text-3xl font-bold">
+      <p className={'font-bold text-slate-100 text-3xl'}>
         {isOver ? "Game Over" : "Paused"}
       </p>
       {!isOver ? (
         <button
-          className={`button button-light h-10 w-44`}
+          className={`button button-light h-8 w-40`}
           onClick={() => startCountdown(true)}
         >
           Resume
         </button>
       ) : null}
       <button
-        className={`button button-light h-10 w-44`}
+        className={`button button-light h-8 w-40`}
         onClick={() => startCountdown(true)}
       >
         {isOver ? "New Game" : "Restart"}

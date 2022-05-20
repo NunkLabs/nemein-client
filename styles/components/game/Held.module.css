@@ -20,8 +20,8 @@
     opacity: 0;
   }
   100% {
-    border: 5px solid #f3f4f6;
-    border-radius: 0.25rem;
     opacity: 1;
+
+    @apply border-4 border-slate-100 rounded
   }
 }

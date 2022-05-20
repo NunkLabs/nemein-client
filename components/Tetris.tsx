@@ -132,7 +132,7 @@ export const Tetris = () => {
     <div className="grid place-items-center px-5 py-5">
       <TopPanel isAnimated={animate} gameState={gameState} />
       <div className="relative">
-        <div className="flex gap-x-3">
+        <div className="flex gap-x-2">
           <HeldPanel isAnimated={animate} gameState={gameState} />
           <GamePanel
             isReady={ready}
