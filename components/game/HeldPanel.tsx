@@ -26,7 +26,7 @@ export const HeldPanel = ({ isAnimated, gameState }: props) => {
         ${styles.held} ${styles[isAnimated ? "transform-held" : ""]}
       `}
     >
-      {fieldToJsxElement(held)}
+      {fieldToJsxElement(held, gameState?.gameOver)}
     </div>
   );
 };

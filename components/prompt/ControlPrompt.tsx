@@ -8,7 +8,7 @@ type props = {
 export const ControlPrompt = ({ isOver, startCountdown }: props) => {
   return (
     <div className={styles.control}>
-      <p className={'font-bold text-slate-100 text-3xl'}>
+      <p className={"font-bold text-slate-100 text-3xl"}>
         {isOver ? "Game Over" : "Paused"}
       </p>
       {!isOver ? (

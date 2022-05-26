@@ -3,7 +3,7 @@
   height: 440px;
   width: 220px;
 
-  @apply border-4 border-transparent rounded
+  @apply border-4 border-transparent rounded;
 }
 
 .transform-game {
@@ -15,12 +15,12 @@
 
 @keyframes game-fade-in {
   0% {
-    @apply border-4 border-transparent
+    @apply border-4 border-transparent;
   }
   75% {
-    @apply border-4 border-transparent
+    @apply border-4 border-transparent;
   }
   100% {
-    @apply border-4 border-slate-100
+    @apply border-4 border-slate-100;
   }
 }
