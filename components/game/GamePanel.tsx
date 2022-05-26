@@ -69,7 +69,7 @@ export const GamePanel = ({
       {!isActive && isCountdown ? (
         <CountdownPrompt startGame={startGame} />
       ) : null}
-      <div>{fieldToJsxElement(game)}</div>
+      <div>{fieldToJsxElement(game, gameState?.gameOver)}</div>
     </div>
   );
 };

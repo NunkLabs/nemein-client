@@ -29,6 +29,7 @@ export const QueuePanel = ({ isAnimated, gameState }: props) => {
     gameState.spawnedTetrominos.forEach((tetromino: TetrominoType) => {
       const spawnedFieldRender = fieldToJsxElement(
         RENDER_TETROMINOS_ARR[tetromino],
+        gameState.gameOver,
         false,
         true
       );

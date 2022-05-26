@@ -27,6 +27,6 @@
   100% {
     opacity: 1;
 
-    @apply border-4 border-slate-100 rounded
+    @apply border-4 border-slate-100 rounded;
   }
 }
