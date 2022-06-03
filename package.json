@@ -9,7 +9,7 @@
     "format": "next lint && yarn prettier --write .",
     "lint": "next lint",
     "start": "next start",
-    "update": "yarn update-interactive --latest"
+    "update": "yarn upgrade-interactive --latest"
   },
   "dependencies": {
     "next": "12.1.6",
@@ -17,15 +17,19 @@
     "react-dom": "18.1.0"
   },
   "devDependencies": {
-    "@types/node": "17.0.31",
-    "@types/react": "18.0.9",
+    "@types/node": "17.0.38",
+    "@types/react": "18.0.10",
     "autoprefixer": "^10.4.7",
-    "eslint": "8.15.0",
+    "eslint": "8.16.0",
     "eslint-config-next": "12.1.6",
     "eslint-config-prettier": "^8.5.0",
-    "postcss": "^8.4.13",
+    "postcss": "^8.4.14",
     "prettier": "^2.6.2",
     "tailwindcss": "^3.0.24",
-    "typescript": "4.6.4"
+    "typescript": "4.7.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=1.22.18"
   }
 }
