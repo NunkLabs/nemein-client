@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 
+import { Opcodes, TetrisSocket } from "components/Socket";
 import { GamePanel } from "components/game/GamePanel";
 import { HeldPanel } from "components/game/HeldPanel";
 import { QueuePanel } from "components/game/QueuePanel";
@@ -42,7 +43,7 @@ const VALID_KEYS = [
 ];
 
 export const Tetris = () => {
-  const socket = useRef<WebSocket | null>(null);
+  const socket = useRef<TetrisSocket | null>(null);
   const isActive = useRef<boolean>(false);
   const isOver = useRef<boolean>(false);
 
@@ -52,9 +53,9 @@ export const Tetris = () => {
   const [countdown, setCountdown] = useState<boolean>(false);
   const [gameState, setGameState] = useState<TetrisState | null>(null);
 
-  const startCountdown = (restart: boolean) => {
+  const startCountdown = (restart: boolean = false) => {
     if (restart) {
-      socket.current?.send("Restart");
+      socket.current?.send({ op: Opcodes.RESTART });
     }
 
     setCountdown(true);
@@ -68,7 +69,7 @@ export const Tetris = () => {
     }
 
     if (!active) {
-      socket.current?.send("ToggleGame");
+      socket.current?.send({ op: Opcodes.TOGGLE });
     }
 
     setActive(true);
@@ -82,49 +83,75 @@ export const Tetris = () => {
 
     if (key === "Escape") {
       if (!isActive.current) {
-        return setCountdown(true);
+        setCountdown(true);
+
+        return;
       }
 
       setActive(false);
 
       isActive.current = false;
 
-      return socket.current?.send("ToggleGame");
+      socket.current?.send({ op: Opcodes.TOGGLE });
+
+      return;
     }
 
     if (!isActive.current || !VALID_KEYS.includes(key)) return;
 
-    return socket.current?.send(key);
+    socket.current?.send({
+      op: Opcodes.INPUT,
+      data: key,
+    });
   }, []);
 
   useEffect(() => {
     if (!ready) return;
 
-    socket.current = new WebSocket("ws://localhost:8080");
+    socket.current = new TetrisSocket();
 
-    socket.current.onopen = () =>
-      document.addEventListener("keydown", handleKeydown);
+    socket.current.on("message", (data) => {
+      const message = JSON.parse(data);
 
-    socket.current.onmessage = ({ data }) => {
-      const newGameState = JSON.parse(data);
+      switch (message.op) {
+        case Opcodes.READY: {
+          const initialGameState = message.data;
 
-      setGameState(newGameState);
+          setGameState(initialGameState);
 
-      if (newGameState.gameOver) {
-        setActive(false);
+          socket.current?.setHeartbeat(message.heartbeat);
 
-        isActive.current = false;
-        isOver.current = true;
+          document.addEventListener("keydown", handleKeydown);
+
+          break;
+        }
+
+        case Opcodes.DATA: {
+          const newGameState = message.data;
+
+          setGameState(newGameState);
+
+          if (newGameState.gameOver) {
+            setActive(false);
+
+            isActive.current = false;
+            isOver.current = true;
+          }
+
+          break;
+        }
+
+        default:
       }
-    };
+    });
 
     const currentSocket = socket.current;
 
     return () => {
       /* Clean up on component unmount */
-      currentSocket.close();
-
       document.removeEventListener("keydown", handleKeydown);
+
+      currentSocket.destroy();
     };
   }, [socket, ready, handleKeydown]);
 

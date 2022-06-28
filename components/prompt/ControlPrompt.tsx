@@ -2,7 +2,7 @@ import styles from "styles/components/prompt/Control.module.css";
 
 type props = {
   isOver: boolean;
-  startCountdown: (restart: boolean) => void;
+  startCountdown: (restart?: boolean) => void;
 };
 
 export const ControlPrompt = ({ isOver, startCountdown }: props) => {
@@ -14,7 +14,7 @@ export const ControlPrompt = ({ isOver, startCountdown }: props) => {
       {!isOver ? (
         <button
           className={`button button-light h-8 w-40`}
-          onClick={() => startCountdown(true)}
+          onClick={() => startCountdown()}
         >
           Resume
         </button>
