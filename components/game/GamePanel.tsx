@@ -16,7 +16,7 @@ type props = {
   isOver: boolean;
   gameState: TetrisState | null;
   startAnimation: () => void;
-  startCountdown: (restart: boolean) => void;
+  startCountdown: (restart?: boolean) => void;
   startGame: () => void;
 };
 
@@ -58,7 +58,7 @@ export const GamePanel = ({
   return (
     <div
       className={`${styles.game} ${styles[isAnimated ? "transform-game" : ""]}`}
-      onAnimationEnd={() => startCountdown(false)}
+      onAnimationEnd={() => startCountdown()}
     >
       {!isReady ? (
         <StartPrompt isAnimated={isAnimated} startAnimation={startAnimation} />

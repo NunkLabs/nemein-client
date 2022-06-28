@@ -1,6 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
+  env: {
+    WS_SERVER: "ws://localhost:8080",
+  },
   reactStrictMode: false,
 };
-
-module.exports = nextConfig;
