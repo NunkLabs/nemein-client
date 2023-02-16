@@ -1,6 +1,6 @@
 module.exports = {
   env: {
-    WS_SERVER: "ws://localhost:8080",
+    WS_SERVER: "wss://tetribass.com/socket",
   },
   reactStrictMode: false,
 };
