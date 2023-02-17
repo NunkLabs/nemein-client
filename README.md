@@ -25,9 +25,12 @@ yarn dev
 **Build & start in production mode**
 
 ```
-yarn build
-yarn start
+yarn build && yarn start
 ```
+
+**Set environment variables**
+
+Next.js loads environment variables in a specific [order](https://nextjs.org/docs/basic-features/environment-variables#environment-variable-load-order). `.env.development` will be the default for `yarn dev`, `.env.production` will be the defaults for `yarn build && yarn start`. To override the default env variables, please create and use a `.env.local` file.
 
 **Coding standards**
 
