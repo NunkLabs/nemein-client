@@ -28,27 +28,23 @@ export const Opcodes = {
 
 const DEFAULT_WS_SERVER = "ws://localhost:8080";
 const DEFAULT_WS_CLOSURE = 1000;
+const DEFAULT_PING_INTERVAL = 500;
 const DEFAULT_PING_LIMIT = 5;
 const DEFAULT_MAX_ACCEPTABLE_PING = 300;
-const INITIAL_PING_INTERVAL = 500;
-const ACTIVE_PING_INTERVAL = 5000;
 
 export class TetrisSocket extends EventEmitter {
   public server: string | null;
 
   private socket: WebSocket | null;
 
-  private heartbeatInterval: NodeJS.Timer | null;
-
-  private pingInterval: NodeJS.Timer | null;
+  private heartbeat: NodeJS.Timer | null;
 
   constructor() {
     super();
 
     this.server = null;
     this.socket = null;
-    this.heartbeatInterval = null;
-    this.pingInterval = null;
+    this.heartbeat = null;
 
     this.init();
   }
@@ -69,21 +65,19 @@ export class TetrisSocket extends EventEmitter {
 
       switch (message.op) {
         case Opcodes.OPEN: {
-          this.setHeartbeat(data.heartbeat);
-
-          this.setPing();
+          this.setHeartbeat(message.heartbeat);
 
           break;
         }
 
-        case Opcodes.PING: {
-          const roundtripPing = Date.now() - message.timestamp;
+        case Opcodes.HEARTBEAT: {
+          const heartbeatPing = Date.now() - message.timestamp;
 
           console.log(
-            `Roundtrip ping to ${this.server} is ${roundtripPing}ms.`
+            `Heartbeat ping to ${this.server} is ${heartbeatPing}ms.`
           );
 
-          this.emit("ping", roundtripPing);
+          this.emit("ping", heartbeatPing);
 
           break;
         }
@@ -99,12 +93,8 @@ export class TetrisSocket extends EventEmitter {
    * by clearing the heartbeat interval timer and closing the connection.
    */
   destroy() {
-    if (this.heartbeatInterval) {
-      clearInterval(this.heartbeatInterval);
-    }
-
-    if (this.pingInterval) {
-      clearInterval(this.pingInterval);
+    if (this.heartbeat) {
+      clearInterval(this.heartbeat);
     }
 
     if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
@@ -129,17 +119,14 @@ export class TetrisSocket extends EventEmitter {
    */
   setHeartbeat(duration?: number) {
     if (duration && !Number.isNaN(duration)) {
-      if (this.heartbeatInterval) {
-        clearInterval(this.heartbeatInterval);
+      if (this.heartbeat) {
+        clearInterval(this.heartbeat);
 
-        this.heartbeatInterval = null;
+        this.heartbeat = null;
       }
 
       if (duration >= 0) {
-        this.heartbeatInterval = setInterval(
-          this.setHeartbeat.bind(this),
-          duration
-        );
+        this.heartbeat = setInterval(this.setHeartbeat.bind(this), duration);
       }
 
       return;
@@ -149,25 +136,6 @@ export class TetrisSocket extends EventEmitter {
       op: Opcodes.HEARTBEAT,
       timestamp: Date.now(),
     });
-  }
-
-  /**
-   * @brief: setPing: This function sets up an interval to ping the servers
-   * @param:   {number}   duration   Interval between ping in milliseconds
-   */
-  setPing(interval: number = ACTIVE_PING_INTERVAL) {
-    if (this.pingInterval) {
-      clearInterval(this.pingInterval);
-
-      this.pingInterval = null;
-    }
-
-    this.pingInterval = setInterval(() => {
-      this.send({
-        op: Opcodes.PING,
-        timestamp: Date.now(),
-      });
-    }, interval);
   }
 
   async getBestServer() {
@@ -216,7 +184,7 @@ export class TetrisSocket extends EventEmitter {
                     });
 
                     pingAttempted += 1;
-                  }, INITIAL_PING_INTERVAL);
+                  }, DEFAULT_PING_INTERVAL);
 
                   break;
                 }
