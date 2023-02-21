@@ -55,7 +55,10 @@ export const Tetris = () => {
 
   const startCountdown = (restart: boolean = false) => {
     if (restart) {
-      socket.current?.send({ op: Opcodes.RESTART });
+      socket.current?.send({
+        op: Opcodes.RESTART,
+        timestamp: Date.now(),
+      });
     }
 
     setCountdown(true);
@@ -69,7 +72,10 @@ export const Tetris = () => {
     }
 
     if (!active) {
-      socket.current?.send({ op: Opcodes.TOGGLE });
+      socket.current?.send({
+        op: Opcodes.TOGGLE,
+        timestamp: Date.now(),
+      });
     }
 
     setActive(true);
@@ -92,7 +98,10 @@ export const Tetris = () => {
 
       isActive.current = false;
 
-      socket.current?.send({ op: Opcodes.TOGGLE });
+      socket.current?.send({
+        op: Opcodes.TOGGLE,
+        timestamp: Date.now(),
+      });
 
       return;
     }
@@ -101,6 +110,7 @@ export const Tetris = () => {
 
     socket.current?.send({
       op: Opcodes.INPUT,
+      timestamp: Date.now(),
       data: key,
     });
   }, []);
@@ -110,16 +120,12 @@ export const Tetris = () => {
 
     socket.current = new TetrisSocket();
 
-    socket.current.on("message", (data) => {
-      const message = JSON.parse(data);
-
+    socket.current.on("message", (message) => {
       switch (message.op) {
         case Opcodes.READY: {
           const initialGameState = message.data;
 
           setGameState(initialGameState);
-
-          socket.current?.setHeartbeat(message.heartbeat);
 
           document.addEventListener("keydown", handleKeydown);
 
