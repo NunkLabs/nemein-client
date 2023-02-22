@@ -28,9 +28,9 @@ export const Opcodes = {
 
 const DEFAULT_WS_SERVER = "ws://localhost:8080";
 const DEFAULT_WS_CLOSURE = 1000;
-const DEFAULT_PING_INTERVAL = 500;
+const DEFAULT_PING_INTERVAL_MS = 500;
 const DEFAULT_PING_LIMIT = 5;
-const DEFAULT_MAX_ACCEPTABLE_PING = 300;
+const DEFAULT_MAX_ACCEPTABLE_PING_MS = 300;
 
 export class TetrisSocket extends EventEmitter {
   public server: string | null;
@@ -184,7 +184,7 @@ export class TetrisSocket extends EventEmitter {
                     });
 
                     pingAttempted += 1;
-                  }, DEFAULT_PING_INTERVAL);
+                  }, DEFAULT_PING_INTERVAL_MS);
 
                   break;
                 }
@@ -207,7 +207,7 @@ export class TetrisSocket extends EventEmitter {
       })
     );
 
-    let bestPing = DEFAULT_MAX_ACCEPTABLE_PING;
+    let bestPing = DEFAULT_MAX_ACCEPTABLE_PING_MS;
 
     resolvedServers.forEach((server) => {
       if (!server || server.averagePing >= bestPing) return;
