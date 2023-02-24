@@ -9,7 +9,7 @@
     "format": "next lint && yarn prettier --write .",
     "lint": "next lint",
     "postinstall": "is-ci || husky install",
-    "start": "next start",
+    "start": "next build && next start",
     "update": "yarn upgrade-interactive --latest"
   },
   "dependencies": {
