@@ -25,7 +25,7 @@ yarn dev
 **Build & start in production mode**
 
 ```
-yarn build && yarn start
+yarn start
 ```
 
 **Set environment variables**
