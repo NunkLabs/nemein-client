@@ -46,7 +46,7 @@ export const GamePanel = ({
       const row = [];
 
       for (let x = 0; x < DEFAULT_BOARD_WIDTH; x += 1) {
-        row.push(gameState.field[x].colArr[y]);
+        row.push(gameState.field[x].colArr[y].type);
       }
 
       renderField.push(row);

@@ -1,12 +1,19 @@
+const Tetris = import("constants/Tetris");
+
 /* Tetris game state typings */
+declare type TetrisCell = {
+  type: Tetris.TetrominoType;
+  hp: number;
+};
+
 declare type TetrisState = {
   level: number;
   score: number;
   field: {
-    colArr: number[];
+    colArr: TetrisCell[];
     lowestY: number;
   }[];
   gameOver: boolean;
-  heldTetromino: TetrominoType;
-  spawnedTetrominos: TetrominoType[];
+  heldTetromino: Tetris.TetrominoType;
+  spawnedTetrominos: Tetris.TetrominoType[];
 };
