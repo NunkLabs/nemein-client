@@ -2,9 +2,9 @@ import EventEmitter from "stream";
 
 type SocketData = {
   op: number;
+  timestamp?: number;
   data?: object | string;
   heartbeat?: number;
-  timestamp: number;
 };
 
 type ResolvedServer = {
