@@ -57,7 +57,6 @@ export const Tetris = () => {
     if (restart) {
       socket.current?.send({
         op: Opcodes.RESTART,
-        timestamp: Date.now(),
       });
     }
 
@@ -74,7 +73,6 @@ export const Tetris = () => {
     if (!active) {
       socket.current?.send({
         op: Opcodes.TOGGLE,
-        timestamp: Date.now(),
       });
     }
 
@@ -100,7 +98,6 @@ export const Tetris = () => {
 
       socket.current?.send({
         op: Opcodes.TOGGLE,
-        timestamp: Date.now(),
       });
 
       return;
@@ -110,7 +107,6 @@ export const Tetris = () => {
 
     socket.current?.send({
       op: Opcodes.INPUT,
-      timestamp: Date.now(),
       data: key,
     });
   }, []);
