@@ -49,6 +49,10 @@
   background-color: #86efac;
 }
 
+.row-8 {
+  background-color: #e9e7e7ac;
+}
+
 /* Styles for tetrominos with grid */
 .row-grid-0 {
   border: 1px solid #374151;
