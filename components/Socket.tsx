@@ -32,7 +32,7 @@ const DEFAULT_PING_INTERVAL_MS = 500;
 const DEFAULT_PING_LIMIT = 5;
 const DEFAULT_MAX_ACCEPTABLE_PING_MS = 300;
 
-export class TetrisSocket extends EventEmitter {
+export class GameSocket extends EventEmitter {
   public server: string | null;
 
   private socket: WebSocket | null;

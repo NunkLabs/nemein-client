@@ -4,7 +4,7 @@ import { StartPrompt } from "components/prompt/StartPrompt";
 import { ControlPrompt } from "components/prompt/ControlPrompt";
 import { CountdownPrompt } from "components/prompt/CountdownPrompt";
 
-import { fieldToJsxElement } from "utils/TetrisUtils";
+import { fieldToJsxElement } from "utils/GameUtils";
 
 import styles from "styles/components/game/Game.module.css";
 
@@ -14,7 +14,7 @@ type props = {
   isAnimated: boolean;
   isCountdown: boolean;
   isOver: boolean;
-  gameState: TetrisState | null;
+  gameStates: ClassicStates | NemeinStates | null;
   startAnimation: () => void;
   startCountdown: (restart?: boolean) => void;
   startGame: () => void;
@@ -29,7 +29,7 @@ export const GamePanel = ({
   isAnimated,
   isCountdown,
   isOver,
-  gameState,
+  gameStates,
   startAnimation,
   startCountdown,
   startGame,
@@ -37,7 +37,7 @@ export const GamePanel = ({
   const [game, setGame] = useState<number[][]>([]);
 
   useEffect(() => {
-    if (!gameState) return;
+    if (!gameStates) return;
 
     /* Prepare an HTML element for the main game board */
     const renderField: number[][] = [];
@@ -46,14 +46,16 @@ export const GamePanel = ({
       const row = [];
 
       for (let x = 0; x < DEFAULT_BOARD_WIDTH; x += 1) {
-        row.push(gameState.field[x].colArr[y].type);
+        const col = gameStates.field[x].colArr[y];
+
+        row.push(typeof col === "number" ? col : col.type);
       }
 
       renderField.push(row);
     }
 
     setGame(renderField);
-  }, [gameState]);
+  }, [gameStates]);
 
   return (
     <div
@@ -69,7 +71,7 @@ export const GamePanel = ({
       {!isActive && isCountdown ? (
         <CountdownPrompt startGame={startGame} />
       ) : null}
-      <div>{fieldToJsxElement(game, gameState?.gameOver)}</div>
+      <div>{fieldToJsxElement(game, gameStates?.gameOver)}</div>
     </div>
   );
 };

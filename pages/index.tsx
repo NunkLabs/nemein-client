@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 
 import Head from "next/head";
 
-import { Tetris } from "components/Tetris";
+import { Game } from "components/Game";
 
 const Home: NextPage = () => {
   return (
@@ -11,7 +11,7 @@ const Home: NextPage = () => {
         <title>TetriBASS</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Tetris />
+      <Game />
     </div>
   );
 };
