@@ -1,6 +1,6 @@
-import { TetrominoType } from "constants/Tetris";
+import { TetrominoType } from "constants/Game";
 
-import styles from "styles/components/Tetris.module.css";
+import styles from "styles/components/Tetromino.module.css";
 
 /**
  * @brief: fieldToJsxElement: Convert a field of coords to a JSX element for

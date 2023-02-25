@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 
-import { fieldToJsxElement } from "utils/TetrisUtils";
+import { fieldToJsxElement } from "utils/GameUtils";
 
-import { RENDER_TETROMINOS_ARR, TetrominoType } from "constants/Tetris";
+import { RENDER_TETROMINOS_ARR, TetrominoType } from "constants/Game";
 
 import styles from "styles/components/game/Queue.module.css";
 
 type props = {
   isAnimated: boolean;
-  gameState: TetrisState | null;
+  gameStates: ClassicStates | NemeinStates | null;
 };
 
 const MAX_SPAWNED_FIELDS = 6;
 
-export const QueuePanel = ({ isAnimated, gameState }: props) => {
+export const QueuePanel = ({ isAnimated, gameStates }: props) => {
   const [queue, setQueue] = useState<JSX.Element[]>(
     Array(MAX_SPAWNED_FIELDS)
       .fill(<div className={styles.next} />)
@@ -21,15 +21,15 @@ export const QueuePanel = ({ isAnimated, gameState }: props) => {
   );
 
   useEffect(() => {
-    if (!gameState) return;
+    if (!gameStates) return;
 
     /* Prepare HTML elements for the tetromino queue */
     const spawnedFieldsRender: JSX.Element[][] = [];
 
-    gameState.spawnedTetrominos.forEach((tetromino: TetrominoType) => {
+    gameStates.spawnedTetrominos.forEach((tetromino: TetrominoType) => {
       const spawnedFieldRender = fieldToJsxElement(
         RENDER_TETROMINOS_ARR[tetromino],
-        gameState.gameOver,
+        gameStates.gameOver,
         false,
         true
       );
@@ -44,7 +44,7 @@ export const QueuePanel = ({ isAnimated, gameState }: props) => {
         </div>
       ))
     );
-  }, [gameState]);
+  }, [gameStates]);
 
   return (
     <div

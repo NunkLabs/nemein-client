@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 
-import { fieldToJsxElement } from "utils/TetrisUtils";
+import { fieldToJsxElement } from "utils/GameUtils";
 
-import { RENDER_TETROMINOS_ARR } from "constants/Tetris";
+import { RENDER_TETROMINOS_ARR } from "constants/Game";
 
 import styles from "styles/components/game/Held.module.css";
 
 type props = {
   isAnimated: boolean;
-  gameState: TetrisState | null;
+  gameStates: ClassicStates | NemeinStates | null;
 };
 
-export const HeldPanel = ({ isAnimated, gameState }: props) => {
+export const HeldPanel = ({ isAnimated, gameStates }: props) => {
   const [held, setHeld] = useState<number[][]>(RENDER_TETROMINOS_ARR[0]);
 
   useEffect(() => {
-    if (!gameState) return;
+    if (!gameStates) return;
 
-    setHeld(RENDER_TETROMINOS_ARR[gameState.heldTetromino]);
-  }, [gameState]);
+    setHeld(RENDER_TETROMINOS_ARR[gameStates.heldTetromino]);
+  }, [gameStates]);
 
   return (
     <div
@@ -26,7 +26,7 @@ export const HeldPanel = ({ isAnimated, gameState }: props) => {
         ${styles.held} ${styles[isAnimated ? "transform-held" : ""]}
       `}
     >
-      {fieldToJsxElement(held, gameState?.gameOver)}
+      {fieldToJsxElement(held, gameStates?.gameOver)}
     </div>
   );
 };

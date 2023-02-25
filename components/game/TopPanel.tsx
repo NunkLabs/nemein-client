@@ -4,19 +4,19 @@ import styles from "styles/components/game/Top.module.css";
 
 type props = {
   isAnimated: boolean;
-  gameState: TetrisState | null;
+  gameStates: ClassicStates | NemeinStates | null;
 };
 
-export const TopPanel = ({ isAnimated, gameState }: props) => {
+export const TopPanel = ({ isAnimated, gameStates }: props) => {
   const [level, setLevel] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
 
   useEffect(() => {
-    if (!gameState) return;
+    if (!gameStates) return;
 
-    setLevel(gameState.level);
-    setScore(gameState.score);
-  }, [gameState]);
+    setLevel(gameStates.level);
+    setScore(gameStates.score);
+  }, [gameStates]);
 
   return (
     <div
