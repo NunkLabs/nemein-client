@@ -67,6 +67,11 @@ export class GameSocket extends EventEmitter {
         case Opcodes.OPEN: {
           this.setHeartbeat(message.heartbeat);
 
+          this.send({
+            op: Opcodes.READY,
+            data: process.env.NODE_ENV === "development" ? "nemein" : "classic",
+          });
+
           break;
         }
 
