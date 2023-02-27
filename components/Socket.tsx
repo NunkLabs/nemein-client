@@ -4,15 +4,12 @@ type SocketData = {
   op: number;
   timestamp?: number;
   data?: object | string;
-  heartbeat?: number;
 };
 
 type ResolvedServer = {
-  url: string;
-  pingSocket: WebSocket | null;
-  pingInterval: NodeJS.Timer;
+  socket: WebSocket;
   recentPings: number[];
-  averagePing: number;
+  averageLatency: number;
 };
 
 export const Opcodes = {
@@ -26,15 +23,15 @@ export const Opcodes = {
   HEARTBEAT: 10, // Socket is sending a heartbeat
 };
 
-const DEFAULT_WS_SERVER = "ws://localhost:8080";
 const DEFAULT_WS_CLOSURE = 1000;
+const DEFAULT_HEARTBEAT_INTERVAL_MS = 5000;
 const DEFAULT_PING_INTERVAL_MS = 500;
 const DEFAULT_PING_LIMIT = 5;
-const DEFAULT_MAX_ACCEPTABLE_PING_MS = 300;
+const DEFAULT_MAX_ACCEPTABLE_LATENCY_MS = 300;
+const AVAILABLE_SERVERS =
+  process.env.NEXT_PUBLIC_SERVERS || "ws://localhost:8080";
 
 export class GameSocket extends EventEmitter {
-  public server: string | null;
-
   private socket: WebSocket | null;
 
   private heartbeat: NodeJS.Timer | null;
@@ -42,7 +39,6 @@ export class GameSocket extends EventEmitter {
   constructor() {
     super();
 
-    this.server = null;
     this.socket = null;
     this.heartbeat = null;
 
@@ -56,41 +52,95 @@ export class GameSocket extends EventEmitter {
   async init() {
     if (this.socket) return;
 
-    this.server = await this.getBestServer();
+    const availableServers = new Map();
 
-    this.socket = new WebSocket(this.server);
-
-    this.socket.onmessage = ({ data }) => {
-      const message = JSON.parse(data);
-
-      switch (message.op) {
-        case Opcodes.OPEN: {
-          this.setHeartbeat(message.heartbeat);
-
-          this.send({
-            op: Opcodes.READY,
-            data: process.env.NODE_ENV === "development" ? "nemein" : "classic",
+    const resolvedServers = await Promise.all(
+      AVAILABLE_SERVERS.split(" ").map((server): Promise<ResolvedServer> => {
+        return new Promise((resolve) => {
+          availableServers.set(server, {
+            socket: new WebSocket(server),
+            recentPings: [],
+            averageLatency: 0,
           });
 
-          break;
-        }
+          const currentServer = availableServers.get(server);
 
-        case Opcodes.HEARTBEAT: {
-          const heartbeatPing = Date.now() - message.timestamp;
+          currentServer.socket.onmessage = ({ data }: MessageEvent) => {
+            const message = JSON.parse(data);
 
-          console.log(
-            `Heartbeat ping to ${this.server} is ${heartbeatPing}ms.`
-          );
+            this.emit("message", message);
 
-          this.emit("ping", heartbeatPing);
+            switch (message.op) {
+              case Opcodes.OPEN: {
+                let pingAttempted = 0;
 
-          break;
-        }
+                const pingInterval = setInterval(() => {
+                  if (pingAttempted >= DEFAULT_PING_LIMIT) {
+                    clearInterval(pingInterval);
 
-        default:
-          this.emit("message", message);
+                    resolve(currentServer);
+
+                    return;
+                  }
+
+                  this.send({
+                    op: Opcodes.PING,
+                    timestamp: Date.now(),
+                  });
+
+                  pingAttempted += 1;
+                }, DEFAULT_PING_INTERVAL_MS);
+
+                break;
+              }
+
+              case Opcodes.HEARTBEAT: {
+                console.log(
+                  `Latency to ${this.socket?.url} is ${
+                    Date.now() - message.timestamp
+                  }`
+                );
+
+                break;
+              }
+
+              case Opcodes.PING: {
+                currentServer.recentPings.push(Date.now() - message.timestamp);
+
+                currentServer.averageLatency =
+                  currentServer.recentPings.reduce(
+                    (sum: number, value: number) => sum + value,
+                    0
+                  ) / currentServer.recentPings.length;
+              }
+            }
+          };
+        });
+      })
+    );
+
+    let bestLatency = DEFAULT_MAX_ACCEPTABLE_LATENCY_MS;
+
+    resolvedServers.forEach(({ socket, averageLatency }) => {
+      if (!socket) return;
+
+      if (averageLatency >= bestLatency) {
+        socket.close(DEFAULT_WS_CLOSURE);
+
+        return;
       }
-    };
+
+      bestLatency = averageLatency;
+
+      this.socket = socket;
+    });
+
+    this.setHeartbeat(DEFAULT_HEARTBEAT_INTERVAL_MS);
+
+    this.send({
+      op: Opcodes.READY,
+      data: process.env.NODE_ENV === "development" ? "nemein" : "classic",
+    });
   }
 
   /**
@@ -141,93 +191,5 @@ export class GameSocket extends EventEmitter {
       op: Opcodes.HEARTBEAT,
       timestamp: Date.now(),
     });
-  }
-
-  async getBestServer() {
-    let bestServer = DEFAULT_WS_SERVER;
-
-    const allServers = process.env.NEXT_PUBLIC_SERVERS!.split(" ");
-    const availableServers = new Map();
-
-    const resolvedServers = await Promise.all(
-      allServers.map((server): Promise<ResolvedServer | null> => {
-        return new Promise((resolve) => {
-          try {
-            const socket = new WebSocket(server);
-
-            availableServers.set(server, {
-              url: server,
-              pingSocket: socket,
-              pingInterval: null,
-              recentPings: [],
-              averagePing: 0,
-            });
-
-            socket.onmessage = ({ data }) => {
-              const currentHost = availableServers.get(server);
-
-              const message = JSON.parse(data);
-
-              switch (message.op) {
-                case Opcodes.OPEN: {
-                  let pingAttempted = 0;
-
-                  currentHost.pingInterval = setInterval(() => {
-                    if (pingAttempted >= DEFAULT_PING_LIMIT) {
-                      clearInterval(currentHost.pingInterval);
-
-                      currentHost.pingInterval = null;
-
-                      resolve(currentHost);
-
-                      return;
-                    }
-
-                    this.send({
-                      op: Opcodes.PING,
-                      timestamp: Date.now(),
-                    });
-
-                    pingAttempted += 1;
-                  }, DEFAULT_PING_INTERVAL_MS);
-
-                  break;
-                }
-
-                default: {
-                  currentHost.recentPings.push(Date.now() - message.timestamp);
-
-                  currentHost.averagePing =
-                    currentHost.recentPings.reduce(
-                      (sum: number, value: number) => sum + value,
-                      0
-                    ) / currentHost.recentPings.length;
-                }
-              }
-            };
-          } catch (error) {
-            resolve(null);
-          }
-        });
-      })
-    );
-
-    let bestPing = DEFAULT_MAX_ACCEPTABLE_PING_MS;
-
-    resolvedServers.forEach((server) => {
-      if (!server || server.averagePing >= bestPing) return;
-
-      bestPing = server.averagePing;
-
-      bestServer = server.url;
-
-      if (server.pingSocket) {
-        server.pingSocket.close(DEFAULT_WS_CLOSURE);
-
-        server.pingSocket = null;
-      }
-    });
-
-    return bestServer;
   }
 }
