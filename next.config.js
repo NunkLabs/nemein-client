@@ -1,3 +1,7 @@
 module.exports = {
-  reactStrictMode: false,
+  compress: false,
+  experimental: {
+    appDir: true,
+  },
+  reactStrictMode: true,
 };

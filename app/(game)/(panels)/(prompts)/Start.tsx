@@ -1,11 +1,11 @@
-import styles from "styles/components/prompt/Start.module.css";
+import styles from "./Start.module.css";
 
 type props = {
   isAnimated: boolean;
   startAnimation: () => void;
 };
 
-export const StartPrompt = ({ isAnimated, startAnimation }: props) => {
+export default function StartPrompt({ isAnimated, startAnimation }: props) {
   return (
     <div className={styles.outer}>
       {isAnimated ? null : <p className={styles.logo}>TetriBASS</p>}
@@ -25,4 +25,4 @@ export const StartPrompt = ({ isAnimated, startAnimation }: props) => {
       </div>
     </div>
   );
-};
+}

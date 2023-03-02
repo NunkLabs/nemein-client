@@ -1,7 +1,5 @@
 import { TetrominoType } from "constants/Game";
 
-import styles from "styles/components/Tetromino.module.css";
-
 /**
  * @brief: fieldToJsxElement: Convert a field of coords to a JSX element for
  * render
@@ -34,10 +32,7 @@ export const fieldToJsxElement = (
 
           return (
             <div
-              className={`
-                ${styles.row} ${styles[rowStyle]}
-                ${styles[queue ? "row-queue" : ""]}
-              `}
+              className={`row ${rowStyle} ${queue ? "row-queue" : ""}`}
               key={`row-${rowIndex}`}
             />
           );

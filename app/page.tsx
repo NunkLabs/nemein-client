@@ -1,6 +1,14 @@
-import "styles/globals.css";
+import type { NextWebVitalsMetric } from "next/app";
 
-import type { AppProps, NextWebVitalsMetric } from "next/app";
+import Game from "./(game)/Game";
+
+export default function HomePage() {
+  return (
+    <div className="bg-gray-800 h-screen min-w-fit relative">
+      <Game />
+    </div>
+  );
+}
 
 export function reportWebVitals(metric: NextWebVitalsMetric) {
   const formattedMetricValue = metric.value.toFixed(2);
@@ -103,8 +111,6 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
   }
 }
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
-
-export default MyApp;
+export const config = {
+  runtime: "experimental-edge",
+};

@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { StartPrompt } from "components/prompt/StartPrompt";
-import { ControlPrompt } from "components/prompt/ControlPrompt";
-import { CountdownPrompt } from "components/prompt/CountdownPrompt";
-
 import { fieldToJsxElement } from "utils/GameUtils";
 
-import styles from "styles/components/game/Game.module.css";
+import StartPrompt from "./(prompts)/Start";
+import ControlPrompt from "./(prompts)/Control";
+import CountdownPrompt from "./(prompts)/Countdown";
+import styles from "./Main.module.css";
 
 type props = {
   isReady: boolean;
@@ -23,7 +22,7 @@ type props = {
 const DEFAULT_BOARD_HEIGHT = 20;
 const DEFAULT_BOARD_WIDTH = 10;
 
-export const GamePanel = ({
+export default function MainPanel({
   isReady,
   isActive,
   isAnimated,
@@ -33,7 +32,7 @@ export const GamePanel = ({
   startAnimation,
   startCountdown,
   startGame,
-}: props) => {
+}: props) {
   const [game, setGame] = useState<number[][]>([]);
 
   useEffect(() => {
@@ -74,4 +73,4 @@ export const GamePanel = ({
       <div>{fieldToJsxElement(game, gameStates?.gameOver)}</div>
     </div>
   );
-};
+}

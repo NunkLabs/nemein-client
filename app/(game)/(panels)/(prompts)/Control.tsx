@@ -1,11 +1,11 @@
-import styles from "styles/components/prompt/Control.module.css";
+import styles from "./Control.module.css";
 
 type props = {
   isOver: boolean;
   startCountdown: (restart?: boolean) => void;
 };
 
-export const ControlPrompt = ({ isOver, startCountdown }: props) => {
+export default function ControlPrompt({ isOver, startCountdown }: props) {
   return (
     <div className={styles.control}>
       <p className={"font-bold text-slate-100 text-3xl"}>
@@ -27,4 +27,4 @@ export const ControlPrompt = ({ isOver, startCountdown }: props) => {
       </button>
     </div>
   );
-};
+}
