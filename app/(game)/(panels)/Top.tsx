@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
-import styles from "styles/components/game/Top.module.css";
+import styles from "./Top.module.css";
 
 type props = {
   isAnimated: boolean;
   gameStates: ClassicStates | NemeinStates | null;
 };
 
-export const TopPanel = ({ isAnimated, gameStates }: props) => {
+export default function TopPanel({ isAnimated, gameStates }: props) {
   const [level, setLevel] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
 
@@ -32,4 +32,4 @@ export const TopPanel = ({ isAnimated, gameStates }: props) => {
       </div>
     </div>
   );
-};
+}

@@ -1,10 +1,12 @@
+"use client";
+
 import { useCallback, useEffect, useState, useRef } from "react";
 
-import { Opcodes, GameSocket } from "components/Socket";
-import { GamePanel } from "components/game/GamePanel";
-import { HeldPanel } from "components/game/HeldPanel";
-import { QueuePanel } from "components/game/QueuePanel";
-import { TopPanel } from "components/game/TopPanel";
+import { Opcodes, GameSocket } from "libs/Socket";
+import MainPanel from "./(panels)/Main";
+import HeldPanel from "./(panels)/Held";
+import QueuePanel from "./(panels)/Queue";
+import TopPanel from "./(panels)/Top";
 
 const VALID_KEYS = [
   /* Left */
@@ -42,7 +44,7 @@ const VALID_KEYS = [
   " ",
 ];
 
-export const Game = () => {
+export default function Game() {
   const socket = useRef<GameSocket | null>(null);
   const isActive = useRef<boolean>(false);
   const isOver = useRef<boolean>(false);
@@ -165,7 +167,7 @@ export const Game = () => {
       <div className="relative">
         <div className="flex gap-x-2">
           <HeldPanel isAnimated={animate} gameStates={gameStates} />
-          <GamePanel
+          <MainPanel
             isReady={ready}
             isActive={active}
             isAnimated={animate}
@@ -181,4 +183,4 @@ export const Game = () => {
       </div>
     </div>
   );
-};
+}

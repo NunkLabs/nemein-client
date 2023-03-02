@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import styles from "styles/components/prompt/Countdown.module.css";
+import styles from "./Countdown.module.css";
 
 type props = {
   startGame: () => void;
@@ -9,7 +9,7 @@ type props = {
 const DEFAULT_COUNTDOWN_INTERVAL = 1000;
 const DEFAULT_MAX_COUNTDOWN = 3;
 
-export const CountdownPrompt = ({ startGame }: props) => {
+export default function CountdownPrompt({ startGame }: props) {
   const [remainingTime, setRemainingTime] = useState(DEFAULT_MAX_COUNTDOWN);
 
   useEffect(() => {
@@ -35,4 +35,4 @@ export const CountdownPrompt = ({ startGame }: props) => {
       <p>{remainingTime}</p>
     </div>
   );
-};
+}
