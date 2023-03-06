@@ -1,26 +1,7 @@
-.game {
+.main {
   place-items: center;
   height: 440px;
   width: 220px;
 
-  @apply border-4 border-transparent rounded;
-}
-
-.transform-game {
-  animation-duration: 1.75s;
-  animation-fill-mode: forwards;
-  animation-name: game-fade-in;
-  animation-timing-function: ease-out;
-}
-
-@keyframes game-fade-in {
-  0% {
-    @apply border-4 border-transparent;
-  }
-  75% {
-    @apply border-4 border-transparent;
-  }
-  100% {
-    @apply border-4 border-slate-100;
-  }
+  @apply border-4 border-slate-100 rounded;
 }

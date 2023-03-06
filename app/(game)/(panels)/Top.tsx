@@ -3,11 +3,10 @@ import { useEffect, useState } from "react";
 import styles from "./Top.module.css";
 
 type props = {
-  isAnimated: boolean;
   gameStates: ClassicStates | NemeinStates | null;
 };
 
-export default function TopPanel({ isAnimated, gameStates }: props) {
+export default function TopPanel({ gameStates }: props) {
   const [level, setLevel] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
 
@@ -19,9 +18,7 @@ export default function TopPanel({ isAnimated, gameStates }: props) {
   }, [gameStates]);
 
   return (
-    <div
-      className={`${styles.info} ${styles[isAnimated ? "transform-info" : ""]}`}
-    >
+    <div className={styles.top}>
       <div className="text-slate-100 text-xl">
         <p className="font-bold">LEVEL</p>
         <p className="font-medium">{level}</p>

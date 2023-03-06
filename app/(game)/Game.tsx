@@ -1,12 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
+import anime from "animejs/lib/anime.es";
 
 import { Opcodes, GameSocket } from "libs/Socket";
 import MainPanel from "./(panels)/Main";
 import HeldPanel from "./(panels)/Held";
 import QueuePanel from "./(panels)/Queue";
 import TopPanel from "./(panels)/Top";
+
+import "./Game.css";
 
 const VALID_KEYS = [
   /* Left */
@@ -46,110 +49,106 @@ const VALID_KEYS = [
 
 export default function Game() {
   const socket = useRef<GameSocket | null>(null);
-  const isActive = useRef<boolean>(false);
   const isOver = useRef<boolean>(false);
 
   const [ready, setReady] = useState<boolean>(false);
   const [active, setActive] = useState<boolean>(false);
-  const [animate, setAnimate] = useState<boolean>(false);
-  const [countdown, setCountdown] = useState<boolean>(false);
   const [gameStates, setGameStates] = useState<
     ClassicStates | NemeinStates | null
   >(null);
 
-  const startCountdown = (restart: boolean = false) => {
-    if (restart) {
-      socket.current?.send({
-        op: Opcodes.RESTART,
-      });
-    }
-
-    setCountdown(true);
-  };
-
   const startGame = () => {
-    setCountdown(false);
-
     if (!ready) {
       setReady(true);
     }
 
     if (!active) {
       socket.current?.send({
-        op: Opcodes.TOGGLE,
+        op: Opcodes.READY,
+        data: process.env.NODE_ENV === "development" ? "nemein" : "classic",
       });
+
+      setActive(true);
     }
 
-    setActive(true);
-
-    isActive.current = true;
     isOver.current = false;
   };
 
-  const handleKeydown = useCallback(({ key }: { key: string }) => {
-    if (isOver.current) return;
+  const restartGame = () => {
+    socket.current?.send({ op: Opcodes.RESTART });
 
-    if (key === "Escape") {
-      if (!isActive.current) {
-        setCountdown(true);
+    startGame();
+  };
 
-        return;
-      }
-
-      setActive(false);
-
-      isActive.current = false;
-
-      socket.current?.send({
-        op: Opcodes.TOGGLE,
-      });
-
-      return;
-    }
-
-    if (!isActive.current || !VALID_KEYS.includes(key)) return;
+  const handleKeydown = ({ key }: { key: string }) => {
+    if (isOver.current || !VALID_KEYS.includes(key)) return;
 
     socket.current?.send({
       op: Opcodes.INPUT,
       data: key,
     });
-  }, []);
+  };
 
   useEffect(() => {
-    if (!ready) return;
-
     socket.current = new GameSocket();
 
-    socket.current.on("message", (message) => {
-      switch (message.op) {
-        case Opcodes.READY: {
-          const initialGameStates = message.data;
+    socket.current
+      .on("progress", (data) => {
+        const initTimeline = anime.timeline({
+          easing: "easeInOutCubic",
+        });
 
-          setGameStates(initialGameStates);
+        initTimeline
+          .add({
+            targets: ".init-progress",
+            value: data.percent,
+          })
+          .add({
+            targets: [".init-progress", ".animation-wrapper "],
+            height: 32,
+          })
+          .add({
+            targets: [".init-progress"],
+            duration: 500,
+            opacity: 0,
+            zIndex: 0,
+          })
+          .add({
+            targets: [".start-button"],
+            duration: 100,
+            opacity: 1,
+            zIndex: 50,
+          });
+      })
+      .on("message", (message) => {
+        switch (message.op) {
+          case Opcodes.READY: {
+            const initialGameStates = message.data;
 
-          document.addEventListener("keydown", handleKeydown);
+            setGameStates(initialGameStates);
 
-          break;
-        }
+            document.addEventListener("keydown", handleKeydown);
 
-        case Opcodes.DATA: {
-          const newGameStates = message.data;
-
-          setGameStates(newGameStates);
-
-          if (newGameStates.gameOver) {
-            setActive(false);
-
-            isActive.current = false;
-            isOver.current = true;
+            break;
           }
 
-          break;
-        }
+          case Opcodes.DATA: {
+            const newGameStates = message.data;
 
-        default:
-      }
-    });
+            setGameStates(newGameStates);
+
+            if (newGameStates.gameOver) {
+              setActive(false);
+
+              isOver.current = true;
+            }
+
+            break;
+          }
+
+          default:
+        }
+      });
 
     const currentSocket = socket.current;
 
@@ -159,28 +158,59 @@ export default function Game() {
 
       currentSocket.destroy();
     };
-  }, [socket, ready, handleKeydown]);
+  }, []);
 
   return (
-    <div className="grid place-items-center px-5 py-5">
-      <TopPanel isAnimated={animate} gameStates={gameStates} />
-      <div className="relative">
+    <div className="grid h-screen place-items-center px-5 py-5">
+      {active ? null : <div className="animation-wrapper" />}
+      <div className="game-wrapper">
+        <TopPanel gameStates={gameStates} />
         <div className="flex gap-x-2">
-          <HeldPanel isAnimated={animate} gameStates={gameStates} />
+          <HeldPanel gameStates={gameStates} />
           <MainPanel
             isReady={ready}
             isActive={active}
-            isAnimated={animate}
-            isCountdown={countdown}
             isOver={!active && isOver.current}
             gameStates={gameStates}
-            startAnimation={() => setAnimate(true)}
-            startCountdown={startCountdown}
-            startGame={startGame}
+            restartGame={restartGame}
           />
-          <QueuePanel isAnimated={animate} gameStates={gameStates} />
+          <QueuePanel gameStates={gameStates} />
         </div>
       </div>
+      {ready ? null : (
+        <button
+          className={"start-button button button-light"}
+          onClick={() => {
+            const startTimeline = anime.timeline({
+              easing: "easeInOutCubic",
+              duration: 750,
+            });
+
+            startTimeline
+              .add({
+                targets: ".start-button",
+                opacity: 0,
+                zIndex: 0,
+              })
+              .add({
+                targets: ".animation-wrapper",
+                height: 440,
+                width: 220,
+              })
+              .add({
+                targets: ".game-wrapper",
+                opacity: 1,
+                zIndex: 40,
+                complete: startGame,
+              });
+          }}
+        >
+          Play
+        </button>
+      )}
+      {ready ? null : (
+        <progress className="init-progress" value="10" max="100" />
+      )}
     </div>
   );
 }

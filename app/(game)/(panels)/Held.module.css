@@ -1,27 +1,5 @@
 .held {
-  min-height: 60px;
-  min-width: 60px;
-  opacity: 0;
   place-self: start;
-}
 
-.transform-held {
-  animation-duration: 1.75s;
-  animation-fill-mode: forwards;
-  animation-name: held-fade-in;
-  animation-timing-function: ease-out;
-}
-
-@keyframes held-fade-in {
-  0% {
-    opacity: 0;
-  }
-  75% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-
-    @apply border-4 border-slate-100 rounded;
-  }
+  @apply border-slate-100 border-4 rounded;
 }

@@ -1,10 +1,11 @@
 .control {
-  place-items: center;
   position: absolute;
+  place-items: center;
+  text-align: center;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 50;
 
-  @apply w-44 grid gap-y-2 text-center;
+  @apply w-44 grid gap-y-2;
 }

@@ -1,0 +1,26 @@
+.animation-wrapper {
+  position: absolute;
+  height: 16px;
+  width: 176px;
+  z-index: 30;
+
+  @apply border-slate-100 border-4 rounded;
+}
+
+.game-wrapper {
+  opacity: 0;
+  z-index: 0;
+}
+
+.start-button {
+  position: absolute;
+  height: 32px;
+  width: 176px;
+  opacity: 0;
+}
+
+.init-progress {
+  position: absolute;
+  opacity: 1;
+  z-index: 50;
+}
