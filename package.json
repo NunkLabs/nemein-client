@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "clean": "rm -rf node_modules && yarn cache clean",
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "format": "next lint && yarn prettier --write .",
     "lint": "next lint",
     "postinstall": "is-ci || husky install",
@@ -13,6 +13,7 @@
     "update": "yarn upgrade-interactive --latest"
   },
   "dependencies": {
+    "animejs": "^3.2.1",
     "dotenv": "^16.0.3",
     "next": "13.2.3",
     "react": "18.2.0",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.4.3",
     "@commitlint/config-conventional": "^17.4.3",
+    "@types/animejs": "^3.1.7",
     "@types/node": "18.14.2",
     "@types/react": "18.0.28",
     "autoprefixer": "^10.4.13",

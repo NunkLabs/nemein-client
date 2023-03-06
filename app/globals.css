@@ -20,6 +20,20 @@ a {
   box-sizing: content-box;
 }
 
+progress {
+  appearance: none;
+
+  @apply h-4 w-44 accent-slate-100 bg-slate-800 border-slate-100 border-4 rounded;
+}
+
+progress::-webkit-progress-bar {
+  @apply bg-slate-800 border-slate-100 border-4;
+}
+
+progress::-webkit-progress-value {
+  @apply bg-slate-100;
+}
+
 .button {
   display: inline-block;
   text-align: center;

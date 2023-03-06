@@ -7,11 +7,10 @@ import { RENDER_TETROMINOS_ARR } from "constants/Game";
 import styles from "./Held.module.css";
 
 type props = {
-  isAnimated: boolean;
   gameStates: ClassicStates | NemeinStates | null;
 };
 
-export default function HeldPanel({ isAnimated, gameStates }: props) {
+export default function HeldPanel({ gameStates }: props) {
   const [held, setHeld] = useState<number[][]>(RENDER_TETROMINOS_ARR[0]);
 
   useEffect(() => {
@@ -21,11 +20,7 @@ export default function HeldPanel({ isAnimated, gameStates }: props) {
   }, [gameStates]);
 
   return (
-    <div
-      className={`
-        ${styles.held} ${styles[isAnimated ? "transform-held" : ""]}
-      `}
-    >
+    <div className={styles.held}>
       {fieldToJsxElement(held, gameStates?.gameOver)}
     </div>
   );

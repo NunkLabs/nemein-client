@@ -1,5 +1,5 @@
 .queue {
-  min-width: 120px;
+  min-width: 118px;
 
   @apply grid grid-rows-6 gap-1;
 }
@@ -8,25 +8,6 @@
   min-height: 60px;
   min-width: 60px;
   place-self: start;
-}
 
-.transform-queue > .next {
-  animation-duration: 1.75s;
-  animation-fill-mode: forwards;
-  animation-name: queue-fade-in;
-  animation-timing-function: ease-out;
-}
-
-@keyframes queue-fade-in {
-  0% {
-    opacity: 0;
-  }
-  75% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-
-    @apply border-4 border-slate-100 rounded;
-  }
+  @apply border-slate-100 border-4 rounded;
 }

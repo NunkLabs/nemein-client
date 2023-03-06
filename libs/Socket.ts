@@ -119,6 +119,8 @@ export class GameSocket extends EventEmitter {
       })
     );
 
+    this.emit("progress", { percent: 60 });
+
     let bestLatency = DEFAULT_MAX_ACCEPTABLE_LATENCY_MS;
 
     resolvedServers.forEach(({ socket, averageLatency }) => {
@@ -137,10 +139,7 @@ export class GameSocket extends EventEmitter {
 
     this.setHeartbeat(DEFAULT_HEARTBEAT_INTERVAL_MS);
 
-    this.send({
-      op: Opcodes.READY,
-      data: process.env.NODE_ENV === "development" ? "nemein" : "classic",
-    });
+    this.emit("progress", { percent: 100 });
   }
 
   /**

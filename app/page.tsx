@@ -110,7 +110,3 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
     }
   }
 }
-
-export const config = {
-  runtime: "experimental-edge",
-};

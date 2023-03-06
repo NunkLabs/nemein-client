@@ -7,13 +7,12 @@ import { RENDER_TETROMINOS_ARR, TetrominoType } from "constants/Game";
 import styles from "./Queue.module.css";
 
 type props = {
-  isAnimated: boolean;
   gameStates: ClassicStates | NemeinStates | null;
 };
 
 const MAX_SPAWNED_FIELDS = 6;
 
-export default function QueuePanel({ isAnimated, gameStates }: props) {
+export default function QueuePanel({ gameStates }: props) {
   const [queue, setQueue] = useState<JSX.Element[]>(
     Array(MAX_SPAWNED_FIELDS)
       .fill(<div className={styles.next} />)
@@ -46,13 +45,5 @@ export default function QueuePanel({ isAnimated, gameStates }: props) {
     );
   }, [gameStates]);
 
-  return (
-    <div
-      className={`
-        ${styles.queue} ${styles[isAnimated ? "transform-queue" : ""]}
-      `}
-    >
-      {queue}
-    </div>
-  );
+  return <div className={styles.queue}>{queue}</div>;
 }

@@ -3,5 +3,5 @@ module.exports = {
   experimental: {
     appDir: true,
   },
-  reactStrictMode: true,
+  reactStrictMode: process.env.NODE_ENV === "production",
 };
