@@ -4,7 +4,7 @@ const Game = import("constants/Game");
 declare type ClassicStates = {
   level: number;
   score: number;
-  field: {
+  gameField: {
     colArr: number[];
     lowestY: number;
   }[];
@@ -22,10 +22,11 @@ declare type NemeinCell = {
 declare type NemeinStates = {
   level: number;
   score: number;
-  field: {
+  gameField: {
     colArr: NemeinCell[];
     lowestY: number;
   }[];
+  statusField: Game.TetrominoType[][];
   gameOver: boolean;
   heldTetromino: Game.TetrominoType;
   spawnedTetrominos: Game.TetrominoType[];

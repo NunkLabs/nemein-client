@@ -35,7 +35,7 @@ export default function MainPanel({
       const row = [];
 
       for (let x = 0; x < DEFAULT_BOARD_WIDTH; x += 1) {
-        const col = gameStates.field[x].colArr[y];
+        const col = gameStates.gameField[x].colArr[y];
 
         row.push(typeof col === "number" ? col : col.type);
       }
