@@ -1,5 +1,8 @@
 .animation-wrapper {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   height: 16px;
   width: 176px;
   z-index: 30;
@@ -8,12 +11,19 @@
 }
 
 .game-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   opacity: 0;
   z-index: 0;
 }
 
 .start-button {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   height: 32px;
   width: 176px;
   opacity: 0;
@@ -21,6 +31,9 @@
 
 .init-progress {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   opacity: 1;
   z-index: 50;
 }
