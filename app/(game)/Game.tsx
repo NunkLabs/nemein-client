@@ -160,7 +160,7 @@ export default function Game() {
 
   return (
     <div className="grid h-screen place-items-center px-5 py-5">
-      {active ? null : <div className="animation-wrapper" />}
+      {ready ? null : <div className="animation-wrapper" />}
       <div className="game-wrapper">
         <TopPanel gameStates={gameStates} />
         <div className="flex gap-x-2">
