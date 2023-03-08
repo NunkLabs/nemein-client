@@ -2,10 +2,9 @@ import { useEffect, useState, useRef } from "react";
 import anime from "animejs/lib/anime.es";
 
 import { Opcodes, GameSocket } from "libs/Socket";
-import MainPanel from "./(panels)/Main";
-import HeldPanel from "./(panels)/Held";
-import QueuePanel from "./(panels)/Queue";
-import TopPanel from "./(panels)/Top";
+import { TetrominoType, RENDER_TETROMINOS_ARR } from "constants/Game";
+import ControlPrompt from "./(prompts)/Control";
+import fieldToJsxElement from "utils/GameUtils";
 
 import "./Game.css";
 
@@ -45,15 +44,32 @@ const VALID_KEYS = [
   " ",
 ];
 
+const DEFAULT_BOARD_HEIGHT = 20;
+const DEFAULT_BOARD_WIDTH = 10;
+const MAX_SPAWNED_FIELDS = 6;
+
 export default function Game() {
   const socket = useRef<GameSocket | null>(null);
   const isOver = useRef<boolean>(false);
 
   const [ready, setReady] = useState<boolean>(false);
   const [active, setActive] = useState<boolean>(false);
-  const [gameStates, setGameStates] = useState<
-    ClassicStates | NemeinStates | null
-  >(null);
+
+  const [gameData, setGameData] = useState<{
+    level: number;
+    score: number;
+    main: JSX.Element[];
+    held: JSX.Element[];
+    queue: JSX.Element[];
+  }>({
+    level: 1,
+    score: 0,
+    main: [],
+    held: fieldToJsxElement(RENDER_TETROMINOS_ARR[0]),
+    queue: Array(MAX_SPAWNED_FIELDS)
+      .fill(<div className="next" />)
+      .map((_, index) => <div className="next" key={`next-${index}`} />),
+  });
 
   const startGame = () => {
     if (!ready) {
@@ -121,21 +137,61 @@ export default function Game() {
       .on("message", (message) => {
         switch (message.op) {
           case Opcodes.READY: {
-            const initialGameStates = message.data;
-
-            setGameStates(initialGameStates);
-
             document.addEventListener("keydown", handleKeydown);
 
             break;
           }
 
           case Opcodes.DATA: {
-            const newGameStates = message.data;
+            const gameStates = message.data;
 
-            setGameStates(newGameStates);
+            const { gameField, heldTetromino, spawnedTetrominos, gameOver } =
+              gameStates;
 
-            if (newGameStates.gameOver) {
+            /* Prepare an array to render the main game panel */
+            const gameRender: number[][] = [];
+
+            for (let y = 0; y < DEFAULT_BOARD_HEIGHT; y += 1) {
+              const row = [];
+
+              for (let x = 0; x < DEFAULT_BOARD_WIDTH; x += 1) {
+                const col = gameField[x].colArr[y];
+
+                row.push(typeof col === "number" ? col : col.type);
+              }
+
+              gameRender.push(row);
+            }
+
+            /* Prepare an array to render the queue panel */
+            const spawnedRender: JSX.Element[][] = [];
+
+            spawnedTetrominos.forEach((tetromino: TetrominoType) => {
+              const spawnedFieldRender = fieldToJsxElement(
+                RENDER_TETROMINOS_ARR[tetromino],
+                gameStates.gameOver,
+                true
+              );
+
+              spawnedRender.push(spawnedFieldRender);
+            });
+
+            setGameData({
+              level: gameStates.level,
+              score: gameStates.score,
+              main: fieldToJsxElement(gameRender, gameStates.gameOver),
+              held: fieldToJsxElement(
+                RENDER_TETROMINOS_ARR[heldTetromino],
+                gameStates.gameOver
+              ),
+              queue: spawnedRender.map((tetromino, index) => (
+                <div className="next" key={`next-${index}`}>
+                  {tetromino}
+                </div>
+              )),
+            });
+
+            if (gameStates.gameOver) {
               setActive(false);
 
               isOver.current = true;
@@ -162,17 +218,28 @@ export default function Game() {
     <div className="grid h-screen place-items-center px-5 py-5">
       {ready ? null : <div className="animation-wrapper" />}
       <div className="game-wrapper">
-        <TopPanel gameStates={gameStates} />
+        <div className="top">
+          <div className="text-slate-100 text-xl">
+            <p className="font-bold">LEVEL</p>
+            <p className="font-medium">{gameData.level}</p>
+          </div>
+          <div className="text-slate-100 text-xl">
+            <p className="font-bold">SCORE</p>
+            <p className="font-medium">{gameData.score}</p>
+          </div>
+        </div>
         <div className="flex gap-x-2">
-          <HeldPanel gameStates={gameStates} />
-          <MainPanel
-            isReady={ready}
-            isActive={active}
-            isOver={!active && isOver.current}
-            gameStates={gameStates}
-            restartGame={restartGame}
-          />
-          <QueuePanel gameStates={gameStates} />
+          <div className="held">{gameData.held}</div>
+          <div className="main">
+            {ready && !active ? (
+              <ControlPrompt
+                isOver={isOver.current}
+                restartGame={restartGame}
+              />
+            ) : null}
+            <div>{gameData.main}</div>
+          </div>
+          <div className="queue">{gameData.queue}</div>
         </div>
       </div>
       {ready ? null : (
