@@ -5,23 +5,21 @@ import { TetrominoType } from "constants/Game";
  * render
  * @param  {number[][]}     field  Field to render
  * @param  {boolean}        over   Whether the game is over
- * @param  {boolean}        grid   Toggle for the game grid
  * @param  {boolean}        queue  Whether the field is for the queue panel
  * @return {JSX.Element[]}         JSX element of field
  */
-export const fieldToJsxElement = (
+export default function fieldToJsxElement(
   field: number[][],
   over: boolean = false,
-  grid: boolean = false,
   queue: boolean = false
-): JSX.Element[] => {
+): JSX.Element[] {
   const retField: JSX.Element[] = [];
 
   field.forEach((col, colIndex) => {
     retField.push(
       <div className="flex" key={`col-${colIndex}`}>
         {col.map((row, rowIndex) => {
-          let rowStyle = `row${grid ? "-grid" : ""}-${row}`;
+          let rowStyle = `row-${row}`;
 
           if (
             (over && row !== TetrominoType.Blank) ||
@@ -42,4 +40,4 @@ export const fieldToJsxElement = (
   });
 
   return retField;
-};
+}

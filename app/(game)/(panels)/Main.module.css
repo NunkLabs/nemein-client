@@ -1,7 +1,0 @@
-.main {
-  place-items: center;
-  height: 440px;
-  width: 220px;
-
-  @apply border-4 border-slate-100 rounded;
-}

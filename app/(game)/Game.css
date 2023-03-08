@@ -37,3 +37,42 @@
   opacity: 1;
   z-index: 50;
 }
+
+.top {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -400%);
+  width: 220px;
+  text-align: center;
+
+  @apply grid grid-cols-2 gap-x-1 p-3;
+}
+
+.main {
+  place-items: center;
+  height: 440px;
+  width: 220px;
+
+  @apply border-4 border-slate-100 rounded;
+}
+
+.held {
+  place-self: start;
+
+  @apply border-slate-100 border-4 rounded;
+}
+
+.queue {
+  min-width: 118px;
+
+  @apply grid grid-rows-6 gap-1;
+}
+
+.next {
+  min-height: 60px;
+  min-width: 60px;
+  place-self: start;
+
+  @apply border-slate-100 border-4 rounded;
+}

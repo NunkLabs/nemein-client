@@ -1,5 +1,0 @@
-.held {
-  place-self: start;
-
-  @apply border-slate-100 border-4 rounded;
-}
