@@ -71,6 +71,8 @@ export default function Game() {
       .map((_, index) => <div className="next" key={`next-${index}`} />),
   });
 
+  const gameMode = process.env.NODE_ENV === "development" ? "nemein" : "classic"
+
   const startGame = () => {
     if (!ready) {
       setReady(true);
@@ -79,7 +81,7 @@ export default function Game() {
     if (!active) {
       socket.current?.send({
         op: Opcodes.READY,
-        data: process.env.NODE_ENV === "development" ? "nemein" : "classic",
+        data: gameMode,
       });
 
       setActive(true);
@@ -218,7 +220,7 @@ export default function Game() {
     <div className="grid h-screen place-items-center px-5 py-5">
       {ready ? null : <div className="animation-wrapper" />}
       <div className="game-wrapper">
-        <div className="top">
+        {gameMode === "nemein" ? null : <div className="top">
           <div className="text-slate-100 text-xl">
             <p className="font-bold">LEVEL</p>
             <p className="font-medium">{gameData.level}</p>
@@ -227,7 +229,7 @@ export default function Game() {
             <p className="font-bold">SCORE</p>
             <p className="font-medium">{gameData.score}</p>
           </div>
-        </div>
+        </div>}
         <div className="flex gap-x-2">
           <div className="held">{gameData.held}</div>
           <div className="main">
