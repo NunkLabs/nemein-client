@@ -20,8 +20,8 @@ declare type NemeinCell = {
 };
 
 declare type NemeinStates = {
-  level: number;
-  score: number;
+  level: number /* Deprecated but still kept to suppress errors */;
+  score: number /* Deprecated but still kept to suppress errors */;
   gameField: {
     colArr: NemeinCell[];
     lowestY: number;
