@@ -15,23 +15,23 @@ export default function fieldToJsxElement(
 ): JSX.Element[] {
   const retField: JSX.Element[] = [];
 
-  field.forEach((col, colIndex) => {
+  field.forEach((row, rowIndex) => {
     retField.push(
-      <div className="flex" key={`col-${colIndex}`}>
-        {col.map((row, rowIndex) => {
-          let rowStyle = `row-${row}`;
+      <div className="row" key={`row-${rowIndex}`}>
+        {row.map((col, colIndex) => {
+          let colStyle = `col-${col}`;
 
           if (
-            (over && row !== TetrominoType.Blank) ||
-            row === TetrominoType.Ghost
+            (over && col !== TetrominoType.Blank) ||
+            col === TetrominoType.Ghost
           ) {
-            rowStyle = "row-ghost";
+            colStyle = "col-ghost";
           }
 
           return (
             <div
-              className={`row ${rowStyle} ${queue ? "row-queue" : ""}`}
-              key={`row-${rowIndex}`}
+              className={`col ${colStyle} ${queue ? "col-queue" : ""}`}
+              key={`col-${colIndex}`}
             />
           );
         })}
