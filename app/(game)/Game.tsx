@@ -71,7 +71,8 @@ export default function Game() {
       .map((_, index) => <div className="next" key={`next-${index}`} />),
   });
 
-  const gameMode = process.env.NODE_ENV === "development" ? "nemein" : "classic"
+  const gameMode =
+    process.env.NODE_ENV === "development" ? "nemein" : "classic";
 
   const startGame = () => {
     if (!ready) {
@@ -220,29 +221,26 @@ export default function Game() {
     <div className="grid h-screen place-items-center px-5 py-5">
       {ready ? null : <div className="animation-wrapper" />}
       <div className="game-wrapper">
-        {gameMode === "nemein" ? null : <div className="top">
-          <div className="text-slate-100 text-xl">
-            <p className="font-bold">LEVEL</p>
-            <p className="font-medium">{gameData.level}</p>
+        {gameMode === "nemein" ? null : (
+          <div className="top">
+            <div className="text-slate-100 text-xl">
+              <p className="font-bold">LEVEL</p>
+              <p className="font-medium">{gameData.level}</p>
+            </div>
+            <div className="text-slate-100 text-xl">
+              <p className="font-bold">SCORE</p>
+              <p className="font-medium">{gameData.score}</p>
+            </div>
           </div>
-          <div className="text-slate-100 text-xl">
-            <p className="font-bold">SCORE</p>
-            <p className="font-medium">{gameData.score}</p>
-          </div>
-        </div>}
-        <div className="flex gap-x-2">
-          <div className="held">{gameData.held}</div>
-          <div className="main">
-            {ready && !active ? (
-              <ControlPrompt
-                isOver={isOver.current}
-                restartGame={restartGame}
-              />
-            ) : null}
-            <div>{gameData.main}</div>
-          </div>
-          <div className="queue">{gameData.queue}</div>
+        )}
+        <div className="held">{gameData.held}</div>
+        <div className="main">
+          {ready && !active ? (
+            <ControlPrompt isOver={isOver.current} restartGame={restartGame} />
+          ) : null}
+          {gameData.main}
         </div>
+        <div className="queue">{gameData.queue}</div>
       </div>
       {ready ? null : (
         <button
@@ -261,8 +259,8 @@ export default function Game() {
               })
               .add({
                 targets: ".animation-wrapper",
-                height: 440,
-                width: 220,
+                height: 480,
+                width: 240,
               })
               .add({
                 targets: ".game-wrapper",
