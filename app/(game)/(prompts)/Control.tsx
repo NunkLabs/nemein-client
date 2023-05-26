@@ -1,4 +1,4 @@
-import styles from "./Control.module.css";
+import "./Control.css";
 
 type props = {
   isOver: boolean;
@@ -7,7 +7,7 @@ type props = {
 
 export default function ControlPrompt({ isOver, restartGame }: props) {
   return (
-    <div className={styles.control}>
+    <div className={"control"}>
       <p className={"font-bold text-slate-100 text-3xl"}>
         {isOver ? "Game Over" : "Settings"}
       </p>
