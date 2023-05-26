@@ -7,7 +7,7 @@
     "jsx": "preserve",
     "lib": ["dom", "dom.iterable", "esnext"],
     "module": "esnext",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "noEmit": true,
     "pretty": true,
     "resolveJsonModule": true,

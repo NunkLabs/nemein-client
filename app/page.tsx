@@ -1,11 +1,11 @@
-"use client";
+import dynamic from "next/dynamic";
 
-import Game from "./(game)/Game";
+const MyStage = dynamic(() => import("./(game)/Game"), { ssr: false });
 
 export default function HomePage() {
   return (
     <div className="bg-gray-800 h-screen min-w-fit relative">
-      <Game />
+      <MyStage />
     </div>
   );
 }

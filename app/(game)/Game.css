@@ -10,17 +10,13 @@
   @apply border-slate-100 border-4 rounded;
 }
 
-.game-wrapper {
+.init-progress {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100%;
-  grid-template-columns: repeat(3, minmax(0, 240px));
-  opacity: 0;
-  z-index: 0;
-
-  @apply grid gap-x-3 justify-center;
+  opacity: 1;
+  z-index: 50;
 }
 
 .start-button {
@@ -33,163 +29,6 @@
   opacity: 0;
 }
 
-.init-progress {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 1;
-  z-index: 50;
-}
-
-.top {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -400%);
-  width: 220px;
-  text-align: center;
-
-  @apply grid grid-cols-2 gap-x-1 p-3;
-}
-
-.main {
-  width: 240px;
-  height: 480px;
-  grid-template-rows: repeat(20, minmax(0, 24px));
-  justify-self: center;
-
-  @apply grid gap-0 border-4 border-slate-100 rounded;
-}
-
-.held {
-  width: 120px;
-  height: 120px;
-  grid-template-rows: repeat(5, minmax(0, 24px));
-  justify-self: end;
-
-  @apply grid gap-0 border-slate-100 border-4 rounded;
-}
-
-.queue {
-  width: 120px;
-  justify-self: start;
-
-  @apply flex flex-col gap-y-2;
-}
-
-.next {
-  width: 65px;
-  height: 65px;
-  grid-template-rows: repeat(5, minmax(0, 13px));
-  place-self: start;
-
-  @apply grid gap-0 border-slate-100 border-4 rounded;
-}
-
-.row {
-  @apply grid gap-0;
-}
-
-.main .row {
-  height: 24px;
-  grid-template-columns: repeat(10, minmax(0, 24px));
-}
-
-.held .row {
-  height: 24px;
-  grid-template-columns: repeat(5, minmax(0, 24px));
-}
-
-.next .row {
-  height: 13px;
-  grid-template-columns: repeat(5, minmax(0, 13px));
-}
-
-/* Styles for default tetrominos */
-.col {
-  width: 24px;
-}
-
-/* Styles for queue tetrominos */
-.col-queue {
-  width: 13px;
-}
-
-/* Styles for ghost tetrominos & tetrominos on game over */
-.col-ghost {
-  background-color: #f3f4f6;
-  opacity: 0.25;
-}
-
-/* Default (empty) board column */
-.col-0 {
-  background-color: #1f2937;
-}
-
-/* Colors for tetrominos */
-.col-1 {
-  background-color: #fef08a;
-}
-
-.col-2 {
-  background-color: #93c5fd;
-}
-
-.col-3 {
-  background-color: #d8b4fe;
-}
-
-.col-4 {
-  background-color: #a5b4fc;
-}
-
-.col-5 {
-  background-color: #fdba74;
-}
-
-.col-6 {
-  background-color: #fca5a5;
-}
-
-.col-7 {
-  background-color: #86efac;
-}
-
-.col-8 {
-  background-color: #e9e7e7ac;
-}
-
-/* Styles for tetrominos with grid */
-.col-grid-0 {
-  border: 1px solid #374151;
-  background-color: #1f2937;
-}
-
-.col-grid-1 {
-  background-color: #fef08a;
-}
-
-.col-grid-2 {
-  background-color: #93c5fd;
-}
-
-.col-grid-3 {
-  background-color: #d8b4fe;
-}
-
-.col-grid-4 {
-  background-color: #a5b4fc;
-}
-
-.col-grid-5 {
-  background-color: #fdba74;
-}
-
-.col-grid-6 {
-  background-color: #fca5a5;
-}
-
-.col-grid-7 {
-  background-color: #86efac;
+.stage {
+  opacity: 0;
 }
