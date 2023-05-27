@@ -164,23 +164,23 @@ const TETROMINOS_ARR = [
 
 const BASE_TEXTURE = Texture.from("/textures/blank.svg");
 
-export function drawPanels(borderGraphics: PixiGraphics): void {
-  borderGraphics.clear();
+export function drawPanels(panelGraphics: PixiGraphics): void {
+  panelGraphics.clear();
 
-  borderGraphics.lineStyle({
+  panelGraphics.lineStyle({
     width: BORDER_STYLE.WIDTH,
     color: BORDER_STYLE.COLOR,
     alignment: BORDER_STYLE.ALIGNMENT,
   });
 
-  borderGraphics.drawRect(
+  panelGraphics.drawRect(
     HOLD_PANEL.X,
     HOLD_PANEL.Y,
     HOLD_PANEL.WIDTH,
     HOLD_PANEL.HEIGHT
   );
 
-  borderGraphics.drawRect(
+  panelGraphics.drawRect(
     GAME_PANEL.X,
     GAME_PANEL.Y,
     GAME_PANEL.WIDTH,
@@ -188,13 +188,13 @@ export function drawPanels(borderGraphics: PixiGraphics): void {
   );
 
   for (
-    let queueBorderYCoord = QUEUE_PANEL.Y;
-    queueBorderYCoord + QUEUE_PANEL.HEIGHT + STAGE_SPACER < STAGE_SIZE;
-    queueBorderYCoord += QUEUE_PANEL.HEIGHT + STAGE_SPACER
+    let queuePanelYCoord = QUEUE_PANEL.Y;
+    queuePanelYCoord + QUEUE_PANEL.HEIGHT + STAGE_SPACER < STAGE_SIZE;
+    queuePanelYCoord += QUEUE_PANEL.HEIGHT + STAGE_SPACER
   ) {
-    borderGraphics.drawRect(
+    panelGraphics.drawRect(
       QUEUE_PANEL.X,
-      queueBorderYCoord,
+      queuePanelYCoord,
       QUEUE_PANEL.WIDTH,
       QUEUE_PANEL.HEIGHT
     );
@@ -204,13 +204,13 @@ export function drawPanels(borderGraphics: PixiGraphics): void {
 export function getGameRender(
   gameStates: ClassicStates | NemeinStates
 ): JSX.Element[] {
-  const containers: JSX.Element[] = [];
+  const pixiContainers: JSX.Element[] = [];
 
   const { gameField, heldTetromino, spawnedTetrominos } = gameStates;
 
   /* Render the main game panel */
   gameField.forEach((col, colIndex) => {
-    containers.push(
+    pixiContainers.push(
       <Container
         position={[GAME_PANEL.X + GAME_PANEL.CHILD * colIndex, GAME_PANEL.Y]}
         key={`game-col-${colIndex}`}
@@ -245,7 +245,7 @@ export function getGameRender(
   const holdField = TETROMINOS_ARR[heldTetromino];
 
   holdField.forEach((col, colIndex) => {
-    containers.push(
+    pixiContainers.push(
       <Container
         position={[HOLD_PANEL.X + HOLD_PANEL.CHILD * colIndex, HOLD_PANEL.Y]}
         key={`hold-col-${colIndex}`}
@@ -271,15 +271,18 @@ export function getGameRender(
   });
 
   /* Render the queue panel */
-  let queueYCoord = QUEUE_PANEL.Y;
+  let queuePanelYCoord = QUEUE_PANEL.Y;
 
   spawnedTetrominos.forEach((spawnedTetromino, spawnedIndex) => {
     const queueField = TETROMINOS_ARR[spawnedTetromino];
 
     queueField.forEach((col, colIndex) => {
-      containers.push(
+      pixiContainers.push(
         <Container
-          position={[QUEUE_PANEL.X + QUEUE_PANEL.CHILD * colIndex, queueYCoord]}
+          position={[
+            QUEUE_PANEL.X + QUEUE_PANEL.CHILD * colIndex,
+            queuePanelYCoord,
+          ]}
           key={`queue-${spawnedIndex}-col-${colIndex}`}
         >
           {col.map((row, rowIndex) => {
@@ -302,8 +305,8 @@ export function getGameRender(
       );
     });
 
-    queueYCoord += QUEUE_PANEL.HEIGHT + STAGE_SPACER;
+    queuePanelYCoord += QUEUE_PANEL.HEIGHT + STAGE_SPACER;
   });
 
-  return containers;
+  return pixiContainers;
 }
