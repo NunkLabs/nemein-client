@@ -46,6 +46,9 @@ const VALID_KEYS = [
   " ",
 ];
 
+const INIT_ANIMATION_DURATION_MS = 500;
+const START_GAME_ANIMATION_DURATION_MS = 250;
+
 const DEFAULT_STAGE_SIZE = 720;
 
 export default function Game() {
@@ -98,7 +101,7 @@ export default function Game() {
       .on("progress", (data) => {
         const initTimeline = anime.timeline({
           easing: "easeInOutCubic",
-          duration: 500,
+          duration: INIT_ANIMATION_DURATION_MS,
         });
 
         initTimeline
@@ -106,15 +109,18 @@ export default function Game() {
             targets: ".init-progress",
             value: data.percent,
           })
+          /* Matches the wrapper and the progress bar to the start button size */
           .add({
             targets: [".animation-wrapper", ".init-progress"],
             height: 32,
           })
+          /* Hides progress bar */
           .add({
             targets: [".init-progress"],
             opacity: 0,
             zIndex: 0,
           })
+          /* Reveals the start button & brings it the the top most layer */
           .add({
             targets: [".start-button"],
             opacity: 1,
@@ -168,15 +174,17 @@ export default function Game() {
             onClick={() => {
               const startTimeline = anime.timeline({
                 easing: "easeInOutCubic",
-                duration: 500,
+                duration: START_GAME_ANIMATION_DURATION_MS,
               });
 
               startTimeline
+                /* Hides the wrapper & start button */
                 .add({
                   targets: [".animation-wrapper", ".start-button"],
                   opacity: 0,
                   zIndex: 0,
                 })
+                /* Reveals the game stage */
                 .add({
                   targets: ".stage",
                   opacity: 1,
