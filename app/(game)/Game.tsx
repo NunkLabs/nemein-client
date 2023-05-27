@@ -65,7 +65,7 @@ export default function Game() {
     if (!active) {
       socket.current?.send({
         op: Opcodes.READY,
-        data: "nemein",
+        data: process.env.NODE_ENV === "production" ? "classic" : "nemein",
       });
 
       setActive(true);

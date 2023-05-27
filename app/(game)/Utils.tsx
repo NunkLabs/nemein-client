@@ -15,6 +15,19 @@ enum TetrominoType {
   Ghost,
 }
 
+/* Classic game state typings */
+type ClassicStates = {
+  level: number;
+  score: number;
+  gameField: {
+    colArr: number[];
+    lowestY: number;
+  }[];
+  gameOver: boolean;
+  heldTetromino: TetrominoType;
+  spawnedTetrominos: TetrominoType[];
+};
+
 /* Nemein game state typings */
 type NemeinStates = {
   level: number /* Deprecated but still kept to suppress errors */;
@@ -188,7 +201,9 @@ export function drawPanels(borderGraphics: PixiGraphics): void {
   }
 }
 
-export function getGameRender(gameStates: NemeinStates): JSX.Element[] {
+export function getGameRender(
+  gameStates: ClassicStates | NemeinStates
+): JSX.Element[] {
   const containers: JSX.Element[] = [];
 
   const { gameField, heldTetromino, spawnedTetrominos } = gameStates;
@@ -201,13 +216,15 @@ export function getGameRender(gameStates: NemeinStates): JSX.Element[] {
         key={`game-col-${colIndex}`}
       >
         {col.colArr.map((row, rowIndex) => {
-          const tetromino = TetrominoType[row.type];
+          const tetromino =
+            TetrominoType[typeof row === "number" ? row : row.type];
           const tintColor = TETROMINO_STYLE[tetromino.toUpperCase()];
 
           return (
             <Sprite
               alpha={
-                gameStates.gameOver || row.type === TetrominoType.Ghost
+                gameStates.gameOver ||
+                tetromino === TetrominoType[TetrominoType.Ghost]
                   ? 0.25
                   : 1
               }
