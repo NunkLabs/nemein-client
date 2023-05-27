@@ -159,6 +159,8 @@ export default function Game() {
       /* Clean up on component unmount */
       document.removeEventListener("keydown", handleKeydown);
 
+      currentSocket.removeAllListeners();
+
       currentSocket.destroy();
     };
   }, []);
