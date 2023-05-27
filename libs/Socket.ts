@@ -147,11 +147,11 @@ export class GameSocket extends EventEmitter {
    * by clearing the heartbeat interval timer and closing the connection.
    */
   destroy() {
+    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
+
     if (this.heartbeat) {
       clearInterval(this.heartbeat);
     }
-
-    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
 
     this.socket.close(DEFAULT_WS_CLOSURE);
   }
