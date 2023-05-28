@@ -8,7 +8,7 @@ type SocketData = {
 
 type ResolvedServer = {
   socket: WebSocket;
-  recentPings: number[];
+  latencies: number[];
   averageLatency: number;
 };
 
@@ -25,8 +25,8 @@ export const Opcodes = {
 
 const DEFAULT_WS_CLOSURE = 1000;
 const DEFAULT_HEARTBEAT_INTERVAL_MS = 5000;
-const DEFAULT_PING_INTERVAL_MS = 500;
-const DEFAULT_PING_LIMIT = 5;
+const DEFAULT_PING_INTERVAL_MS = 100;
+const DEFAULT_PING_ATTEMPT_LIMIT = 5;
 const DEFAULT_MAX_ACCEPTABLE_LATENCY_MS = 300;
 const AVAILABLE_SERVERS =
   process.env.NEXT_PUBLIC_SERVERS || "ws://localhost:8080";
@@ -52,18 +52,16 @@ export class GameSocket extends EventEmitter {
   async init() {
     if (this.socket) return;
 
-    const availableServers = new Map();
+    const availableServers = AVAILABLE_SERVERS.split(" ");
 
     const resolvedServers = await Promise.all(
-      AVAILABLE_SERVERS.split(" ").map((server): Promise<ResolvedServer> => {
+      availableServers.map((server): Promise<ResolvedServer> => {
         return new Promise((resolve) => {
-          availableServers.set(server, {
+          const currentServer: ResolvedServer = {
             socket: new WebSocket(server),
-            recentPings: [],
+            latencies: [],
             averageLatency: 0,
-          });
-
-          const currentServer = availableServers.get(server);
+          };
 
           currentServer.socket.onmessage = ({ data }: MessageEvent) => {
             const message = JSON.parse(data);
@@ -72,10 +70,10 @@ export class GameSocket extends EventEmitter {
 
             switch (message.op) {
               case Opcodes.OPEN: {
-                let pingAttempted = 0;
-
                 const pingInterval = setInterval(() => {
-                  if (pingAttempted >= DEFAULT_PING_LIMIT) {
+                  if (
+                    currentServer.latencies.length >= DEFAULT_PING_ATTEMPT_LIMIT
+                  ) {
                     clearInterval(pingInterval);
 
                     resolve(currentServer);
@@ -83,12 +81,12 @@ export class GameSocket extends EventEmitter {
                     return;
                   }
 
-                  this.send({
-                    op: Opcodes.PING,
-                    timestamp: Date.now(),
-                  });
-
-                  pingAttempted += 1;
+                  currentServer.socket.send(
+                    JSON.stringify({
+                      op: Opcodes.PING,
+                      timestamp: Date.now(),
+                    })
+                  );
                 }, DEFAULT_PING_INTERVAL_MS);
 
                 break;
@@ -105,13 +103,15 @@ export class GameSocket extends EventEmitter {
               }
 
               case Opcodes.PING: {
-                currentServer.recentPings.push(Date.now() - message.timestamp);
+                currentServer.latencies.push(Date.now() - message.timestamp);
 
                 currentServer.averageLatency =
-                  currentServer.recentPings.reduce(
+                  currentServer.latencies.reduce(
                     (sum: number, value: number) => sum + value,
                     0
-                  ) / currentServer.recentPings.length;
+                  ) / currentServer.latencies.length;
+
+                break;
               }
             }
           };
