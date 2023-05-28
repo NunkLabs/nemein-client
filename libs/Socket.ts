@@ -66,8 +66,6 @@ export class GameSocket extends EventEmitter {
           currentServer.socket.onmessage = ({ data }: MessageEvent) => {
             const message = JSON.parse(data);
 
-            this.emit("message", message);
-
             switch (message.op) {
               case Opcodes.OPEN: {
                 const pingInterval = setInterval(() => {
@@ -113,6 +111,9 @@ export class GameSocket extends EventEmitter {
 
                 break;
               }
+
+              default:
+                this.emit("message", message);
             }
           };
         });
