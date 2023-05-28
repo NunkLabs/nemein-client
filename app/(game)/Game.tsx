@@ -104,11 +104,14 @@ export default function Game() {
           duration: INIT_ANIMATION_DURATION_MS,
         });
 
+        initTimeline.add({
+          targets: ".init-progress",
+          value: data.percent,
+        });
+
+        if (data.percent < 100) return;
+
         initTimeline
-          .add({
-            targets: ".init-progress",
-            value: data.percent,
-          })
           /* Matches the wrapper and the progress bar to the start button size */
           .add({
             targets: [".animation-wrapper", ".init-progress"],
