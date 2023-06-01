@@ -18,7 +18,6 @@ export const Opcodes = {
   DATA: 2, // Socket received data
   INPUT: 3, // Socket is sending a game input
   TOGGLE: 4, // Socket is sending a game state toggle command
-  RESTART: 5, // Socket is sending a restart command
   PING: 9, // Socket is sending a ping command
   HEARTBEAT: 10, // Socket is sending a heartbeat
 };
