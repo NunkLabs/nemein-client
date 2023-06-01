@@ -1,11 +1,11 @@
 import "./Control.css";
 
-type props = {
+type ControlProps = {
   isOver: boolean;
   restartGame: () => void;
 };
 
-export default function ControlPrompt({ isOver, restartGame }: props) {
+export default function ControlPrompt({ isOver, restartGame }: ControlProps) {
   return (
     <div className={"control"}>
       <p className={"font-bold text-slate-100 text-3xl"}>

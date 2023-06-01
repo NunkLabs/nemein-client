@@ -23,11 +23,11 @@ export const Opcodes = {
   HEARTBEAT: 10, // Socket is sending a heartbeat
 };
 
-const DEFAULT_WS_CLOSURE = 1000;
-const DEFAULT_HEARTBEAT_INTERVAL_MS = 5000;
-const DEFAULT_PING_INTERVAL_MS = 100;
-const DEFAULT_PING_ATTEMPT_LIMIT = 5;
-const DEFAULT_MAX_ACCEPTABLE_LATENCY_MS = 300;
+const WS_CLOSURE_CODE = 1000;
+const HEARTBEAT_INTERVAL_MS = 5000;
+const PING_INTERVAL_MS = 100;
+const PING_ATTEMPT_LIMIT = 5;
+const MAX_ACCEPTABLE_LATENCY_MS = 300;
 const AVAILABLE_SERVERS =
   process.env.NEXT_PUBLIC_SERVERS || "ws://localhost:8080";
 
@@ -63,15 +63,13 @@ export class GameSocket extends EventEmitter {
             averageLatency: 0,
           };
 
-          currentServer.socket.onmessage = ({ data }: MessageEvent) => {
-            const message = JSON.parse(data);
+          currentServer.socket.onmessage = (message: MessageEvent) => {
+            const data: SocketData = JSON.parse(message.data);
 
-            switch (message.op) {
+            switch (data.op) {
               case Opcodes.OPEN: {
                 const pingInterval = setInterval(() => {
-                  if (
-                    currentServer.latencies.length >= DEFAULT_PING_ATTEMPT_LIMIT
-                  ) {
+                  if (currentServer.latencies.length >= PING_ATTEMPT_LIMIT) {
                     clearInterval(pingInterval);
 
                     resolve(currentServer);
@@ -85,15 +83,17 @@ export class GameSocket extends EventEmitter {
                       timestamp: Date.now(),
                     })
                   );
-                }, DEFAULT_PING_INTERVAL_MS);
+                }, PING_INTERVAL_MS);
 
                 break;
               }
 
               case Opcodes.HEARTBEAT: {
+                if (!data.timestamp) return;
+
                 console.log(
                   `Latency to ${this.socket?.url} is ${
-                    Date.now() - message.timestamp
+                    Date.now() - data.timestamp
                   }`
                 );
 
@@ -101,7 +101,9 @@ export class GameSocket extends EventEmitter {
               }
 
               case Opcodes.PING: {
-                currentServer.latencies.push(Date.now() - message.timestamp);
+                if (!data.timestamp) return;
+
+                currentServer.latencies.push(Date.now() - data.timestamp);
 
                 currentServer.averageLatency =
                   currentServer.latencies.reduce(
@@ -113,7 +115,7 @@ export class GameSocket extends EventEmitter {
               }
 
               default:
-                this.emit("message", message);
+                this.emit("data", data);
             }
           };
         });
@@ -122,13 +124,13 @@ export class GameSocket extends EventEmitter {
 
     this.emit("progress", { percent: 60 });
 
-    let bestLatency = DEFAULT_MAX_ACCEPTABLE_LATENCY_MS;
+    let bestLatency = MAX_ACCEPTABLE_LATENCY_MS;
 
     resolvedServers.forEach(({ socket, averageLatency }) => {
       if (!socket) return;
 
       if (averageLatency >= bestLatency) {
-        socket.close(DEFAULT_WS_CLOSURE);
+        socket.close(WS_CLOSURE_CODE);
 
         return;
       }
@@ -138,7 +140,7 @@ export class GameSocket extends EventEmitter {
       this.socket = socket;
     });
 
-    this.setHeartbeat(DEFAULT_HEARTBEAT_INTERVAL_MS);
+    this.setHeartbeat(HEARTBEAT_INTERVAL_MS);
 
     this.emit("progress", { percent: 100 });
   }
@@ -154,7 +156,7 @@ export class GameSocket extends EventEmitter {
       clearInterval(this.heartbeat);
     }
 
-    this.socket.close(DEFAULT_WS_CLOSURE);
+    this.socket.close(WS_CLOSURE_CODE);
   }
 
   /**
