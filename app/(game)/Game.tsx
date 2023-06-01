@@ -210,8 +210,6 @@ export default function Game() {
           restartGame={() => {
             if (!socket.current) return;
 
-            socket.current.send({ op: Opcodes.RESTART });
-
             socket.current.send({
               op: Opcodes.READY,
               data:
