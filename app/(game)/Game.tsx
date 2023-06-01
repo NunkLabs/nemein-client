@@ -60,29 +60,6 @@ export default function Game() {
   const [resolution, setResolution] = useState<number | undefined>(undefined);
   const [game, setGame] = useState<JSX.Element[]>([]);
 
-  const startGame = () => {
-    if (!ready) {
-      setReady(true);
-    }
-
-    if (!active) {
-      socket.current?.send({
-        op: Opcodes.READY,
-        data: process.env.NODE_ENV === "production" ? "classic" : "nemein",
-      });
-
-      setActive(true);
-    }
-
-    isOver.current = false;
-  };
-
-  const restartGame = () => {
-    socket.current?.send({ op: Opcodes.RESTART });
-
-    startGame();
-  };
-
   const handleKeydown = ({ key }: { key: string }) => {
     if (isOver.current || !VALID_KEYS.includes(key)) return;
 
@@ -98,7 +75,7 @@ export default function Game() {
     socket.current = new GameSocket();
 
     socket.current
-      .on("progress", (data) => {
+      .on("progress", (progress: { percent: number }) => {
         const initTimeline = anime.timeline({
           easing: "easeInOutCubic",
           duration: INIT_ANIMATION_DURATION_MS,
@@ -106,10 +83,10 @@ export default function Game() {
 
         initTimeline.add({
           targets: ".init-progress",
-          value: data.percent,
+          value: progress.percent,
         });
 
-        if (data.percent < 100) return;
+        if (progress.percent < 100) return;
 
         initTimeline
           /* Matches the wrapper and the progress bar to the start button size */
@@ -130,8 +107,8 @@ export default function Game() {
             zIndex: 50,
           });
       })
-      .on("message", (message) => {
-        switch (message.op) {
+      .on("data", (data) => {
+        switch (data.op) {
           case Opcodes.READY: {
             document.addEventListener("keydown", handleKeydown);
 
@@ -139,7 +116,7 @@ export default function Game() {
           }
 
           case Opcodes.DATA: {
-            const gameStates = message.data;
+            const gameStates = data.data;
 
             setGame(getGameRender(gameStates));
 
@@ -193,7 +170,19 @@ export default function Game() {
                 .add({
                   targets: ".stage",
                   opacity: 1,
-                  complete: startGame,
+                  complete: () => {
+                    setReady(true);
+
+                    socket.current?.send({
+                      op: Opcodes.READY,
+                      data:
+                        process.env.NODE_ENV === "production"
+                          ? "classic"
+                          : "nemein",
+                    });
+
+                    setActive(true);
+                  },
                 });
             }}
           >
@@ -216,7 +205,24 @@ export default function Game() {
         {game}
       </Stage>
       {ready && !active ? (
-        <ControlPrompt isOver={isOver.current} restartGame={restartGame} />
+        <ControlPrompt
+          isOver={isOver.current}
+          restartGame={() => {
+            if (!socket.current) return;
+
+            socket.current.send({ op: Opcodes.RESTART });
+
+            socket.current.send({
+              op: Opcodes.READY,
+              data:
+                process.env.NODE_ENV === "production" ? "classic" : "nemein",
+            });
+
+            setActive(true);
+
+            isOver.current = false;
+          }}
+        />
       ) : null}
     </div>
   );

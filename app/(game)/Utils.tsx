@@ -1,5 +1,4 @@
-import { Container, Sprite } from "@pixi/react";
-import { Graphics as PixiGraphics, Texture } from "pixi.js";
+import { Container, Graphics, PixiRef, Sprite } from "@pixi/react";
 
 /* Tetromino enum types */
 enum TetrominoType {
@@ -44,6 +43,8 @@ type NemeinStates = {
   heldTetromino: TetrominoType;
   spawnedTetrominos: TetrominoType[];
 };
+
+type IGraphics = PixiRef<typeof Graphics>;
 
 /* Base game sizes in pixels */
 const STAGE_SIZE = 720;
@@ -162,9 +163,7 @@ const TETROMINOS_ARR = [
   ],
 ];
 
-const BASE_TEXTURE = Texture.from("/textures/blank.svg");
-
-export function drawPanels(panelGraphics: PixiGraphics): void {
+export function drawPanels(panelGraphics: IGraphics): void {
   panelGraphics.clear();
 
   panelGraphics.lineStyle({
@@ -231,7 +230,7 @@ export function getGameRender(
               height={GAME_PANEL.CHILD}
               width={GAME_PANEL.CHILD}
               position={[0, GAME_PANEL.CHILD * rowIndex]}
-              texture={BASE_TEXTURE}
+              image={"/textures/blank.svg"}
               tint={tintColor}
               key={`game-row-${rowIndex}`}
             />
@@ -260,7 +259,7 @@ export function getGameRender(
               height={HOLD_PANEL.CHILD}
               width={HOLD_PANEL.CHILD}
               position={[0, HOLD_PANEL.CHILD * rowIndex]}
-              texture={BASE_TEXTURE}
+              image={"/textures/blank.svg"}
               tint={tintColor}
               key={`hold-row-${rowIndex}`}
             />
@@ -295,7 +294,7 @@ export function getGameRender(
                 height={QUEUE_PANEL.CHILD}
                 width={QUEUE_PANEL.CHILD}
                 position={[0, QUEUE_PANEL.CHILD * rowIndex]}
-                texture={BASE_TEXTURE}
+                image={"/textures/blank.svg"}
                 tint={tintColor}
                 key={`queue-${spawnedIndex}-row-${rowIndex}`}
               />
