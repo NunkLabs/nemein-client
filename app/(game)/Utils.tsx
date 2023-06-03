@@ -14,6 +14,11 @@ enum TetrominoType {
   Ghost,
 }
 
+type ClearRecord = {
+  idx: number;
+  lineTypeArr: TetrominoType[];
+};
+
 /* Classic game state typings */
 type ClassicStates = {
   level: number;
@@ -38,7 +43,7 @@ type NemeinStates = {
     }[];
     lowestY: number;
   }[];
-  statusField: TetrominoType[][];
+  clearRecordsArr: ClearRecord[];
   gameOver: boolean;
   heldTetromino: TetrominoType;
   spawnedTetrominos: TetrominoType[];
