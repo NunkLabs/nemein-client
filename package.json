@@ -33,7 +33,6 @@
   },
   "lint-staged": {
     "*.{tsx,ts}": [
-      "next lint",
       "prettier --write --ignore-unknown"
     ]
   },
