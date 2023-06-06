@@ -23,11 +23,11 @@ a {
 progress {
   appearance: none;
 
-  @apply h-4 w-44 accent-slate-100 bg-slate-800 border-slate-100 border-4 rounded;
+  @apply h-4 w-44 rounded border-4 border-slate-100 bg-slate-800 accent-slate-100;
 }
 
 progress::-webkit-progress-bar {
-  @apply bg-slate-800 border-slate-100 border-4;
+  @apply border-4 border-slate-100 bg-slate-800;
 }
 
 progress::-webkit-progress-value {
@@ -50,7 +50,7 @@ progress::-moz-progress-bar {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
-  @apply bg-transparent border-4 border-transparent font-medium text-lg rounded;
+  @apply rounded border-4 border-transparent bg-transparent text-lg font-medium;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -85,39 +85,39 @@ fieldset:disabled a.button {
 }
 
 .button-light {
-  @apply text-gray-800 bg-slate-100 border-slate-100;
+  @apply border-slate-100 bg-slate-100 text-gray-800;
 }
 
 .button-light:hover {
-  @apply text-slate-100 bg-gray-800 border-slate-100;
+  @apply border-slate-100 bg-gray-800 text-slate-100;
 }
 
 .button-light.disabled,
 .button-light:disabled {
-  @apply text-gray-800 bg-transparent;
+  @apply bg-transparent text-gray-800;
 }
 
 .button-light:not(:disabled):not(.disabled):active,
 .button-light:not(:disabled):not(.disabled).active,
 .show > .button-light.dropdown-toggle {
-  @apply text-gray-800 bg-slate-100/50 border-slate-100/50;
+  @apply border-slate-100/50 bg-slate-100/50 text-gray-800;
 }
 
 .button-dark {
-  @apply text-slate-100 bg-gray-800 border-gray-800;
+  @apply border-gray-800 bg-gray-800 text-slate-100;
 }
 
 .button-dark:hover {
-  @apply text-gray-800 bg-slate-100 border-gray-800;
+  @apply border-gray-800 bg-slate-100 text-gray-800;
 }
 
 .button-dark.disabled,
 .button-dark:disabled {
-  @apply text-slate-100 bg-transparent;
+  @apply bg-transparent text-slate-100;
 }
 
 .button-dark:not(:disabled):not(.disabled):active,
 .button-dark:not(:disabled):not(.disabled).active,
 .show > .button-dark.dropdown-toggle {
-  @apply text-slate-100 bg-gray-800/50 border-gray-800/50;
+  @apply border-gray-800/50 bg-gray-800/50 text-slate-100;
 }

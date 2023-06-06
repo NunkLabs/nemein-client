@@ -7,7 +7,7 @@
   width: 176px;
   z-index: 30;
 
-  @apply border-slate-100 border-4 rounded;
+  @apply rounded border-4 border-slate-100;
 }
 
 .init-progress {
