@@ -1,9 +1,9 @@
-import Game from "./(game)/Game";
+import GameStage from "./(game)/GameStage";
 
 export default function HomePage() {
   return (
     <div className="bg-gray-800 h-screen min-w-fit relative">
-      <Game />
+      <GameStage />
     </div>
   );
 }

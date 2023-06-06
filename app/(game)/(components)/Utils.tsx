@@ -1,7 +1,7 @@
 import { Container, Graphics, PixiRef, Sprite } from "@pixi/react";
 
 /* Tetromino enum types */
-enum TetrominoType {
+export enum TetrominoType {
   Blank,
   Square,
   I,
@@ -14,13 +14,13 @@ enum TetrominoType {
   Ghost,
 }
 
-type ClearRecord = {
+export type ClearRecord = {
   idx: number;
   lineTypeArr: TetrominoType[];
 };
 
 /* Classic game state typings */
-type ClassicStates = {
+export type ClassicStates = {
   level: number;
   score: number;
   gameField: {
@@ -33,7 +33,7 @@ type ClassicStates = {
 };
 
 /* Nemein game state typings */
-type NemeinStates = {
+export type NemeinStates = {
   level: number /* Deprecated but still kept to suppress errors */;
   score: number /* Deprecated but still kept to suppress errors */;
   gameField: {
@@ -52,10 +52,10 @@ type NemeinStates = {
 type IGraphics = PixiRef<typeof Graphics>;
 
 /* Base game sizes in pixels */
-const STAGE_SIZE = 720;
-const STAGE_SPACER = 24;
+export const STAGE_SIZE = 720;
+export const STAGE_SPACER = 24;
 
-const HOLD_PANEL = {
+export const HOLD_PANEL = {
   CHILD: 24,
   HEIGHT: 120,
   WIDTH: 120,
@@ -63,7 +63,7 @@ const HOLD_PANEL = {
   Y: STAGE_SPACER * 2,
 };
 
-const GAME_PANEL = {
+export const GAME_PANEL = {
   CHILD: 30,
   HEIGHT: 600,
   WIDTH: 300,
@@ -71,7 +71,7 @@ const GAME_PANEL = {
   Y: STAGE_SPACER * 2,
 };
 
-const QUEUE_PANEL = {
+export const QUEUE_PANEL = {
   CHILD: 16,
   HEIGHT: 80,
   WIDTH: 80,
@@ -79,29 +79,29 @@ const QUEUE_PANEL = {
   Y: STAGE_SPACER * 2,
 };
 
-const BORDER_STYLE = {
+export const BORDER_STYLE = {
   WIDTH: 4,
   COLOR: 0xf1f5f9,
   ALIGNMENT: 1,
 };
 
-const TETROMINO_STYLE: {
+export const TETROMINO_STYLES: {
   [key: string]: number;
 } = {
-  BLANK: 0x1f2937,
-  SQUARE: 0xfef08a,
+  Blank: 0x1f2937,
+  Square: 0xfef08a,
   I: 0x93c5fd,
   T: 0xd8b4fe,
   J: 0xa5b4fc,
   L: 0xfdba74,
   Z: 0xfca5a5,
   S: 0x86efac,
-  GREY: 0xf1f5f9,
-  GHOST: 0xf1f5f9,
+  Grey: 0xf1f5f9,
+  Ghost: 0xf1f5f9,
 };
 
 /* Tetrominos coords consts */
-const TETROMINOS_ARR = [
+export const TETROMINOS_ARR = [
   [
     /* Blank */
     [0, 0, 0, 0, 0],
@@ -168,6 +168,10 @@ const TETROMINOS_ARR = [
   ],
 ];
 
+/**
+ * @brief: drawPanels: Draws the outer border for the game panels
+ * @param  {IGraphics}   panelGraphics   Pixi graphics object
+ */
 export function drawPanels(panelGraphics: IGraphics): void {
   panelGraphics.clear();
 
@@ -205,6 +209,11 @@ export function drawPanels(panelGraphics: IGraphics): void {
   }
 }
 
+/**
+ * @brief: getGameRender: Convert the game state to Pixi containers for render
+ * @param  {ClassicStates | NemeinStates}   gameStates   Game state to render
+ * @return {JSX.Element[]}                               Pixi containers
+ */
 export function getGameRender(
   gameStates: ClassicStates | NemeinStates
 ): JSX.Element[] {
@@ -222,7 +231,7 @@ export function getGameRender(
         {col.colArr.map((row, rowIndex) => {
           const tetromino =
             TetrominoType[typeof row === "number" ? row : row.type];
-          const tintColor = TETROMINO_STYLE[tetromino.toUpperCase()];
+          const tintColor = TETROMINO_STYLES[tetromino];
 
           return (
             <Sprite
@@ -256,7 +265,7 @@ export function getGameRender(
       >
         {col.map((row, rowIndex) => {
           const tetromino = TetrominoType[row];
-          const tintColor = TETROMINO_STYLE[tetromino.toUpperCase()];
+          const tintColor = TETROMINO_STYLES[tetromino];
 
           return (
             <Sprite
@@ -291,7 +300,7 @@ export function getGameRender(
         >
           {col.map((row, rowIndex) => {
             const tetromino = TetrominoType[row];
-            const tintColor = TETROMINO_STYLE[tetromino.toUpperCase()];
+            const tintColor = TETROMINO_STYLES[tetromino];
 
             return (
               <Sprite
@@ -313,4 +322,14 @@ export function getGameRender(
   });
 
   return pixiContainers;
+}
+
+/**
+ * @brief: randomFloatInRange: Randomizes a float in range
+ * @param  {number}   min   The minimum float
+ * @param  {number}   max   The maximum float
+ * @return {number}         The random float rounded to the nearest hundredth
+ */
+export function randomFloatInRange(min: number, max: number) {
+  return parseFloat((Math.random() * (max - min) + min).toFixed(2));
 }

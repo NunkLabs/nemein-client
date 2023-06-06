@@ -1,14 +1,15 @@
 "use client";
 
-import { Graphics, Stage } from "@pixi/react";
+import { Stage } from "@pixi/react";
 import { useEffect, useState, useRef } from "react";
 import anime from "animejs/lib/anime.es";
 
 import { Opcodes, GameSocket } from "libs/Socket";
-import { drawPanels, getGameRender } from "./Utils";
+import { STAGE_SIZE, ClassicStates, NemeinStates } from "./(components)/Utils";
+import Game from "./(components)/Game";
 import ControlPrompt from "./(prompts)/Control";
 
-import "./Game.css";
+import "./GameStage.css";
 
 const VALID_KEYS = [
   /* Left */
@@ -46,19 +47,21 @@ const VALID_KEYS = [
   " ",
 ];
 
+/* Page load animation durations */
 const INIT_ANIMATION_DURATION_MS = 500;
 const START_GAME_ANIMATION_DURATION_MS = 250;
 
-const DEFAULT_STAGE_SIZE = 720;
-
-export default function Game() {
+export default function GameStage() {
   const socket = useRef<GameSocket | null>(null);
   const isOver = useRef<boolean>(false);
 
   const [ready, setReady] = useState<boolean>(false);
   const [active, setActive] = useState<boolean>(false);
   const [resolution, setResolution] = useState<number | undefined>(undefined);
-  const [game, setGame] = useState<JSX.Element[]>([]);
+
+  const [gameStates, setGameStates] = useState<
+    ClassicStates | NemeinStates | null
+  >(null);
 
   const handleKeydown = ({ key }: { key: string }) => {
     if (isOver.current || !VALID_KEYS.includes(key)) return;
@@ -75,7 +78,7 @@ export default function Game() {
     socket.current = new GameSocket();
 
     socket.current
-      .on("progress", (progress: { percent: number }) => {
+      .on("progress", ({ percent }) => {
         const initTimeline = anime.timeline({
           easing: "easeInOutCubic",
           duration: INIT_ANIMATION_DURATION_MS,
@@ -83,10 +86,10 @@ export default function Game() {
 
         initTimeline.add({
           targets: ".init-progress",
-          value: progress.percent,
+          value: percent,
         });
 
-        if (progress.percent < 100) return;
+        if (percent < 100) return;
 
         initTimeline
           /* Matches the wrapper and the progress bar to the start button size */
@@ -107,8 +110,8 @@ export default function Game() {
             zIndex: 50,
           });
       })
-      .on("data", (data) => {
-        switch (data.op) {
+      .on("data", ({ op, data }) => {
+        switch (op) {
           case Opcodes.READY: {
             document.addEventListener("keydown", handleKeydown);
 
@@ -116,11 +119,9 @@ export default function Game() {
           }
 
           case Opcodes.DATA: {
-            const gameStates = data.data;
+            setGameStates(data);
 
-            setGame(getGameRender(gameStates));
-
-            if (gameStates.gameOver) {
+            if (data.gameOver) {
               setActive(false);
 
               isOver.current = true;
@@ -192,17 +193,17 @@ export default function Game() {
       )}
       <Stage
         className={"stage"}
-        height={DEFAULT_STAGE_SIZE}
-        width={DEFAULT_STAGE_SIZE}
+        height={STAGE_SIZE}
+        width={STAGE_SIZE}
         options={{
+          hello: true, // Logs Pixi version & renderer type
           antialias: true,
           backgroundAlpha: 0,
           powerPreference: "high-performance",
           resolution,
         }}
       >
-        <Graphics draw={drawPanels}></Graphics>
-        {game}
+        <Game gameStates={gameStates} />
       </Stage>
       {ready && !active ? (
         <ControlPrompt
