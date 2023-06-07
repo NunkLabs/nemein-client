@@ -23,7 +23,7 @@ type SpriteProperties = {
 const ANIMATION_SPEED_MULTIPLIER = 5;
 
 /* Max animation duration in seconds */
-const MAX_ANIMATION_DURATION = 3;
+const MAX_ANIMATION_DURATION_S = 3;
 
 /* Float ranges for displacement values */
 const HORIZONTAL_DISPLACEMENT_FLOOR = -2.5;
@@ -100,11 +100,11 @@ export default function ClearedBlock({
   );
 
   useTick((delta, ticker) => {
-    if (time.current > MAX_ANIMATION_DURATION) return;
+    if (time.current > MAX_ANIMATION_DURATION_S) return;
 
     /* Tracks the current animation progress */
     progress.current = parseFloat(
-      (time.current / MAX_ANIMATION_DURATION).toFixed(2)
+      (time.current / MAX_ANIMATION_DURATION_S).toFixed(2)
     );
 
     const verticalDisplacement =

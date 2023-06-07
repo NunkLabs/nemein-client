@@ -48,17 +48,19 @@ const VALID_KEYS = [
 ];
 
 /* Page load animation durations */
-const INIT_ANIMATION_DURATION_MS = 500;
-const START_GAME_ANIMATION_DURATION_MS = 250;
+const START_BUTTON_ANIMATION_DURATION_MS = 500;
+const PROGRESS_BAR_ANIMATION_DURATION_MS = 250;
+const GAME_STAGE_ANIMATION_DURATION_MS = 500;
 
 export default function GameStage() {
-  const socket = useRef<GameSocket | null>(null);
+  const gameSocket = useRef<GameSocket | null>(null);
+  const devicePixelRatio = useRef<number | undefined>(undefined);
   const isOver = useRef<boolean>(false);
 
   const [ready, setReady] = useState<boolean>(false);
   const [active, setActive] = useState<boolean>(false);
-  const [resolution, setResolution] = useState<number | undefined>(undefined);
-
+  const [animateStage, setAnimateStage] = useState<boolean>(false);
+  const [loadingProgress, setLoadingProgress] = useState<number>(0);
   const [gameStates, setGameStates] = useState<
     ClassicStates | NemeinStates | null
   >(null);
@@ -66,49 +68,27 @@ export default function GameStage() {
   const handleKeydown = ({ key }: { key: string }) => {
     if (isOver.current || !VALID_KEYS.includes(key)) return;
 
-    socket.current?.send({
+    gameSocket.current?.send({
       op: Opcodes.INPUT,
       data: key,
     });
   };
 
   useEffect(() => {
-    setResolution(window.devicePixelRatio);
+    devicePixelRatio.current = window.devicePixelRatio;
 
-    socket.current = new GameSocket();
+    gameSocket.current = new GameSocket();
 
-    socket.current
+    gameSocket.current
       .on("progress", ({ percent }) => {
-        const initTimeline = anime.timeline({
-          easing: "easeInOutCubic",
-          duration: INIT_ANIMATION_DURATION_MS,
-        });
-
-        initTimeline.add({
+        anime({
           targets: ".init-progress",
+          easing: "easeInOutCubic",
+          duration: PROGRESS_BAR_ANIMATION_DURATION_MS,
           value: percent,
         });
 
-        if (percent < 100) return;
-
-        initTimeline
-          /* Matches the wrapper and the progress bar to the start button size */
-          .add({
-            targets: [".animation-wrapper", ".init-progress"],
-            height: 32,
-          })
-          /* Hides progress bar */
-          .add({
-            targets: [".init-progress"],
-            opacity: 0,
-            zIndex: 0,
-          })
-          /* Reveals the start button & brings it the the top most layer */
-          .add({
-            targets: [".start-button"],
-            opacity: 1,
-            zIndex: 50,
-          });
+        setLoadingProgress(percent);
       })
       .on("data", ({ op, data }) => {
         switch (op) {
@@ -134,7 +114,7 @@ export default function GameStage() {
         }
       });
 
-    const currentSocket = socket.current;
+    const currentSocket = gameSocket.current;
 
     return () => {
       /* Clean up on component unmount */
@@ -146,53 +126,40 @@ export default function GameStage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!animateStage || loadingProgress < 100) return;
+
+    const stageTimeline = anime.timeline({
+      easing: "easeInOutCubic",
+      duration: GAME_STAGE_ANIMATION_DURATION_MS,
+    });
+
+    stageTimeline
+      .add({
+        targets: [".animation-wrapper", ".init-progress"],
+        opacity: 0,
+        zIndex: 0,
+      })
+      .add({
+        targets: ".stage",
+        opacity: 1,
+        zIndex: 50,
+        complete: () => {
+          gameSocket.current?.send({
+            op: Opcodes.READY,
+            data: process.env.NODE_ENV === "production" ? "classic" : "nemein",
+          });
+
+          setReady(true);
+          setActive(true);
+        },
+      });
+  }, [animateStage, loadingProgress]);
+
   return (
     <div className="grid h-screen place-items-center px-5 py-5">
-      {ready ? null : (
-        <>
-          <div className="animation-wrapper" />
-          <progress className="init-progress" value="10" max="100" />
-          <button
-            className={"start-button button button-light"}
-            onClick={() => {
-              const startTimeline = anime.timeline({
-                easing: "easeInOutCubic",
-                duration: START_GAME_ANIMATION_DURATION_MS,
-              });
-
-              startTimeline
-                /* Hides the wrapper & start button */
-                .add({
-                  targets: [".animation-wrapper", ".start-button"],
-                  opacity: 0,
-                  zIndex: 0,
-                })
-                /* Reveals the game stage */
-                .add({
-                  targets: ".stage",
-                  opacity: 1,
-                  complete: () => {
-                    setReady(true);
-
-                    socket.current?.send({
-                      op: Opcodes.READY,
-                      data:
-                        process.env.NODE_ENV === "production"
-                          ? "classic"
-                          : "nemein",
-                    });
-
-                    setActive(true);
-                  },
-                });
-            }}
-          >
-            Play
-          </button>
-        </>
-      )}
       <Stage
-        className={"stage"}
+        className="stage"
         height={STAGE_SIZE}
         width={STAGE_SIZE}
         options={{
@@ -200,18 +167,52 @@ export default function GameStage() {
           antialias: true,
           backgroundAlpha: 0,
           powerPreference: "high-performance",
-          resolution,
+          resolution: devicePixelRatio.current,
         }}
       >
         <Game gameStates={gameStates} />
       </Stage>
+      {ready ? null : (
+        <div className="animation-wrapper">
+          <button
+            className={"start-button button button-light"}
+            onClick={() => {
+              const startTimeline = anime.timeline({
+                easing: "easeInOutCubic",
+                duration: START_BUTTON_ANIMATION_DURATION_MS,
+              });
+
+              startTimeline
+                /* Hides start button */
+                .add({
+                  targets: [".start-button"],
+                  opacity: 0,
+                  zIndex: 0,
+                })
+                .add({
+                  targets: [".animation-wrapper"],
+                  height: 16,
+                })
+                .add({
+                  targets: [".init-progress"],
+                  opacity: 1,
+                  zIndex: 50,
+                  complete: () => setAnimateStage(true),
+                });
+            }}
+          >
+            Play
+          </button>
+          <progress className="init-progress" value="10" max="100" />
+        </div>
+      )}
       {ready && !active ? (
         <ControlPrompt
           isOver={isOver.current}
           restartGame={() => {
-            if (!socket.current) return;
+            if (!gameSocket.current) return;
 
-            socket.current.send({
+            gameSocket.current.send({
               op: Opcodes.READY,
               data:
                 process.env.NODE_ENV === "production" ? "classic" : "nemein",
