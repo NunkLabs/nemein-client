@@ -87,18 +87,6 @@ export class GameSocket extends EventEmitter {
                 break;
               }
 
-              case Opcodes.HEARTBEAT: {
-                if (!data.timestamp) return;
-
-                console.log(
-                  `Latency to ${this.socket?.url} is ${
-                    Date.now() - data.timestamp
-                  }`
-                );
-
-                break;
-              }
-
               case Opcodes.PING: {
                 if (!data.timestamp) return;
 

@@ -1,15 +1,14 @@
 "use client";
 
-import { Stage } from "@pixi/react";
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import anime from "animejs/lib/anime.es";
 
 import { Opcodes, GameSocket } from "libs/Socket";
-import { STAGE_SIZE, ClassicStates, NemeinStates } from "./(components)/Utils";
+import { ClassicStates, NemeinStates } from "./(components)/Utils";
 import Game from "./(components)/Game";
+import StartPrompt from "./(prompts)/Start";
 import ControlPrompt from "./(prompts)/Control";
-
-import "./GameStage.css";
+import SettingsPrompt from "./(prompts)/Settings";
 
 const VALID_KEYS = [
   /* Left */
@@ -47,42 +46,73 @@ const VALID_KEYS = [
   " ",
 ];
 
-/* Page load animation durations */
-const START_BUTTON_ANIMATION_DURATION_MS = 500;
 const PROGRESS_BAR_ANIMATION_DURATION_MS = 250;
 const GAME_STAGE_ANIMATION_DURATION_MS = 500;
 
 export default function GameStage() {
   const gameSocket = useRef<GameSocket | null>(null);
-  const devicePixelRatio = useRef<number | undefined>(undefined);
   const isOver = useRef<boolean>(false);
 
-  const [ready, setReady] = useState<boolean>(false);
-  const [active, setActive] = useState<boolean>(false);
-  const [animateStage, setAnimateStage] = useState<boolean>(false);
   const [loadingProgress, setLoadingProgress] = useState<number>(0);
+  const [showGameStage, setShowGameStage] = useState<boolean>(false);
+  const [showControl, setShowControl] = useState<boolean>(false);
+  const [showSettings, setShowSettings] = useState<boolean>(false);
+  const [gameLatency, setGameLatency] = useState<number>(0);
+  const [performanceInfo, setPerformanceInfo] = useState<{
+    fps: number;
+    frameTime: number;
+  }>({
+    fps: 0,
+    frameTime: 0,
+  });
   const [gameStates, setGameStates] = useState<
     ClassicStates | NemeinStates | null
   >(null);
+  const [gameOptions, setGameOptions] = useState<{
+    isClassic: boolean;
+    antialias: boolean;
+    powerPreference: "default" | "high-performance" | "low-power";
+    performanceDisplay: boolean;
+    screenShake: boolean;
+  }>({
+    isClassic: process.env.NODE_ENV === "production",
+    antialias: true,
+    powerPreference: "default",
+    performanceDisplay: false,
+    screenShake: true,
+  });
 
   const handleKeydown = ({ key }: { key: string }) => {
-    if (isOver.current || !VALID_KEYS.includes(key)) return;
+    if (isOver.current || !gameSocket.current || !VALID_KEYS.includes(key))
+      return;
 
-    gameSocket.current?.send({
+    gameSocket.current.send({
       op: Opcodes.INPUT,
       data: key,
     });
   };
 
-  useEffect(() => {
-    devicePixelRatio.current = window.devicePixelRatio;
+  const toggleGame = useCallback(() => {
+    if (!gameSocket.current) return;
 
+    gameSocket.current.send({
+      op: Opcodes.READY,
+      data: gameOptions.isClassic ? "classic" : "nemein",
+    });
+
+    isOver.current = false;
+
+    setShowControl(false);
+  }, [gameOptions]);
+
+  useEffect(() => {
     gameSocket.current = new GameSocket();
 
     gameSocket.current
       .on("progress", ({ percent }) => {
+        /* Updates the progress bar */
         anime({
-          targets: ".init-progress",
+          targets: "#init-progress",
           easing: "easeInOutCubic",
           duration: PROGRESS_BAR_ANIMATION_DURATION_MS,
           value: percent,
@@ -90,10 +120,18 @@ export default function GameStage() {
 
         setLoadingProgress(percent);
       })
-      .on("data", ({ op, data }) => {
+      .on("data", ({ op, timestamp, data }) => {
         switch (op) {
           case Opcodes.READY: {
             document.addEventListener("keydown", handleKeydown);
+
+            break;
+          }
+
+          case Opcodes.HEARTBEAT: {
+            if (!timestamp || !gameOptions.performanceDisplay) return;
+
+            setGameLatency(Date.now() - timestamp);
 
             break;
           }
@@ -102,9 +140,9 @@ export default function GameStage() {
             setGameStates(data);
 
             if (data.gameOver) {
-              setActive(false);
-
               isOver.current = true;
+
+              setShowControl(true);
             }
 
             break;
@@ -124,105 +162,63 @@ export default function GameStage() {
 
       currentSocket.destroy();
     };
-  }, []);
+  }, [gameOptions]);
 
   useEffect(() => {
-    if (!animateStage || loadingProgress < 100) return;
+    if (loadingProgress < 100 || !showGameStage) return;
 
-    const stageTimeline = anime.timeline({
-      easing: "easeInOutCubic",
-      duration: GAME_STAGE_ANIMATION_DURATION_MS,
-    });
-
-    stageTimeline
+    anime
+      .timeline({
+        easing: "easeInOutCubic",
+        duration: GAME_STAGE_ANIMATION_DURATION_MS,
+      })
+      /* Hides the animation wrapper & the progress bar */
       .add({
-        targets: [".animation-wrapper", ".init-progress"],
+        targets: ["#animation-wrapper", "#init-progress"],
         opacity: 0,
         zIndex: 0,
       })
+      /* Reveals the game stage */
       .add({
-        targets: ".stage",
+        targets: "#game-stage",
         opacity: 1,
         zIndex: 50,
-        complete: () => {
-          gameSocket.current?.send({
-            op: Opcodes.READY,
-            data: process.env.NODE_ENV === "production" ? "classic" : "nemein",
-          });
-
-          setReady(true);
-          setActive(true);
-        },
+        complete: toggleGame,
       });
-  }, [animateStage, loadingProgress]);
+  }, [loadingProgress, showGameStage, toggleGame]);
 
   return (
     <div className="grid h-screen place-items-center px-5 py-5">
-      <Stage
-        className="stage"
-        height={STAGE_SIZE}
-        width={STAGE_SIZE}
-        options={{
-          hello: true, // Logs Pixi version & renderer type
-          antialias: true,
-          backgroundAlpha: 0,
-          powerPreference: "high-performance",
-          resolution: devicePixelRatio.current,
-        }}
-      >
-        <Game gameStates={gameStates} />
-      </Stage>
-      {ready ? null : (
-        <div className="animation-wrapper">
-          <button
-            className={"start-button button button-light"}
-            onClick={() => {
-              const startTimeline = anime.timeline({
-                easing: "easeInOutCubic",
-                duration: START_BUTTON_ANIMATION_DURATION_MS,
-              });
-
-              startTimeline
-                /* Hides start button */
-                .add({
-                  targets: [".start-button"],
-                  opacity: 0,
-                  zIndex: 0,
-                })
-                .add({
-                  targets: [".animation-wrapper"],
-                  height: 16,
-                })
-                .add({
-                  targets: [".init-progress"],
-                  opacity: 1,
-                  zIndex: 50,
-                  complete: () => setAnimateStage(true),
-                });
-            }}
-          >
-            Play
-          </button>
-          <progress className="init-progress" value="10" max="100" />
-        </div>
-      )}
-      {ready && !active ? (
-        <ControlPrompt
-          isOver={isOver.current}
-          restartGame={() => {
-            if (!gameSocket.current) return;
-
-            gameSocket.current.send({
-              op: Opcodes.READY,
-              data:
-                process.env.NODE_ENV === "production" ? "classic" : "nemein",
-            });
-
-            setActive(true);
-
-            isOver.current = false;
-          }}
+      {showGameStage ? (
+        <Game
+          gameStates={gameStates}
+          gameOptions={gameOptions}
+          setPerformanceInfo={setPerformanceInfo}
         />
+      ) : (
+        <StartPrompt
+          showGameStage={setShowGameStage}
+          showSettings={setShowSettings}
+        />
+      )}
+      {showControl ? (
+        <ControlPrompt isOver={isOver.current} toggleGame={toggleGame} />
+      ) : null}
+      {showSettings ? (
+        <SettingsPrompt
+          options={gameOptions}
+          applyOptions={setGameOptions}
+          showSettings={setShowSettings}
+        />
+      ) : null}
+      {gameOptions.performanceDisplay ? (
+        <div
+          className="text-md absolute bottom-[1%] left-1/2  
+            translate-x-[-50%] translate-y-[-50%] font-medium text-slate-100"
+        >
+          latency: {gameLatency}ms • fps: {performanceInfo.fps} • frame time:{" "}
+          {performanceInfo.frameTime}ms
+        </div>
       ) : null}
     </div>
   );

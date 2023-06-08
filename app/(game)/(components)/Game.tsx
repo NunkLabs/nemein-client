@@ -1,17 +1,31 @@
-import { Container, Graphics } from "@pixi/react";
-import { useEffect, useState } from "react";
+import { Container, Graphics, Stage } from "@pixi/react";
+import { useEffect, useState, useRef } from "react";
 
 import {
   GAME_PANEL,
+  STAGE_SIZE,
   ClassicStates,
   NemeinStates,
   drawPanels,
   getGameRender,
 } from "./Utils";
 import ClearedBlock from "./ClearedBlock";
+import PerfTracker from "./PerfTracker";
+
+export type PowerPreference = "default" | "high-performance" | "low-power";
+
+export type GameOptions = {
+  isClassic: boolean;
+  antialias: boolean;
+  powerPreference: PowerPreference;
+  performanceDisplay: boolean;
+  screenShake: boolean;
+};
 
 type GameProps = {
   gameStates: ClassicStates | NemeinStates | null;
+  gameOptions: GameOptions;
+  setPerformanceInfo: (info: { fps: number; frameTime: number }) => void;
 };
 
 const SCREEN_SHAKE_INTERVAL_MS = 10;
@@ -22,12 +36,20 @@ const SCREEN_SHAKE_OFFSETS: [number, number][] = [
   [0, 0],
 ];
 
-export default function Game({ gameStates }: GameProps) {
+export default function Game({
+  gameStates,
+  gameOptions,
+  setPerformanceInfo,
+}: GameProps) {
+  const devicePixelRatio = useRef<number | undefined>(undefined);
+
   const [position, setPosition] = useState<[number, number]>([0, 0]);
   const [gameRender, setGameRender] = useState<JSX.Element[]>([]);
   const [clearedBlocks, setClearedBlocks] = useState<JSX.Element[]>([]);
 
   useEffect(() => {
+    devicePixelRatio.current = window.devicePixelRatio;
+
     if (!gameStates) return;
 
     const render = getGameRender(gameStates);
@@ -53,6 +75,8 @@ export default function Game({ gameStates }: GameProps) {
         ]);
       });
 
+      if (!gameOptions.screenShake) return;
+
       let offsetIterationIndex = 0;
 
       const screenShakeInterval = setInterval(() => {
@@ -65,13 +89,30 @@ export default function Game({ gameStates }: GameProps) {
         clearInterval(screenShakeInterval);
       }, SCREEN_SHAKE_INTERVAL_MS);
     }
-  }, [gameStates]);
+  }, [gameStates, gameOptions]);
 
   return (
-    <Container position={position}>
-      <Graphics draw={drawPanels}></Graphics>
-      {gameRender}
-      {clearedBlocks}
-    </Container>
+    <Stage
+      className="opacity-0"
+      id="game-stage"
+      height={STAGE_SIZE}
+      width={STAGE_SIZE}
+      options={{
+        hello: true, // Logs Pixi version & renderer type
+        antialias: gameOptions.antialias,
+        backgroundAlpha: 0,
+        powerPreference: gameOptions.powerPreference,
+        resolution: devicePixelRatio.current,
+      }}
+    >
+      <Container position={position}>
+        <Graphics draw={drawPanels}></Graphics>
+        {gameRender}
+        {clearedBlocks}
+      </Container>
+      {gameOptions.performanceDisplay ? (
+        <PerfTracker setPerformanceInfo={setPerformanceInfo} />
+      ) : null}
+    </Stage>
   );
 }

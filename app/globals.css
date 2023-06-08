@@ -121,3 +121,22 @@ fieldset:disabled a.button {
 .show > .button-dark.dropdown-toggle {
   @apply border-gray-800/50 bg-gray-800/50 text-slate-100;
 }
+
+.button-alt {
+  @apply border-slate-100 bg-gray-800 text-slate-100;
+}
+
+.button-alt:hover {
+  @apply border-slate-100 bg-slate-100 text-gray-800;
+}
+
+.button-alt.disabled,
+.button-alt:disabled {
+  @apply bg-transparent text-gray-800;
+}
+
+.button-alt:not(:disabled):not(.disabled):active,
+.button-alt:not(:disabled):not(.disabled).active,
+.show > .button-alt.dropdown-toggle {
+  @apply border-slate-100/50 bg-slate-100/50 text-gray-800;
+}
