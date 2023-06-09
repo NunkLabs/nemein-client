@@ -100,7 +100,16 @@ export default function ClearedBlock({
   );
 
   useTick((delta, ticker) => {
-    if (time.current > MAX_ANIMATION_DURATION_S) return;
+    if (time.current > MAX_ANIMATION_DURATION_S) {
+      /* Resets and ensures the sprite is hidden until it's detached */
+      setSpriteProperties({
+        alpha: 0,
+        position: [initialXDisplacement, initialYDisplacement],
+        scale: 1,
+      });
+
+      return;
+    }
 
     /* Tracks the current animation progress */
     progress.current = parseFloat(
@@ -116,7 +125,7 @@ export default function ClearedBlock({
     const currentYPosition = initialYDisplacement - verticalDisplacement;
 
     setSpriteProperties({
-      alpha: progress.current > 1 ? 0 : 1 - progress.current,
+      alpha: 1 - progress.current,
       position: [currentXPosition, currentYPosition],
       scale: 1 + progress.current * maxScale,
     });
