@@ -28,6 +28,7 @@ type GameProps = {
   setPerformanceInfo: (info: { fps: number; frameTime: number }) => void;
 };
 
+const MAX_CLEARED_BLOCKS = 200;
 const SCREEN_SHAKE_INTERVAL_MS = 10;
 const SCREEN_SHAKE_OFFSETS: [number, number][] = [
   [0, 0],
@@ -60,7 +61,7 @@ export default function Game({
       const timestamp = Date.now();
 
       gameStates.clearRecordsArr.forEach(({ idx: rowIndex, lineTypeArr }) => {
-        const newClearedBlocks = lineTypeArr.map((type, colIndex) => (
+        const nextClearedBlocks = lineTypeArr.map((type, colIndex) => (
           <ClearedBlock
             type={type}
             initialXDisplacement={GAME_PANEL.X + GAME_PANEL.CHILD * colIndex}
@@ -69,10 +70,17 @@ export default function Game({
           />
         ));
 
-        setClearedBlocks((clearedBlocks) => [
-          ...clearedBlocks,
-          ...newClearedBlocks,
-        ]);
+        setClearedBlocks((clearedBlocks) => {
+          const newClearedBlocks = clearedBlocks.concat(nextClearedBlocks);
+
+          /* Detaches older blocks if max cleared blocks is reached */
+          return newClearedBlocks.length > MAX_CLEARED_BLOCKS
+            ? newClearedBlocks.splice(
+                newClearedBlocks.length - MAX_CLEARED_BLOCKS,
+                MAX_CLEARED_BLOCKS
+              )
+            : newClearedBlocks;
+        });
       });
 
       if (!gameOptions.screenShake) return;
