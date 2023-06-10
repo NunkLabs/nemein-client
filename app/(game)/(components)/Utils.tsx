@@ -14,9 +14,21 @@ export enum TetrominoType {
   Ghost,
 }
 
+export enum DmgType {
+  Physical,
+  Fire,
+  Cold,
+  Lightning,
+}
+
 export type ClearRecord = {
   idx: number;
   lineTypeArr: TetrominoType[];
+  wasCrit: boolean;
+  dmgDealt: {
+    dominantDmgType: DmgType;
+    value: number;
+  };
 };
 
 /* Classic game state typings */
