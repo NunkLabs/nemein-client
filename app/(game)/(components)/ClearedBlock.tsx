@@ -17,13 +17,22 @@ type ClearedBlockProps = {
 type SpriteProperties = {
   alpha: number;
   position: [number, number];
+  rotation: number;
   scale: number;
 };
 
-const ANIMATION_SPEED_MULTIPLIER = 5;
+/* Timer multiplier to control the speed of the animation*/
+const ANIMATION_TIMER_MULTIPLIER = 5;
 
 /* Max animation duration in seconds */
-const MAX_ANIMATION_DURATION_S = 3;
+const ANIMATION_DURATION_S = 3;
+
+/* Anchor to set the origin point of the sprite */
+const SPRITE_ANCHOR = 0;
+
+/* Float ranges for radian rotation values */
+const RADIAN_ROTATION_FLOOR = -3.5;
+const RADIAN_ROTATION_CEIL = 3.5;
 
 /* Float ranges for displacement values */
 const HORIZONTAL_DISPLACEMENT_FLOOR = -2.5;
@@ -49,8 +58,15 @@ export default function ClearedBlock({
   const [spriteProperties, setSpriteProperties] = useState<SpriteProperties>({
     alpha: 1,
     position: [initialXDisplacement, initialYDisplacement],
+    rotation: 0,
     scale: 1,
   });
+
+  /* Randomizes the radian rotation value */
+  const maxRotation = useMemo(
+    () => randomFloatInRange(RADIAN_ROTATION_FLOOR, RADIAN_ROTATION_CEIL),
+    []
+  );
 
   /* Randomizes max displacements relative to the block size */
   const maxXDisplacement = useMemo(
@@ -100,11 +116,12 @@ export default function ClearedBlock({
   );
 
   useTick((delta, ticker) => {
-    if (time.current > MAX_ANIMATION_DURATION_S) {
+    if (time.current > ANIMATION_DURATION_S) {
       /* Resets and ensures the sprite is hidden until it's detached */
       setSpriteProperties({
         alpha: 0,
         position: [initialXDisplacement, initialYDisplacement],
+        rotation: 0,
         scale: 1,
       });
 
@@ -112,9 +129,7 @@ export default function ClearedBlock({
     }
 
     /* Tracks the current animation progress */
-    progress.current = parseFloat(
-      (time.current / MAX_ANIMATION_DURATION_S).toFixed(2)
-    );
+    progress.current = time.current / ANIMATION_DURATION_S;
 
     const verticalDisplacement =
       time.current * velocity + 0.5 * acceleration * Math.pow(time.current, 2);
@@ -127,6 +142,7 @@ export default function ClearedBlock({
     setSpriteProperties({
       alpha: 1 - progress.current,
       position: [currentXPosition, currentYPosition],
+      rotation: progress.current * maxRotation,
       scale: 1 + progress.current * maxScale,
     });
 
@@ -135,16 +151,18 @@ export default function ClearedBlock({
      * in milliseconds. This value is approximately 1 divided by FPS value.
      * We multiply it with 0.001 to convert it to seconds.
      */
-    time.current += ticker.deltaMS * 0.001 * ANIMATION_SPEED_MULTIPLIER;
+    time.current += ticker.deltaMS * 0.001 * ANIMATION_TIMER_MULTIPLIER;
   });
 
   return (
     <Sprite
       alpha={spriteProperties.alpha}
+      anchor={SPRITE_ANCHOR}
       height={GAME_PANEL.CHILD * spriteProperties.scale}
       width={GAME_PANEL.CHILD * spriteProperties.scale}
       position={spriteProperties.position}
       image={"/textures/blank.svg"}
+      rotation={spriteProperties.rotation}
       tint={TETROMINO_STYLES[TetrominoType[type]]}
     />
   );
