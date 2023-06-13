@@ -1,13 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import anime from "animejs/lib/anime.es";
 
-import { GameOptions, PowerPreference } from "../(components)/Game";
-
-type SettingsProps = {
-  options: GameOptions;
-  applyOptions: (options: GameOptions) => void;
-  showSettings: (settings: boolean) => void;
-};
+import { GameContext } from "../Game";
 
 const POWER_PREFERENCE_OPTIONS = {
   default: "default",
@@ -21,11 +15,42 @@ const BASE_SETTINGS_ANIMATION_PARAMS = {
   duration: 500,
 };
 
-export default function Settings({
-  options,
-  applyOptions,
-  showSettings,
-}: SettingsProps) {
+function SettingsField({
+  buttonLabel,
+  fieldLabel,
+  onClickAction,
+}: {
+  buttonLabel: string;
+  fieldLabel: string;
+  onClickAction: () => void;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-x-1">
+      <div
+        className="button button-dark h-[32px] w-[192px]"
+        onClick={onClickAction}
+      >
+        {buttonLabel}
+      </div>
+      <div
+        className="inline-block h-[32px] w-[192px] rounded border-4
+          border-gray-800 bg-transparent text-center align-middle text-lg
+          font-medium"
+      >
+        {fieldLabel}
+      </div>
+    </div>
+  );
+}
+
+export default function SettingsPrompt() {
+  const { gameSettings, setGameSettings, setSettingsVisibility } =
+    useContext(GameContext);
+
+  if (!setGameSettings || !setSettingsVisibility) {
+    throw new Error("Set state actions are nullish.");
+  }
+
   const powerPreferenceIndex = useRef<number>(0);
 
   useEffect(() => {
@@ -43,116 +68,66 @@ export default function Settings({
     >
       <p className="text-3xl font-bold text-slate-800">settings</p>
       <div className="grid grid-rows-5 gap-y-1">
-        <div className="grid grid-cols-2 gap-x-1">
-          <button
-            className="button button-dark h-[32px] w-[192px]"
-            onClick={() =>
-              applyOptions({
-                ...options,
-                isClassic: !options.isClassic,
-              })
-            }
-          >
-            game mode
-          </button>
-          <div
-            className="inline-block h-[32px] w-[192px] rounded border-4
-              border-gray-800 bg-transparent text-center align-middle text-lg
-              font-medium"
-          >
-            {options.isClassic ? "classic" : "nemein"}
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-x-1">
-          <button
-            className="button button-dark h-[32px] w-[192px]"
-            onClick={() =>
-              applyOptions({
-                ...options,
-                antialias: !options.antialias,
-              })
-            }
-          >
-            antiliasing
-          </button>
-          <div
-            className="inline-block h-[32px] w-[192px] rounded border-4
-              border-gray-800 bg-transparent text-center align-middle text-lg
-              font-medium"
-          >
-            {options.antialias ? "on" : "off"}
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-x-1">
-          <button
-            className="button button-dark h-[32px] w-[192px]"
-            onClick={() => {
-              const powerPreferenceOptions = Object.keys(
-                POWER_PREFERENCE_OPTIONS
-              ) as PowerPreference[];
+        <SettingsField
+          buttonLabel={"game mode"}
+          fieldLabel={gameSettings.isClassic ? "classic" : "nemein"}
+          onClickAction={() =>
+            setGameSettings({
+              ...gameSettings,
+              isClassic: !gameSettings.isClassic,
+            })
+          }
+        />
+        <SettingsField
+          buttonLabel={"antialias"}
+          fieldLabel={gameSettings.antialias ? "on" : "off"}
+          onClickAction={() =>
+            setGameSettings({
+              ...gameSettings,
+              antialias: !gameSettings.antialias,
+            })
+          }
+        />
+        <SettingsField
+          buttonLabel={"power preference"}
+          fieldLabel={POWER_PREFERENCE_OPTIONS[gameSettings.powerPreference]}
+          onClickAction={() => {
+            const powerPreferenceOptions = Object.keys(
+              POWER_PREFERENCE_OPTIONS
+            ) as ("default" | "high-performance" | "low-power")[];
 
-              powerPreferenceIndex.current =
-                powerPreferenceIndex.current + 1 < powerPreferenceOptions.length
-                  ? powerPreferenceIndex.current + 1
-                  : 0;
+            powerPreferenceIndex.current =
+              powerPreferenceIndex.current + 1 < powerPreferenceOptions.length
+                ? powerPreferenceIndex.current + 1
+                : 0;
 
-              applyOptions({
-                ...options,
-                powerPreference:
-                  powerPreferenceOptions[powerPreferenceIndex.current],
-              });
-            }}
-          >
-            power preference
-          </button>
-          <div
-            className="inline-block h-[32px] w-[192px] rounded border-4
-              border-gray-800 bg-transparent text-center align-middle text-lg
-              font-medium"
-          >
-            {POWER_PREFERENCE_OPTIONS[options.powerPreference]}
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-x-1">
-          <button
-            className="button button-dark h-[32px] w-[192px]"
-            onClick={() =>
-              applyOptions({
-                ...options,
-                performanceDisplay: !options.performanceDisplay,
-              })
-            }
-          >
-            performance display
-          </button>
-          <div
-            className="inline-block h-[32px] w-[192px] rounded border-4
-              border-gray-800 bg-transparent text-center align-middle text-lg
-              font-medium"
-          >
-            {options.performanceDisplay ? "on" : "off"}
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-x-1">
-          <button
-            className="button button-dark h-[32px] w-[192px]"
-            onClick={() =>
-              applyOptions({
-                ...options,
-                screenShake: !options.screenShake,
-              })
-            }
-          >
-            screen shake
-          </button>
-          <div
-            className="inline-block h-[32px] w-[192px] rounded border-4
-              border-gray-800 bg-transparent text-center align-middle text-lg
-              font-medium"
-          >
-            {options.screenShake ? "on" : "off"}
-          </div>
-        </div>
+            setGameSettings({
+              ...gameSettings,
+              powerPreference:
+                powerPreferenceOptions[powerPreferenceIndex.current],
+            });
+          }}
+        />
+        <SettingsField
+          buttonLabel={"performance display"}
+          fieldLabel={gameSettings.performanceDisplay ? "on" : "off"}
+          onClickAction={() =>
+            setGameSettings({
+              ...gameSettings,
+              performanceDisplay: !gameSettings.performanceDisplay,
+            })
+          }
+        />
+        <SettingsField
+          buttonLabel={"stage shake"}
+          fieldLabel={gameSettings.stageShake ? "on" : "off"}
+          onClickAction={() =>
+            setGameSettings({
+              ...gameSettings,
+              stageShake: !gameSettings.stageShake,
+            })
+          }
+        />
       </div>
       <button
         className="button button-dark h-[32px] w-[192px]"
@@ -160,7 +135,7 @@ export default function Settings({
           anime({
             ...BASE_SETTINGS_ANIMATION_PARAMS,
             opacity: 0,
-            complete: () => showSettings(false),
+            complete: () => setSettingsVisibility(false),
           });
         }}
       >

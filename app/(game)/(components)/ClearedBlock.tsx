@@ -8,12 +8,6 @@ import {
   randomFloatInRange,
 } from "./Utils";
 
-type ClearedBlockProps = {
-  type: TetrominoType;
-  initialXDisplacement: number;
-  initialYDisplacement: number;
-};
-
 type SpriteProperties = {
   alpha: number;
   position: [number, number];
@@ -51,7 +45,11 @@ export default function ClearedBlock({
   type,
   initialXDisplacement,
   initialYDisplacement,
-}: ClearedBlockProps) {
+}: {
+  type: TetrominoType;
+  initialXDisplacement: number;
+  initialYDisplacement: number;
+}) {
   const time = useRef<number>(0);
   const progress = useRef<number>(0);
 

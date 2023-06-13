@@ -1,18 +1,19 @@
 import { useEffect } from "react";
 import anime from "animejs/lib/anime.es";
 
-type ControlProps = {
-  isOver: boolean;
-  toggleGame: () => void;
-};
-
 const BASE_CONTROL_ANIMATION_PARAMS = {
   targets: "#control-prompt",
   easing: "easeInOutCubic",
   duration: 500,
 };
 
-export default function ControlPrompt({ isOver, toggleGame }: ControlProps) {
+export default function ControlPrompt({
+  isOver,
+  toggleGame,
+}: {
+  isOver: boolean;
+  toggleGame: () => void;
+}) {
   useEffect(() => {
     anime({
       ...BASE_CONTROL_ANIMATION_PARAMS,

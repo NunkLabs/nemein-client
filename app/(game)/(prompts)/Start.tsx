@@ -1,15 +1,18 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import anime from "animejs/lib/anime.es";
 
-type StartProps = {
-  showGameStage: (gameStage: boolean) => void;
-  showSettings: (settings: boolean) => void;
-};
+import { GameContext } from "../Game";
 
 const START_BUTTON_ANIMATION_DURATION_MS = 250;
 const START_PROMPT_ANIMATION_DURATION_MS = 250;
 
-export default function Start({ showGameStage, showSettings }: StartProps) {
+export default function StartPrompt() {
+  const { setStageVisibility, setSettingsVisibility } = useContext(GameContext);
+
+  if (!setStageVisibility || !setSettingsVisibility) {
+    throw new Error("Set station actions are nullish.");
+  }
+
   useEffect(() => {
     anime
       .timeline({
@@ -62,7 +65,7 @@ export default function Start({ showGameStage, showSettings }: StartProps) {
                 targets: ["#init-progress"],
                 opacity: 1,
                 zIndex: 50,
-                complete: () => showGameStage(true),
+                complete: () => setStageVisibility(true),
               });
           }}
           type="button"
@@ -81,7 +84,7 @@ export default function Start({ showGameStage, showSettings }: StartProps) {
         className="button button-alt absolute left-1/2 top-1/2 z-[50]
           h-[32px] w-[176px] translate-x-[-50%] translate-y-[70%]  opacity-0"
         id="settings-button"
-        onClick={() => showSettings(true)}
+        onClick={() => setSettingsVisibility(true)}
         type="button"
       >
         Settings

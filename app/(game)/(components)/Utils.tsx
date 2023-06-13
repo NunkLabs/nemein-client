@@ -222,11 +222,11 @@ export function drawPanels(panelGraphics: IGraphics): void {
 }
 
 /**
- * @brief: getGameRender: Convert the game state to Pixi containers for render
+ * @brief: getGameContainers: Convert game states to Pixi containers for render
  * @param  {ClassicStates | NemeinStates}   gameStates   Game state to render
  * @return {JSX.Element[]}                               Pixi containers
  */
-export function getGameRender(
+export function getGameContainers(
   gameStates: ClassicStates | NemeinStates
 ): JSX.Element[] {
   const pixiContainers: JSX.Element[] = [];
