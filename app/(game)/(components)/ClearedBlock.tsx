@@ -129,13 +129,12 @@ export default function ClearedBlock({
     /* Tracks the current animation progress */
     progress.current = time.current / ANIMATION_DURATION_S;
 
-    const verticalDisplacement =
-      time.current * velocity + 0.5 * acceleration * Math.pow(time.current, 2);
-
     const currentXPosition =
       initialXDisplacement + maxXDisplacement * progress.current;
 
-    const currentYPosition = initialYDisplacement - verticalDisplacement;
+    const currentYDisplacement =
+      time.current * velocity + 0.5 * acceleration * Math.pow(time.current, 2);
+    const currentYPosition = initialYDisplacement - currentYDisplacement;
 
     setSpriteProperties({
       alpha: 1 - progress.current,

@@ -17,7 +17,7 @@ function ContextBridge<T>({
 }: {
   children: ReactNode;
   context: Context<T>;
-  render: (children: React.ReactNode) => JSX.Element;
+  render: (children: ReactNode) => JSX.Element;
 }) {
   return (
     <context.Consumer>
