@@ -1,4 +1,5 @@
 import { Sprite, useTick } from "@pixi/react";
+import { Texture } from "pixi.js";
 import { useMemo, useState, useRef } from "react";
 
 import {
@@ -52,6 +53,9 @@ export default function ClearedBlock({
 }) {
   const time = useRef<number>(0);
   const progress = useRef<number>(0);
+  const textures = useRef({
+    blank: Texture.from("/textures/blank.svg"),
+  });
 
   const baseProperties = useMemo(
     () => ({
@@ -160,8 +164,8 @@ export default function ClearedBlock({
       height={GAME_PANEL.CHILD * spriteProperties.scale}
       width={GAME_PANEL.CHILD * spriteProperties.scale}
       position={spriteProperties.position}
-      image={"/textures/blank.svg"}
       rotation={spriteProperties.rotation}
+      texture={textures.current.blank}
       tint={TETROMINO_STYLES[TetrominoType[type]]}
     />
   );
