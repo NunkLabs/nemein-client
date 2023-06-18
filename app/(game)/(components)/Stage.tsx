@@ -1,15 +1,16 @@
 import { Container, Sprite } from "@pixi/react";
-import { useContext, useEffect, useState } from "react";
+import { Texture } from "pixi.js";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { GameContext } from "../Game";
 import {
   STAGE_SPACER,
-  TETROMINO_STYLES,
-  TETROMINOS_ARR,
-  TetrominoType,
   HOLD_PANEL,
   GAME_PANEL,
   QUEUE_PANEL,
+  TETROMINO_STYLES,
+  TETROMINOS_ARR,
+  TetrominoType,
 } from "./Utils";
 import StageWrapper from "./ContextBridge";
 import BorderGraphics from "./BorderGraphics";
@@ -26,6 +27,10 @@ const SCREEN_SHAKE_OFFSETS: [number, number][] = [
 
 export default function Stage() {
   const { gameStates, gameSettings } = useContext(GameContext);
+
+  const textures = useRef({
+    blank: Texture.from("/textures/blank.svg"),
+  });
 
   const [stagePosition, setStagePosition] = useState<[number, number]>([0, 0]);
   const [gameSprites, setGameSprites] = useState<JSX.Element[]>([]);
@@ -58,7 +63,7 @@ export default function Stage() {
               GAME_PANEL.X + GAME_PANEL.CHILD * colIndex,
               GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex,
             ]}
-            image={"/textures/blank.svg"}
+            texture={textures.current.blank}
             tint={TETROMINO_STYLES[tetromino]}
             key={`game-${colIndex}-${rowIndex}`}
           />
@@ -82,7 +87,7 @@ export default function Stage() {
               HOLD_PANEL.X + HOLD_PANEL.CHILD * colIndex,
               HOLD_PANEL.Y + HOLD_PANEL.CHILD * rowIndex,
             ]}
-            image={"/textures/blank.svg"}
+            texture={textures.current.blank}
             tint={TETROMINO_STYLES[tetromino]}
             key={`hold-${colIndex}-${rowIndex}`}
           />
@@ -109,7 +114,7 @@ export default function Stage() {
                 QUEUE_PANEL.X + QUEUE_PANEL.CHILD * colIndex,
                 queuePanelYCoord + QUEUE_PANEL.CHILD * rowIndex,
               ]}
-              image={"/textures/blank.svg"}
+              texture={textures.current.blank}
               tint={TETROMINO_STYLES[tetromino]}
               key={`queue-${spawnedIndex}-${colIndex}-${rowIndex}`}
             />
