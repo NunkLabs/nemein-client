@@ -15,13 +15,13 @@ type SpriteProperties = {
   scale: number;
 };
 
-/* Timer multiplier to control the speed of the animation*/
+/* Timer multiplier to control the speed of the animation */
 const ANIMATION_TIMER_MULTIPLIER = 5;
 
 /* Max animation duration in seconds */
 const ANIMATION_DURATION_S = 3;
 
-/* Anchor to set the origin point of the sprite */
+/* Anchor value to set the origin point of the sprite */
 const SPRITE_ANCHOR = 0;
 
 /* Float ranges for radian rotation values */
@@ -53,6 +53,37 @@ export default function ClearedBlock({
   const time = useRef<number>(0);
   const progress = useRef<number>(0);
 
+  const baseProperties = useMemo(
+    () => ({
+      /**
+       * Randomizes final displacement values relative to the block's size, and
+       * the final radian rotation value
+       */
+      xDisplacement:
+        GAME_PANEL.CHILD *
+        randomFloatInRange(
+          HORIZONTAL_DISPLACEMENT_FLOOR,
+          HORIZONTAL_DISPLACEMENT_CEILING
+        ),
+      yDisplacement:
+        GAME_PANEL.CHILD *
+        randomFloatInRange(
+          VERTICAL_DISPLACEMENT_FLOOR,
+          VERTICAL_DISPLACEMENT_CEILING
+        ),
+      rotation: randomFloatInRange(RADIAN_ROTATION_FLOOR, RADIAN_ROTATION_CEIL),
+      /**
+       * Randomizes the block scaling, where approximately 20% will grow and
+       * the rest will shrink to simulate a 3D effect
+       */
+      scale:
+        Math.random() < MINORITY_RATIO
+          ? randomFloatInRange(MINORITY_SCALE_FLOOR, MINORITY_SCALE_CEILING)
+          : randomFloatInRange(MAJORITY_SCALE_FLOOR, MAJORITY_SCALE_CEILING),
+    }),
+    []
+  );
+
   const [spriteProperties, setSpriteProperties] = useState<SpriteProperties>({
     alpha: 1,
     position: [initialXDisplacement, initialYDisplacement],
@@ -60,38 +91,12 @@ export default function ClearedBlock({
     scale: 1,
   });
 
-  /* Randomizes the radian rotation value */
-  const maxRotation = useMemo(
-    () => randomFloatInRange(RADIAN_ROTATION_FLOOR, RADIAN_ROTATION_CEIL),
-    []
-  );
-
-  /* Randomizes max displacements relative to the block size */
-  const maxXDisplacement = useMemo(
-    () =>
-      GAME_PANEL.CHILD *
-      randomFloatInRange(
-        HORIZONTAL_DISPLACEMENT_FLOOR,
-        HORIZONTAL_DISPLACEMENT_CEILING
-      ),
-    []
-  );
-  const maxYDisplacement = useMemo(
-    () =>
-      GAME_PANEL.CHILD *
-      randomFloatInRange(
-        VERTICAL_DISPLACEMENT_FLOOR,
-        VERTICAL_DISPLACEMENT_CEILING
-      ),
-    []
-  );
-
   /**
    * From the 2nd kinematic equation s = u t - 0.5 a t ^ 2
    * and the 3rd kinematic equation, v ^ 2 = u ^ 2 + 2 a s
    * we can derive that u = 4 s for t = 1.
    */
-  const velocity = 4 * maxYDisplacement;
+  const velocity = 4 * baseProperties.yDisplacement;
 
   /**
    * Acceleration is a = (-v - v) / 2,
@@ -99,19 +104,6 @@ export default function ClearedBlock({
    * With this, a = -2 v for t = 1.
    */
   const acceleration = -2 * velocity;
-
-  /**
-   * Randomizes the size that the block scales to at the end of the animation,
-   * where approximately 20% will grow and the rest will shrink to simulate
-   * a 3D effect
-   */
-  const maxScale = useMemo(
-    () =>
-      Math.random() < MINORITY_RATIO
-        ? randomFloatInRange(MINORITY_SCALE_FLOOR, MINORITY_SCALE_CEILING)
-        : randomFloatInRange(MAJORITY_SCALE_FLOOR, MAJORITY_SCALE_CEILING),
-    []
-  );
 
   useTick((delta, ticker) => {
     if (time.current > ANIMATION_DURATION_S) {
@@ -129,9 +121,19 @@ export default function ClearedBlock({
     /* Tracks the current animation progress */
     progress.current = time.current / ANIMATION_DURATION_S;
 
+    /**
+     * Calculates the current X position
+     * We use the original X position plus the current displacement based on the
+     * animation progress
+     */
     const currentXPosition =
-      initialXDisplacement + maxXDisplacement * progress.current;
+      initialXDisplacement + baseProperties.xDisplacement * progress.current;
 
+    /**
+     * Calculates the current Y position
+     * We get the current Y displacement with the 2nd kinematic equation,
+     * then we use the original Y position minus the current displacement
+     */
     const currentYDisplacement =
       time.current * velocity + 0.5 * acceleration * Math.pow(time.current, 2);
     const currentYPosition = initialYDisplacement - currentYDisplacement;
@@ -139,8 +141,8 @@ export default function ClearedBlock({
     setSpriteProperties({
       alpha: 1 - progress.current,
       position: [currentXPosition, currentYPosition],
-      rotation: progress.current * maxRotation,
-      scale: 1 + progress.current * maxScale,
+      rotation: progress.current * baseProperties.rotation,
+      scale: 1 + progress.current * baseProperties.scale,
     });
 
     /**
