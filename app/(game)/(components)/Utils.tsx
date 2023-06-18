@@ -108,6 +108,15 @@ export const TETROMINO_STYLES: {
   Ghost: 0xf1f5f9,
 };
 
+export const DAMAGE_TYPE_STYLES: {
+  [key: string]: number;
+} = {
+  Physical: 0xcbd5e1,
+  Fire: 0xfca5a5,
+  Cold: 0x93c5fd,
+  Lightning: 0xfef08a,
+};
+
 /* Tetrominos coords consts */
 export const TETROMINOS_ARR = [
   [
