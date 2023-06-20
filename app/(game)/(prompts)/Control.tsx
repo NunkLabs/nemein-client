@@ -23,11 +23,12 @@ export default function ControlPrompt({
 
   return (
     <div
-      className="absolute left-1/2 top-1/2 z-50 grid w-44 translate-x-[-50%]
-        translate-y-[-50%] place-items-center gap-y-2 text-center"
+      className="absolute left-1/2 top-1/2 z-[65] grid w-44 translate-x-[-50%]
+        translate-y-[-50%] place-items-center gap-y-2 text-center opacity-0"
+      id="control-prompt"
     >
       <p className="text-3xl font-bold text-slate-100">
-        {isOver ? "Game Over" : "Settings"}
+        {isOver ? "Game Over" : "Paused"}
       </p>
       <button
         className="button button-light h-8 w-40"

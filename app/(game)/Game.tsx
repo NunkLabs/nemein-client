@@ -96,6 +96,7 @@ export const GameContext = createContext<{
 
 export default function Game() {
   const gameSocket = useRef<GameSocket | null>(null);
+  const isActive = useRef<boolean>(false);
   const isOver = useRef<boolean>(false);
 
   const [loadingProgress, setLoadingProgress] = useState<number>(0);
@@ -116,8 +117,17 @@ export default function Game() {
     });
 
   const handleKeydown = ({ key }: { key: string }) => {
-    if (isOver.current || !gameSocket.current || !VALID_KEYS.includes(key))
+    if (isOver.current || !gameSocket.current) return;
+
+    if (key === "Escape") {
+      isActive.current = !isActive.current;
+
+      gameSocket.current.send({ op: Opcodes.TOGGLE });
+
       return;
+    }
+
+    if (!isActive.current || !VALID_KEYS.includes(key)) return;
 
     gameSocket.current.send({
       op: Opcodes.INPUT,
@@ -133,6 +143,7 @@ export default function Game() {
       data: gameSettings.isClassic ? "classic" : "nemein",
     });
 
+    isActive.current = true;
     isOver.current = false;
 
     setControlVisibility(false);
@@ -161,22 +172,29 @@ export default function Game() {
             break;
           }
 
-          case Opcodes.HEARTBEAT: {
-            if (!timestamp || !gameSettings.performanceDisplay) return;
-
-            setGameLatency(Date.now() - timestamp);
-
-            break;
-          }
-
           case Opcodes.DATA: {
             setGameStates(data);
 
             if (data.gameOver) {
+              isActive.current = false;
               isOver.current = true;
 
               setControlVisibility(true);
             }
+
+            break;
+          }
+
+          case Opcodes.TOGGLE: {
+            setControlVisibility(!isActive.current);
+
+            break;
+          }
+
+          case Opcodes.HEARTBEAT: {
+            if (!timestamp || !gameSettings.performanceDisplay) return;
+
+            setGameLatency(Date.now() - timestamp);
 
             break;
           }
