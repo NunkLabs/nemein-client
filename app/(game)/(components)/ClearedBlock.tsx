@@ -20,7 +20,7 @@ type SpriteProperties = {
 const ANIMATION_TIMER_MULTIPLIER = 5;
 
 /* Max animation duration in seconds */
-const ANIMATION_DURATION_S = 3;
+const ANIMATION_DURATION_S = 5;
 
 /* Anchor value to set the origin point of the sprite */
 const SPRITE_ANCHOR = 0;
@@ -44,10 +44,12 @@ const MAJORITY_SCALE_CEILING = 0;
 
 export default function ClearedBlock({
   type,
+  gameOver,
   initialXDisplacement,
   initialYDisplacement,
 }: {
   type: TetrominoType;
+  gameOver?: boolean;
   initialXDisplacement: number;
   initialYDisplacement: number;
 }) {
@@ -159,7 +161,7 @@ export default function ClearedBlock({
 
   return (
     <Sprite
-      alpha={spriteProperties.alpha}
+      alpha={type === TetrominoType.Blank ? 0 : spriteProperties.alpha}
       anchor={SPRITE_ANCHOR}
       height={GAME_PANEL.CHILD * spriteProperties.scale}
       width={GAME_PANEL.CHILD * spriteProperties.scale}

@@ -16,6 +16,7 @@ import StageWrapper from "./ContextBridge";
 import BorderGraphics from "./BorderGraphics";
 import ClearedLines from "./ClearedLines";
 import PerformanceTracker from "./PerformanceTracker";
+import ClearedBlock from "./ClearedBlock";
 
 const SCREEN_SHAKE_INTERVAL_MS = 10;
 const SCREEN_SHAKE_OFFSETS: [number, number][] = [
@@ -46,27 +47,32 @@ export default function Stage() {
     /* Constructs the main game sprites */
     gameField.forEach((col, colIndex) => {
       col.colArr.forEach((row, rowIndex) => {
-        const tetromino =
-          TetrominoType[typeof row === "number" ? row : row.type];
+        const tetrominoType = typeof row === "number" ? row : row.type;
+        const tetrominoName = TetrominoType[tetrominoType];
 
         sprites.push(
-          <Sprite
-            alpha={
-              gameStates.gameOver ||
-              tetromino === TetrominoType[TetrominoType.Ghost]
-                ? 0.25
-                : 1
-            }
-            height={GAME_PANEL.CHILD}
-            width={GAME_PANEL.CHILD}
-            position={[
-              GAME_PANEL.X + GAME_PANEL.CHILD * colIndex,
-              GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex,
-            ]}
-            texture={textures.current.blank}
-            tint={TETROMINO_STYLES[tetromino]}
-            key={`game-${colIndex}-${rowIndex}`}
-          />
+          gameStates.gameOver ? (
+            <ClearedBlock
+              type={tetrominoType}
+              gameOver={gameStates.gameOver}
+              initialXDisplacement={GAME_PANEL.X + GAME_PANEL.CHILD * colIndex}
+              initialYDisplacement={GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex}
+              key={`game-over-${colIndex}-${rowIndex}`}
+            />
+          ) : (
+            <Sprite
+              alpha={tetrominoType === TetrominoType.Ghost ? 0.25 : 1}
+              height={GAME_PANEL.CHILD}
+              width={GAME_PANEL.CHILD}
+              position={[
+                GAME_PANEL.X + GAME_PANEL.CHILD * colIndex,
+                GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex,
+              ]}
+              texture={textures.current.blank}
+              tint={TETROMINO_STYLES[tetrominoName]}
+              key={`game-${colIndex}-${rowIndex}`}
+            />
+          )
         );
       });
     });
@@ -76,7 +82,7 @@ export default function Stage() {
 
     holdField.forEach((col, colIndex) => {
       col.forEach((row, rowIndex) => {
-        const tetromino = TetrominoType[row];
+        const tetrominoName = TetrominoType[row];
 
         sprites.push(
           <Sprite
@@ -88,7 +94,7 @@ export default function Stage() {
               HOLD_PANEL.Y + HOLD_PANEL.CHILD * rowIndex,
             ]}
             texture={textures.current.blank}
-            tint={TETROMINO_STYLES[tetromino]}
+            tint={TETROMINO_STYLES[tetrominoName]}
             key={`hold-${colIndex}-${rowIndex}`}
           />
         );
@@ -103,7 +109,7 @@ export default function Stage() {
 
       queueField.forEach((col, colIndex) => {
         col.forEach((row, rowIndex) => {
-          const tetromino = TetrominoType[row];
+          const tetrominoName = TetrominoType[row];
 
           sprites.push(
             <Sprite
@@ -115,7 +121,7 @@ export default function Stage() {
                 queuePanelYCoord + QUEUE_PANEL.CHILD * rowIndex,
               ]}
               texture={textures.current.blank}
-              tint={TETROMINO_STYLES[tetromino]}
+              tint={TETROMINO_STYLES[tetrominoName]}
               key={`queue-${spawnedIndex}-${colIndex}-${rowIndex}`}
             />
           );
@@ -137,14 +143,16 @@ export default function Stage() {
 
       let offsetIterationIndex = 0;
 
-      const screenShakeInterval = setInterval(() => {
+      const stageShakeInterval = setInterval(() => {
         setStagePosition(SCREEN_SHAKE_OFFSETS[offsetIterationIndex]);
 
         offsetIterationIndex += 1;
 
         if (offsetIterationIndex < SCREEN_SHAKE_OFFSETS.length) return;
 
-        clearInterval(screenShakeInterval);
+        offsetIterationIndex = 0;
+
+        clearInterval(stageShakeInterval);
       }, SCREEN_SHAKE_INTERVAL_MS);
     }
   }, [gameStates, gameSettings]);
