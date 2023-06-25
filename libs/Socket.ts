@@ -1,25 +1,69 @@
 import EventEmitter from "stream";
 
-type SocketData = {
-  op: number;
-  timestamp?: number;
-  data?: object | string;
+import { ClassicStates, NemeinStates } from "app/(game)/(components)/Utils";
+
+export enum Opcodes {
+  /* Base socket events */
+  SOCKET_OPEN,
+  SOCKET_READY,
+  SOCKET_PING,
+  SOCKET_HEARTBEAT,
+
+  /* Game events */
+  GAME_KEYDOWN,
+  GAME_STATES,
+  GAME_TOGGLE,
+}
+
+type SocketOpen = {
+  op: Opcodes.SOCKET_OPEN;
+  data: number;
 };
+
+type SocketReady = {
+  op: Opcodes.SOCKET_READY;
+  data: "classic" | "nemein";
+};
+
+type SocketPing = {
+  op: Opcodes.SOCKET_PING;
+  data: number;
+};
+
+type SocketHeartbeat = {
+  op: Opcodes.SOCKET_HEARTBEAT;
+  data: number;
+};
+
+type SocketGameKeydown = {
+  op: Opcodes.GAME_KEYDOWN;
+  data: string;
+};
+
+type SocketGameStates = {
+  op: Opcodes.GAME_STATES;
+  data: ClassicStates | NemeinStates;
+};
+
+type SocketGameToggle = {
+  op: Opcodes.GAME_TOGGLE;
+  data: boolean;
+};
+
+type SocketData =
+  | SocketOpen
+  | SocketReady
+  | SocketPing
+  | SocketHeartbeat
+  | SocketGameKeydown
+  | SocketGameStates
+  | SocketGameToggle;
 
 type ResolvedServer = {
   socket: WebSocket;
   latencies: number[];
   averageLatency: number;
-};
-
-export const Opcodes = {
-  OPEN: 0, // Socket is opened
-  READY: 1, // Socket is ready
-  DATA: 2, // Socket received data
-  INPUT: 3, // Socket is sending a game input
-  TOGGLE: 4, // Socket is sending a game state toggle command
-  PING: 9, // Socket is sending a ping command
-  HEARTBEAT: 10, // Socket is sending a heartbeat
+  heartbeatInterval: number;
 };
 
 const WS_CLOSURE_CODE = 1000;
@@ -60,13 +104,16 @@ export class GameSocket extends EventEmitter {
             socket: new WebSocket(server),
             latencies: [],
             averageLatency: 0,
+            heartbeatInterval: HEARTBEAT_INTERVAL_MS,
           };
 
           currentServer.socket.onmessage = (message: MessageEvent) => {
-            const data: SocketData = JSON.parse(message.data);
+            const { op, data }: SocketData = JSON.parse(message.data);
 
-            switch (data.op) {
-              case Opcodes.OPEN: {
+            switch (op) {
+              case Opcodes.SOCKET_OPEN: {
+                currentServer.heartbeatInterval = data;
+
                 const pingInterval = setInterval(() => {
                   if (currentServer.latencies.length >= PING_ATTEMPT_LIMIT) {
                     clearInterval(pingInterval);
@@ -78,7 +125,7 @@ export class GameSocket extends EventEmitter {
 
                   currentServer.socket.send(
                     JSON.stringify({
-                      op: Opcodes.PING,
+                      op: Opcodes.SOCKET_PING,
                       timestamp: Date.now(),
                     })
                   );
@@ -87,10 +134,10 @@ export class GameSocket extends EventEmitter {
                 break;
               }
 
-              case Opcodes.PING: {
-                if (!data.timestamp) return;
+              case Opcodes.SOCKET_PING: {
+                const previousTimestamp = data;
 
-                currentServer.latencies.push(Date.now() - data.timestamp);
+                currentServer.latencies.push(Date.now() - previousTimestamp);
 
                 currentServer.averageLatency =
                   currentServer.latencies.reduce(
@@ -102,7 +149,7 @@ export class GameSocket extends EventEmitter {
               }
 
               default:
-                this.emit("data", data);
+                this.emit("data", { op, data });
             }
           };
         });
@@ -114,9 +161,7 @@ export class GameSocket extends EventEmitter {
     let bestLatency = MAX_ACCEPTABLE_LATENCY_MS;
 
     resolvedServers.forEach(({ socket, averageLatency }) => {
-      if (!socket) return;
-
-      if (averageLatency >= bestLatency) {
+      if (averageLatency > bestLatency) {
         socket.close(WS_CLOSURE_CODE);
 
         return;
@@ -137,11 +182,9 @@ export class GameSocket extends EventEmitter {
    * by clearing the heartbeat interval timer and closing the connection.
    */
   destroy() {
-    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
+    if (!this.socket) return;
 
-    if (this.heartbeat) {
-      clearInterval(this.heartbeat);
-    }
+    if (this.heartbeat) clearInterval(this.heartbeat);
 
     this.socket.close(WS_CLOSURE_CODE);
   }
@@ -177,8 +220,8 @@ export class GameSocket extends EventEmitter {
     }
 
     this.send({
-      op: Opcodes.HEARTBEAT,
-      timestamp: Date.now(),
+      op: Opcodes.SOCKET_HEARTBEAT,
+      data: Date.now(),
     });
   }
 }

@@ -162,7 +162,7 @@ export default function Stage() {
       <Container position={stagePosition}>
         <BorderGraphics />
         {gameSprites}
-        {gameSettings.isClassic ? null : clearedLines}
+        {gameSettings.gameMode === "nemein" ? clearedLines : null}
       </Container>
       {gameSettings.performanceDisplay ? <PerformanceTracker /> : null}
     </StageWrapper>

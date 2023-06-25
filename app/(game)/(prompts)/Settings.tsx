@@ -70,11 +70,12 @@ export default function SettingsPrompt() {
       <div className="grid grid-rows-5 gap-y-1">
         <SettingsField
           buttonLabel={"game mode"}
-          fieldLabel={gameSettings.isClassic ? "classic" : "nemein"}
+          fieldLabel={gameSettings.gameMode}
           onClickAction={() =>
             setGameSettings({
               ...gameSettings,
-              isClassic: !gameSettings.isClassic,
+              gameMode:
+                gameSettings.gameMode === "classic" ? "nemein" : "classic",
             })
           }
         />

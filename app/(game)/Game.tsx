@@ -19,7 +19,7 @@ import ControlPrompt from "./(prompts)/Control";
 import SettingsPrompt from "./(prompts)/Settings";
 
 type GameSettings = {
-  isClassic: boolean;
+  gameMode: "classic" | "nemein";
   antialias: boolean;
   powerPreference: "default" | "high-performance" | "low-power";
   performanceDisplay: boolean;
@@ -31,6 +31,7 @@ type PerformanceDetails = {
   frameTime: number;
 };
 
+const ESCAPE_KEY = "Escape";
 const VALID_KEYS = [
   /* Left */
   "0",
@@ -71,7 +72,7 @@ const PROGRESS_BAR_ANIMATION_DURATION_MS = 250;
 const GAME_STAGE_ANIMATION_DURATION_MS = 500;
 
 const DEFAULT_GAME_SETTINGS: GameSettings = {
-  isClassic: process.env.NODE_ENV === "production",
+  gameMode: "nemein",
   antialias: true,
   powerPreference: "default",
   performanceDisplay: process.env.NODE_ENV === "development",
@@ -119,10 +120,13 @@ export default function Game() {
   const handleKeydown = ({ key }: { key: string }) => {
     if (isOver.current || !gameSocket.current) return;
 
-    if (key === "Escape") {
+    if (key === ESCAPE_KEY) {
       isActive.current = !isActive.current;
 
-      gameSocket.current.send({ op: Opcodes.TOGGLE });
+      gameSocket.current.send({
+        op: Opcodes.GAME_TOGGLE,
+        data: isActive.current,
+      });
 
       return;
     }
@@ -130,7 +134,7 @@ export default function Game() {
     if (!isActive.current || !VALID_KEYS.includes(key)) return;
 
     gameSocket.current.send({
-      op: Opcodes.INPUT,
+      op: Opcodes.GAME_KEYDOWN,
       data: key,
     });
   };
@@ -139,8 +143,8 @@ export default function Game() {
     if (!gameSocket.current) return;
 
     gameSocket.current.send({
-      op: Opcodes.READY,
-      data: gameSettings.isClassic ? "classic" : "nemein",
+      op: Opcodes.SOCKET_READY,
+      data: gameSettings.gameMode,
     });
 
     isActive.current = true;
@@ -164,15 +168,32 @@ export default function Game() {
 
         setLoadingProgress(percent);
       })
-      .on("data", ({ op, timestamp, data }) => {
+      .on("data", ({ op, data }) => {
         switch (op) {
-          case Opcodes.READY: {
+          case Opcodes.SOCKET_READY: {
+            const gameMode = data;
+
+            if (gameMode !== gameSettings.gameMode) {
+              throw new Error("Game mode mismatched!");
+            }
+
+            /* Listens for keyboard input */
             document.addEventListener("keydown", handleKeydown);
 
             break;
           }
 
-          case Opcodes.DATA: {
+          case Opcodes.SOCKET_HEARTBEAT: {
+            if (!gameSettings.performanceDisplay) return;
+
+            const previousTimestamp = data;
+
+            setGameLatency(Date.now() - previousTimestamp);
+
+            break;
+          }
+
+          case Opcodes.GAME_STATES: {
             setGameStates(data);
 
             if (data.gameOver) {
@@ -185,16 +206,8 @@ export default function Game() {
             break;
           }
 
-          case Opcodes.TOGGLE: {
+          case Opcodes.GAME_TOGGLE: {
             setControlVisibility(!isActive.current);
-
-            break;
-          }
-
-          case Opcodes.HEARTBEAT: {
-            if (!timestamp || !gameSettings.performanceDisplay) return;
-
-            setGameLatency(Date.now() - timestamp);
 
             break;
           }
