@@ -31,6 +31,7 @@ export type ClearRecord = {
 
 /* Classic game state typings */
 export type ClassicStates = {
+  type: "classic";
   level: number;
   score: number;
   gameField: {
@@ -44,6 +45,7 @@ export type ClassicStates = {
 
 /* Nemein game state typings */
 export type NemeinStates = {
+  type: "nemein";
   level: number /* Deprecated but still kept to suppress errors */;
   score: number /* Deprecated but still kept to suppress errors */;
   gameField: {

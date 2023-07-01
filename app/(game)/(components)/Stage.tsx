@@ -40,45 +40,104 @@ export default function Stage() {
   useEffect(() => {
     if (!gameStates) return;
 
-    const { gameField, heldTetromino, spawnedTetrominos } = gameStates;
-
     const sprites: JSX.Element[] = [];
 
     /* Constructs the main game sprites */
-    gameField.forEach((col, colIndex) => {
-      col.colArr.forEach((row, rowIndex) => {
-        const tetrominoType = typeof row === "number" ? row : row.type;
-        const tetrominoName = TetrominoType[tetrominoType];
+    if (gameStates.type === "nemein") {
+      gameStates.gameField.forEach((col, colIndex) => {
+        col.colArr.forEach((row, rowIndex) => {
+          const tetrominoName = TetrominoType[row.type];
 
-        sprites.push(
-          gameStates.gameOver ? (
-            <ClearedBlock
-              type={tetrominoType}
-              gameOver={gameStates.gameOver}
-              initialXDisplacement={GAME_PANEL.X + GAME_PANEL.CHILD * colIndex}
-              initialYDisplacement={GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex}
-              key={`game-over-${colIndex}-${rowIndex}`}
-            />
-          ) : (
-            <Sprite
-              alpha={tetrominoType === TetrominoType.Ghost ? 0.25 : 1}
-              height={GAME_PANEL.CHILD}
-              width={GAME_PANEL.CHILD}
-              position={[
-                GAME_PANEL.X + GAME_PANEL.CHILD * colIndex,
-                GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex,
-              ]}
-              texture={textures.current.blank}
-              tint={TETROMINO_STYLES[tetrominoName]}
-              key={`game-${colIndex}-${rowIndex}`}
-            />
-          )
-        );
+          sprites.push(
+            gameStates.gameOver ? (
+              <ClearedBlock
+                type={row.type}
+                gameOver={gameStates.gameOver}
+                initialXDisplacement={
+                  GAME_PANEL.X + GAME_PANEL.CHILD * colIndex
+                }
+                initialYDisplacement={
+                  GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex
+                }
+                key={`game-over-${colIndex}-${rowIndex}`}
+              />
+            ) : (
+              <Sprite
+                alpha={row.type === TetrominoType.Ghost ? 0.25 : 1}
+                height={GAME_PANEL.CHILD}
+                width={GAME_PANEL.CHILD}
+                position={[
+                  GAME_PANEL.X + GAME_PANEL.CHILD * colIndex,
+                  GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex,
+                ]}
+                texture={textures.current.blank}
+                tint={TETROMINO_STYLES[tetrominoName]}
+                key={`game-${colIndex}-${rowIndex}`}
+              />
+            )
+          );
+        });
       });
-    });
+
+      /* Handles line clear on Nemein game mode */
+      if (gameStates.clearRecordsArr.length) {
+        setClearedLines(
+          <ClearedLines clearRecordsArr={gameStates.clearRecordsArr} />
+        );
+
+        if (!gameSettings.stageShake) return;
+
+        let offsetIterationIndex = 0;
+
+        const stageShakeInterval = setInterval(() => {
+          setStagePosition(SCREEN_SHAKE_OFFSETS[offsetIterationIndex]);
+
+          offsetIterationIndex += 1;
+
+          if (offsetIterationIndex < SCREEN_SHAKE_OFFSETS.length) return;
+
+          clearInterval(stageShakeInterval);
+        }, SCREEN_SHAKE_INTERVAL_MS);
+      }
+    } else {
+      gameStates.gameField.forEach((col, colIndex) => {
+        col.colArr.forEach((row, rowIndex) => {
+          const tetrominoName = TetrominoType[row];
+
+          sprites.push(
+            gameStates.gameOver ? (
+              <ClearedBlock
+                type={row}
+                gameOver={gameStates.gameOver}
+                initialXDisplacement={
+                  GAME_PANEL.X + GAME_PANEL.CHILD * colIndex
+                }
+                initialYDisplacement={
+                  GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex
+                }
+                key={`game-over-${colIndex}-${rowIndex}`}
+              />
+            ) : (
+              <Sprite
+                alpha={row === TetrominoType.Ghost ? 0.25 : 1}
+                height={GAME_PANEL.CHILD}
+                width={GAME_PANEL.CHILD}
+                position={[
+                  GAME_PANEL.X + GAME_PANEL.CHILD * colIndex,
+                  GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex,
+                ]}
+                texture={textures.current.blank}
+                tint={TETROMINO_STYLES[tetrominoName]}
+                key={`game-${colIndex}-${rowIndex}`}
+              />
+            )
+          );
+        });
+      });
+    }
 
     /* Constructs the hold panel sprites */
-    const holdField = TETROMINOS_ARR[heldTetromino];
+    const holdField = TETROMINOS_ARR[gameStates.heldTetromino];
 
     holdField.forEach((col, colIndex) => {
       col.forEach((row, rowIndex) => {
@@ -104,7 +163,7 @@ export default function Stage() {
     /* Constructs the queue panel sprites */
     let queuePanelYCoord = QUEUE_PANEL.Y;
 
-    spawnedTetrominos.forEach((spawnedTetromino, spawnedIndex) => {
+    gameStates.spawnedTetrominos.forEach((spawnedTetromino, spawnedIndex) => {
       const queueField = TETROMINOS_ARR[spawnedTetromino];
 
       queueField.forEach((col, colIndex) => {
@@ -132,29 +191,6 @@ export default function Stage() {
     });
 
     setGameSprites(sprites);
-
-    /* Handles line clear on Nemein game mode */
-    if ("clearRecordsArr" in gameStates && gameStates.clearRecordsArr.length) {
-      setClearedLines(
-        <ClearedLines clearRecordsArr={gameStates.clearRecordsArr} />
-      );
-
-      if (!gameSettings.stageShake) return;
-
-      let offsetIterationIndex = 0;
-
-      const stageShakeInterval = setInterval(() => {
-        setStagePosition(SCREEN_SHAKE_OFFSETS[offsetIterationIndex]);
-
-        offsetIterationIndex += 1;
-
-        if (offsetIterationIndex < SCREEN_SHAKE_OFFSETS.length) return;
-
-        offsetIterationIndex = 0;
-
-        clearInterval(stageShakeInterval);
-      }, SCREEN_SHAKE_INTERVAL_MS);
-    }
   }, [gameStates, gameSettings]);
 
   return (
@@ -162,7 +198,7 @@ export default function Stage() {
       <Container position={stagePosition}>
         <BorderGraphics />
         {gameSprites}
-        {gameSettings.gameMode === "nemein" ? clearedLines : null}
+        {clearedLines}
       </Container>
       {gameSettings.performanceDisplay ? <PerformanceTracker /> : null}
     </StageWrapper>
