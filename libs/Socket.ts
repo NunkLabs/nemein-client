@@ -1,6 +1,6 @@
 import EventEmitter from "stream";
 
-import { ClassicStates, NemeinStates } from "app/(game)/(components)/Utils";
+import { ClassicStates, NemeinStates } from "app/(game)/Utils";
 
 export enum Opcodes {
   /* Base socket events */

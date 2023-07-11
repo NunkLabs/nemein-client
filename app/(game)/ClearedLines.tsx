@@ -1,7 +1,7 @@
 import { Container } from "@pixi/react";
 import { useRef } from "react";
 
-import { GAME_PANEL, ClearRecord, TetrominoType } from "./Utils";
+import { GAME_PANEL, ClearRecord, TetrominoType } from "./Misc";
 import ClearedBlock from "./ClearedBlock";
 import DamageNumber from "./DamageNumber";
 

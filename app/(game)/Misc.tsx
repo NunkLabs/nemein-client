@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction, createContext } from "react";
+
 /* Tetromino enum types */
 export enum TetrominoType {
   Blank,
@@ -60,6 +62,41 @@ export type NemeinStates = {
   heldTetromino: TetrominoType;
   spawnedTetrominos: TetrominoType[];
 };
+
+export type GameSettings = {
+  gameMode: "classic" | "nemein";
+  antialias: boolean;
+  powerPreference: "default" | "high-performance" | "low-power";
+  performanceDisplay: boolean;
+  stageShake: boolean;
+};
+
+export type PerformanceDetails = {
+  fps: number;
+  frameTime: number;
+};
+
+export const GameContext = createContext<{
+  gameStates: ClassicStates | NemeinStates | null;
+  gameSettings: GameSettings;
+  setGameSettings: Dispatch<SetStateAction<GameSettings>> | null;
+  setStageVisibility: Dispatch<SetStateAction<boolean>> | null;
+  setSettingsVisibility: Dispatch<SetStateAction<boolean>> | null;
+  setPerformanceDetails: Dispatch<SetStateAction<PerformanceDetails>> | null;
+}>({
+  gameStates: null,
+  gameSettings: {
+    gameMode: "nemein",
+    antialias: true,
+    powerPreference: "default",
+    performanceDisplay: process.env.NODE_ENV === "development",
+    stageShake: true,
+  },
+  setGameSettings: null,
+  setStageVisibility: null,
+  setSettingsVisibility: null,
+  setPerformanceDetails: null,
+});
 
 /* Base game sizes in pixels */
 export const STAGE_SIZE = 720;
@@ -186,13 +223,3 @@ export const TETROMINOS_ARR = [
     [0, 0, 0, 0, 0],
   ],
 ];
-
-/**
- * @brief: randomFloatInRange: Randomizes a float in range
- * @param  {number}   min   The minimum float
- * @param  {number}   max   The maximum float
- * @return {number}         The random float rounded to the nearest hundredth
- */
-export function randomFloatInRange(min: number, max: number) {
-  return parseFloat((Math.random() * (max - min) + min).toFixed(2));
-}

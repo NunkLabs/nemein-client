@@ -1,8 +1,7 @@
 import { Stage } from "@pixi/react";
 import { Context, ReactNode, useContext } from "react";
 
-import { GameContext } from "../Game";
-import { STAGE_SIZE } from "./Utils";
+import { STAGE_SIZE, GameContext } from "./Misc";
 
 /**
  * By design, React doesn't allow passing parent contexts to child components
@@ -29,7 +28,7 @@ function ContextBridge<T>({
 }
 
 /* Wraps our context bridge around the Pixi's Stage */
-export default function StageWrapper({
+export default function ContextWrapper({
   children,
   ...props
 }: {

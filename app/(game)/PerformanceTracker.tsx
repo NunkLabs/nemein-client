@@ -1,7 +1,7 @@
 import { Container, useApp } from "@pixi/react";
 import { useContext } from "react";
 
-import { GameContext } from "../Game";
+import { GameContext } from "./Misc";
 
 export default function PerformanceTracker() {
   const { setPerformanceDetails } = useContext(GameContext);

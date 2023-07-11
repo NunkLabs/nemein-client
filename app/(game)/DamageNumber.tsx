@@ -2,7 +2,7 @@ import { Text, useTick } from "@pixi/react";
 import { TextStyle } from "pixi.js";
 import { useMemo, useState, useRef } from "react";
 
-import { DAMAGE_TYPE_STYLES, DmgType, ClearRecord } from "./Utils";
+import { DAMAGE_TYPE_STYLES, DmgType, ClearRecord } from "./Misc";
 
 type TextProperties = {
   alpha: number;

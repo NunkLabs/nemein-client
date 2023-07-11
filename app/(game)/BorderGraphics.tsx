@@ -7,7 +7,7 @@ import {
   GAME_PANEL,
   QUEUE_PANEL,
   BORDER_STYLE,
-} from "./Utils";
+} from "./Misc";
 
 export default function BorderGraphics() {
   return (

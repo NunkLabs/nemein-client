@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import anime from "animejs/lib/anime.es";
 
-import { GameContext } from "../Game";
+import { GameContext } from "app/(game)/Misc";
 
 const START_BUTTON_ANIMATION_DURATION_MS = 250;
 const START_PROMPT_ANIMATION_DURATION_MS = 250;

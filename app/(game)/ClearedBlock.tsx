@@ -2,12 +2,8 @@ import { Sprite, useTick } from "@pixi/react";
 import { Texture } from "pixi.js";
 import { useMemo, useState, useRef } from "react";
 
-import {
-  GAME_PANEL,
-  TETROMINO_STYLES,
-  TetrominoType,
-  randomFloatInRange,
-} from "./Utils";
+import { GAME_PANEL, TETROMINO_STYLES, TetrominoType } from "./Misc";
+import { randomFloatInRange } from "libs/Utils";
 
 type SpriteProperties = {
   alpha: number;

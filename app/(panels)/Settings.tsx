@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef } from "react";
 import anime from "animejs/lib/anime.es";
 
-import { GameContext } from "../Game";
+import { GameContext } from "app/(game)/Misc";
 
 const POWER_PREFERENCE_OPTIONS = {
   default: "default",

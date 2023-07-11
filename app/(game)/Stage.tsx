@@ -2,7 +2,6 @@ import { Container, Sprite } from "@pixi/react";
 import { Texture } from "pixi.js";
 import { useContext, useEffect, useRef, useState } from "react";
 
-import { GameContext } from "../Game";
 import {
   STAGE_SPACER,
   HOLD_PANEL,
@@ -11,10 +10,11 @@ import {
   TETROMINO_STYLES,
   TETROMINOS_ARR,
   TetrominoType,
-} from "./Utils";
-import StageWrapper from "./ContextBridge";
+  GameContext,
+} from "./Misc";
 import BorderGraphics from "./BorderGraphics";
 import ClearedLines from "./ClearedLines";
+import ContextWrapper from "./ContextWrapper";
 import PerformanceTracker from "./PerformanceTracker";
 import ClearedBlock from "./ClearedBlock";
 
@@ -194,13 +194,13 @@ export default function Stage() {
   }, [gameStates, gameSettings]);
 
   return (
-    <StageWrapper>
+    <ContextWrapper>
       <Container position={stagePosition}>
         <BorderGraphics />
         {gameSprites}
         {clearedLines}
       </Container>
       {gameSettings.performanceDisplay ? <PerformanceTracker /> : null}
-    </StageWrapper>
+    </ContextWrapper>
   );
 }
