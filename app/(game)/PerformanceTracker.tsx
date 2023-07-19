@@ -1,20 +1,17 @@
-import { Container, useApp } from "@pixi/react";
-import { useContext } from "react";
+import { Container, useTick } from "@pixi/react";
 
-import { GameContext } from "./Misc";
+import { useGameStore } from "libs/Store";
 
 export default function PerformanceTracker() {
-  const { setPerformanceDetails } = useContext(GameContext);
+  const updateGamePerformance = useGameStore(
+    (state) => state.updateGamePerformance
+  );
 
-  if (!setPerformanceDetails) {
-    throw new Error("Set state action is nullish.");
-  }
-
-  const app = useApp();
-
-  setPerformanceDetails({
-    fps: Math.floor(app.ticker.FPS),
-    frameTime: parseFloat(app.ticker.deltaMS.toFixed(2)),
+  useTick((delta, ticker) => {
+    updateGamePerformance({
+      frameRate: Math.floor(ticker.FPS),
+      frameTime: parseFloat(ticker.deltaMS.toFixed(2)),
+    });
   });
 
   return <Container />;

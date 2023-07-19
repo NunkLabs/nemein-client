@@ -1,8 +1,6 @@
+import { useMemo, useState, useRef } from "react";
 import { Text, useTick } from "@pixi/react";
 import { TextStyle } from "pixi.js";
-import { useMemo, useState, useRef } from "react";
-
-import { DAMAGE_TYPE_STYLES, DmgType, ClearRecord } from "./Misc";
 
 type TextProperties = {
   alpha: number;
@@ -29,16 +27,20 @@ const DAMAGE_NUMBER_CRIT_SCALE = 0.15;
 /* Sprite render delay in milliseconds */
 const BASE_RENDER_DELAY_MS = 100;
 
-export default function DamageNumbers({
-  clearRecord,
-  delayMultiplier,
-  initialXDisplacement,
-  initialYDisplacement,
+export default function DamageSprite({
+  dmgDealt,
+  dmgIndex,
+  wasCrit,
+  color,
+  x,
+  y,
 }: {
-  clearRecord: ClearRecord;
-  delayMultiplier: number;
-  initialXDisplacement: number;
-  initialYDisplacement: number;
+  dmgDealt: string;
+  dmgIndex: number;
+  wasCrit: boolean;
+  color: number;
+  x: number;
+  y: number;
 }) {
   const time = useRef<number>(0);
   const progress = useRef<number>(0);
@@ -46,14 +48,12 @@ export default function DamageNumbers({
   /* Memoizes the base properties */
   const baseProperties = useMemo(
     () => ({
-      x: DAMAGE_NUMBER_X_OFFSET + initialXDisplacement,
-      y: DAMAGE_NUMBER_Y_OFFSET + initialYDisplacement,
-      scale: clearRecord.wasCrit
-        ? DAMAGE_NUMBER_MAX_SCALE + DAMAGE_NUMBER_CRIT_SCALE
-        : DAMAGE_NUMBER_MAX_SCALE,
-      renderDelay: BASE_RENDER_DELAY_MS * delayMultiplier,
+      renderDelay: BASE_RENDER_DELAY_MS * dmgIndex,
+      scale: DAMAGE_NUMBER_MAX_SCALE + (wasCrit ? DAMAGE_NUMBER_CRIT_SCALE : 0),
+      x: DAMAGE_NUMBER_X_OFFSET + x,
+      y: DAMAGE_NUMBER_Y_OFFSET + y,
     }),
-    [clearRecord, delayMultiplier, initialXDisplacement, initialYDisplacement]
+    [dmgIndex, wasCrit, x, y]
   );
 
   const [textProperties, setTextProperties] = useState<TextProperties>({
@@ -98,14 +98,12 @@ export default function DamageNumbers({
       style={
         new TextStyle({
           align: "center",
-          fill: DAMAGE_TYPE_STYLES[
-            DmgType[clearRecord.dmgDealt.dominantDmgType]
-          ],
+          fill: color,
           fontWeight: "bold",
           fontSize: 35,
         })
       }
-      text={clearRecord.dmgDealt.value.toString()}
+      text={dmgDealt}
     />
   );
 }

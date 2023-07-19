@@ -1,22 +1,22 @@
-import { Container, Sprite } from "@pixi/react";
+import { useEffect, useRef, useState } from "react";
+import { Container, Sprite, Stage as PixiStage } from "@pixi/react";
 import { Texture } from "pixi.js";
-import { useContext, useEffect, useRef, useState } from "react";
 
+import { DmgType, TetrominoType, useGameStore } from "libs/Store";
 import {
-  STAGE_SPACER,
+  DAMAGE_TYPE_STYLES,
   HOLD_PANEL,
   GAME_PANEL,
   QUEUE_PANEL,
+  STAGE_SIZE,
+  STAGE_SPACER,
   TETROMINO_STYLES,
   TETROMINOS_ARR,
-  TetrominoType,
-  GameContext,
 } from "./Misc";
 import BorderGraphics from "./BorderGraphics";
-import ClearedLines from "./ClearedLines";
-import ContextWrapper from "./ContextWrapper";
+import ClearedSprite from "./ClearedSprite";
+import DamageSprite from "./DamageSprite";
 import PerformanceTracker from "./PerformanceTracker";
-import ClearedBlock from "./ClearedBlock";
 
 const SCREEN_SHAKE_INTERVAL_MS = 10;
 const SCREEN_SHAKE_OFFSETS: [number, number][] = [
@@ -26,19 +26,30 @@ const SCREEN_SHAKE_OFFSETS: [number, number][] = [
   [0, 0],
 ];
 
-export default function Stage() {
-  const { gameStates, gameSettings } = useContext(GameContext);
+export default function Stage({ startGame }: { startGame: () => void }) {
+  const gameOptions = useGameStore((state) => state.gameOptions);
+  const gameStates = useGameStore((state) => state.gameStates);
 
-  const textures = useRef({
-    blank: Texture.from("/textures/blank.svg"),
+  const blockStyles = useRef({
+    texture: {
+      blank: Texture.from("/textures/blank.svg"),
+    },
+    tint: TETROMINO_STYLES,
   });
+  const blocksCleared = useRef<number>(0);
+  const linesCleared = useRef<number>(0);
 
   const [stagePosition, setStagePosition] = useState<[number, number]>([0, 0]);
   const [gameSprites, setGameSprites] = useState<JSX.Element[]>([]);
-  const [clearedLines, setClearedLines] = useState<JSX.Element | null>(null);
 
   useEffect(() => {
-    if (!gameStates) return;
+    if (!gameStates) {
+      startGame();
+
+      return;
+    }
+
+    const { texture, tint } = blockStyles.current;
 
     const sprites: JSX.Element[] = [];
 
@@ -50,15 +61,11 @@ export default function Stage() {
 
           sprites.push(
             gameStates.gameOver ? (
-              <ClearedBlock
-                type={row.type}
-                gameOver={gameStates.gameOver}
-                initialXDisplacement={
-                  GAME_PANEL.X + GAME_PANEL.CHILD * colIndex
-                }
-                initialYDisplacement={
-                  GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex
-                }
+              <ClearedSprite
+                isBlank={tetrominoName === "Blank"}
+                tint={tint[tetrominoName]}
+                x={GAME_PANEL.X + GAME_PANEL.CHILD * colIndex}
+                y={GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex}
                 key={`game-over-${colIndex}-${rowIndex}`}
               />
             ) : (
@@ -70,8 +77,8 @@ export default function Stage() {
                   GAME_PANEL.X + GAME_PANEL.CHILD * colIndex,
                   GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex,
                 ]}
-                texture={textures.current.blank}
-                tint={TETROMINO_STYLES[tetrominoName]}
+                texture={texture.blank}
+                tint={tint[tetrominoName]}
                 key={`game-${colIndex}-${rowIndex}`}
               />
             )
@@ -81,11 +88,40 @@ export default function Stage() {
 
       /* Handles line clear on Nemein game mode */
       if (gameStates.clearRecordsArr.length) {
-        setClearedLines(
-          <ClearedLines clearRecordsArr={gameStates.clearRecordsArr} />
-        );
+        gameStates.clearRecordsArr.map((clearRecord) => {
+          const { idx: rowIndex, lineTypeArr, dmgDealt } = clearRecord;
 
-        if (!gameSettings.stageShake) return;
+          lineTypeArr.forEach((type, colIndex) => {
+            blocksCleared.current += 1;
+
+            sprites.push(
+              <ClearedSprite
+                tint={tint[TetrominoType[type]]}
+                x={GAME_PANEL.X + GAME_PANEL.CHILD * colIndex}
+                y={GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex}
+                key={`cleared-block-${blocksCleared.current}`}
+              />
+            );
+          });
+
+          if (lineTypeArr.includes(TetrominoType.Grey)) return;
+
+          linesCleared.current += 1;
+
+          sprites.push(
+            <DamageSprite
+              dmgDealt={clearRecord.dmgDealt.value.toString()}
+              dmgIndex={rowIndex}
+              wasCrit={clearRecord.wasCrit}
+              color={DAMAGE_TYPE_STYLES[DmgType[dmgDealt.dominantDmgType]]}
+              x={GAME_PANEL.X}
+              y={GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex}
+              key={`damage-number-${linesCleared.current}`}
+            />
+          );
+        });
+
+        if (!gameOptions.stageShake) return;
 
         let offsetIterationIndex = 0;
 
@@ -105,32 +141,18 @@ export default function Stage() {
           const tetrominoName = TetrominoType[row];
 
           sprites.push(
-            gameStates.gameOver ? (
-              <ClearedBlock
-                type={row}
-                gameOver={gameStates.gameOver}
-                initialXDisplacement={
-                  GAME_PANEL.X + GAME_PANEL.CHILD * colIndex
-                }
-                initialYDisplacement={
-                  GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex
-                }
-                key={`game-over-${colIndex}-${rowIndex}`}
-              />
-            ) : (
-              <Sprite
-                alpha={row === TetrominoType.Ghost ? 0.25 : 1}
-                height={GAME_PANEL.CHILD}
-                width={GAME_PANEL.CHILD}
-                position={[
-                  GAME_PANEL.X + GAME_PANEL.CHILD * colIndex,
-                  GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex,
-                ]}
-                texture={textures.current.blank}
-                tint={TETROMINO_STYLES[tetrominoName]}
-                key={`game-${colIndex}-${rowIndex}`}
-              />
-            )
+            <Sprite
+              alpha={row === TetrominoType.Ghost ? 0.25 : 1}
+              height={GAME_PANEL.CHILD}
+              width={GAME_PANEL.CHILD}
+              position={[
+                GAME_PANEL.X + GAME_PANEL.CHILD * colIndex,
+                GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex,
+              ]}
+              texture={texture.blank}
+              tint={tint[tetrominoName]}
+              key={`game-${colIndex}-${rowIndex}`}
+            />
           );
         });
       });
@@ -152,8 +174,8 @@ export default function Stage() {
               HOLD_PANEL.X + HOLD_PANEL.CHILD * colIndex,
               HOLD_PANEL.Y + HOLD_PANEL.CHILD * rowIndex,
             ]}
-            texture={textures.current.blank}
-            tint={TETROMINO_STYLES[tetrominoName]}
+            texture={texture.blank}
+            tint={tint[tetrominoName]}
             key={`hold-${colIndex}-${rowIndex}`}
           />
         );
@@ -179,8 +201,8 @@ export default function Stage() {
                 QUEUE_PANEL.X + QUEUE_PANEL.CHILD * colIndex,
                 queuePanelYCoord + QUEUE_PANEL.CHILD * rowIndex,
               ]}
-              texture={textures.current.blank}
-              tint={TETROMINO_STYLES[tetrominoName]}
+              texture={texture.blank}
+              tint={tint[tetrominoName]}
               key={`queue-${spawnedIndex}-${colIndex}-${rowIndex}`}
             />
           );
@@ -191,16 +213,24 @@ export default function Stage() {
     });
 
     setGameSprites(sprites);
-  }, [gameStates, gameSettings]);
+  }, [gameStates, gameOptions, startGame]);
 
   return (
-    <ContextWrapper>
+    <PixiStage
+      height={STAGE_SIZE}
+      width={STAGE_SIZE}
+      options={{
+        hello: true, // Logs Pixi version & renderer type
+        antialias: gameOptions.antialias,
+        backgroundAlpha: 0,
+        powerPreference: gameOptions.powerPreference,
+      }}
+    >
       <Container position={stagePosition}>
         <BorderGraphics />
         {gameSprites}
-        {clearedLines}
       </Container>
-      {gameSettings.performanceDisplay ? <PerformanceTracker /> : null}
-    </ContextWrapper>
+      {gameOptions.performanceDisplay && <PerformanceTracker />}
+    </PixiStage>
   );
 }

@@ -1,6 +1,6 @@
 import EventEmitter from "stream";
 
-import { ClassicStates, NemeinStates } from "app/(game)/Utils";
+import { GameStates } from "./Store";
 
 export enum Opcodes {
   /* Base socket events */
@@ -42,7 +42,7 @@ type SocketGameKeydown = {
 
 type SocketGameStates = {
   op: Opcodes.GAME_STATES;
-  data: ClassicStates | NemeinStates;
+  data: GameStates;
 };
 
 type SocketGameToggle = {

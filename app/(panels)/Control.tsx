@@ -1,46 +1,23 @@
-import { useEffect } from "react";
-import anime from "animejs/lib/anime.es";
-
-const BASE_CONTROL_ANIMATION_PARAMS = {
-  targets: "#control-prompt",
-  easing: "easeInOutCubic",
-  duration: 500,
-};
+import { useGameStore } from "libs/Store";
 
 export default function ControlPrompt({
-  isOver,
-  toggleGame,
+  startGame,
 }: {
-  isOver: boolean;
-  toggleGame: () => void;
+  startGame: () => void;
 }) {
-  useEffect(() => {
-    anime({
-      ...BASE_CONTROL_ANIMATION_PARAMS,
-      opacity: 1,
-    });
-  }, []);
+  const gameStatus = useGameStore((state) => state.gameStatus);
 
   return (
     <div
       className="absolute left-1/2 top-1/2 z-[65] grid w-44 translate-x-[-50%]
-        translate-y-[-50%] place-items-center gap-y-2 text-center opacity-0"
+        translate-y-[-50%] place-items-center gap-y-2 text-center"
       id="control-prompt"
     >
       <p className="text-3xl font-bold text-slate-100">
-        {isOver ? "Game Over" : "Paused"}
+        {gameStatus === "ending" ? "Game Over" : "Paused"}
       </p>
-      <button
-        className="button button-light h-8 w-40"
-        onClick={() => {
-          anime({
-            ...BASE_CONTROL_ANIMATION_PARAMS,
-            opacity: 0,
-            complete: toggleGame,
-          });
-        }}
-      >
-        {isOver ? "New Game" : "Restart"}
+      <button className="button button-light h-8 w-40" onClick={startGame}>
+        Restart
       </button>
     </div>
   );

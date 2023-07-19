@@ -1,20 +1,12 @@
 "use client";
 
-import { useCallback, useContext, useEffect, useState, useRef } from "react";
-import anime from "animejs/lib/anime.es";
+import { useCallback, useEffect, useState, useRef } from "react";
 
 import { Opcodes, GameSocket } from "libs/Socket";
-import {
-  ClassicStates,
-  NemeinStates,
-  GameSettings,
-  PerformanceDetails,
-  GameContext,
-} from "app/(game)/Misc";
+import { useGameStore } from "libs/Store";
 import Stage from "app/(game)/Stage";
 import StartPrompt from "app/(panels)/Start";
 import ControlPrompt from "app/(panels)/Control";
-import SettingsPrompt from "app/(panels)/Settings";
 
 const ESCAPE_KEY = "Escape";
 const VALID_KEYS = [
@@ -53,123 +45,108 @@ const VALID_KEYS = [
   " ",
 ];
 
-const PROGRESS_BAR_ANIMATION_DURATION_MS = 250;
-const GAME_STAGE_ANIMATION_DURATION_MS = 500;
-
 export default function Nemein() {
-  const gameContext = useContext(GameContext);
+  const gameOptions = useGameStore((state) => state.gameOptions);
+  const gamePerformance = useGameStore((state) => state.gamePerformance);
+  const gameStatus = useGameStore((state) => state.gameStatus);
+  const updateGamePerformance = useGameStore(
+    (state) => state.updateGamePerformance
+  );
+  const updateGameStates = useGameStore((state) => state.updateGameStates);
+  const updateGameStatus = useGameStore((state) => state.updateGameStatus);
+
   const gameSocket = useRef<GameSocket | null>(null);
   const isActive = useRef<boolean>(false);
-  const isOver = useRef<boolean>(false);
 
   const [loadingProgress, setLoadingProgress] = useState<number>(0);
-  const [stageVisibility, setStageVisibility] = useState<boolean>(false);
-  const [settingsVisibility, setSettingsVisibility] = useState<boolean>(false);
-  const [controlVisibility, setControlVisibility] = useState<boolean>(false);
-  const [gameStates, setGameStates] = useState<
-    ClassicStates | NemeinStates | null
-  >(gameContext.gameStates);
-  const [gameSettings, setGameSettings] = useState<GameSettings>(
-    gameContext.gameSettings
-  );
-  const [gameLatency, setGameLatency] = useState<number>(0);
-  const [performanceDetails, setPerformanceDetails] =
-    useState<PerformanceDetails>({
-      fps: 0,
-      frameTime: 0,
-    });
 
-  const handleKeydown = ({ key }: { key: string }) => {
-    if (isOver.current || !gameSocket.current) return;
+  const handleKeydown = useCallback(
+    ({ key }: { key: string }) => {
+      if (!gameSocket.current || gameStatus === "initializing") return;
 
-    if (key === ESCAPE_KEY) {
-      isActive.current = !isActive.current;
+      if (key === ESCAPE_KEY) {
+        isActive.current = !isActive.current;
+
+        gameSocket.current.send({
+          op: Opcodes.GAME_TOGGLE,
+          data: isActive.current,
+        });
+
+        return;
+      }
+
+      if (gameStatus !== "ongoing" || !VALID_KEYS.includes(key)) return;
 
       gameSocket.current.send({
-        op: Opcodes.GAME_TOGGLE,
-        data: isActive.current,
+        op: Opcodes.GAME_KEYDOWN,
+        data: key,
       });
+    },
+    [gameStatus]
+  );
 
-      return;
-    }
-
-    if (!isActive.current || !VALID_KEYS.includes(key)) return;
-
-    gameSocket.current.send({
-      op: Opcodes.GAME_KEYDOWN,
-      data: key,
-    });
-  };
-
-  const toggleGame = useCallback(() => {
+  const startGame = useCallback(() => {
     if (!gameSocket.current) return;
 
     gameSocket.current.send({
       op: Opcodes.SOCKET_READY,
-      data: gameSettings.gameMode,
+      data: gameOptions.gameMode,
     });
 
     isActive.current = true;
-    isOver.current = false;
+  }, [gameOptions.gameMode]);
 
-    setControlVisibility(false);
-  }, [gameSettings]);
+  useEffect(() => {
+    /* Listens for keyboard input */
+    document.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      /* Removes listener on component unmount */
+      document.removeEventListener("keydown", handleKeydown);
+    };
+  }, [handleKeydown]);
 
   useEffect(() => {
     gameSocket.current = new GameSocket();
 
     gameSocket.current
-      .on("progress", ({ percent }) => {
-        /* Updates the progress bar */
-        anime({
-          targets: "#init-progress",
-          easing: "easeInOutCubic",
-          duration: PROGRESS_BAR_ANIMATION_DURATION_MS,
-          value: percent,
-        });
-
-        setLoadingProgress(percent);
-      })
+      .on("progress", ({ percent }) => setLoadingProgress(percent))
       .on("data", ({ op, data }) => {
         switch (op) {
           case Opcodes.SOCKET_READY: {
-            const gameMode = data;
-
-            if (gameMode !== gameSettings.gameMode) {
+            if (data !== gameOptions.gameMode) {
               throw new Error("Game mode mismatched!");
             }
 
-            /* Listens for keyboard input */
-            document.addEventListener("keydown", handleKeydown);
+            isActive.current = true;
+
+            updateGameStatus("ongoing");
 
             break;
           }
 
           case Opcodes.SOCKET_HEARTBEAT: {
-            if (!gameSettings.performanceDisplay) return;
-
-            const previousTimestamp = data;
-
-            setGameLatency(Date.now() - previousTimestamp);
+            updateGamePerformance({
+              currentLatency: Date.now() - data,
+            });
 
             break;
           }
 
           case Opcodes.GAME_STATES: {
-            setGameStates(data);
+            updateGameStates(data);
 
             if (data.gameOver) {
               isActive.current = false;
-              isOver.current = true;
 
-              setControlVisibility(true);
+              updateGameStatus("ending");
             }
 
             break;
           }
 
           case Opcodes.GAME_TOGGLE: {
-            setControlVisibility(!isActive.current);
+            updateGameStatus(isActive.current ? "ongoing" : "pausing");
 
             break;
           }
@@ -181,68 +158,44 @@ export default function Nemein() {
     const currentSocket = gameSocket.current;
 
     return () => {
-      /* Clean up on component unmount */
-      document.removeEventListener("keydown", handleKeydown);
-
+      /* Cleans up socket on component unmount */
       currentSocket.removeAllListeners();
 
       currentSocket.destroy();
     };
-  }, [gameSettings]);
-
-  useEffect(() => {
-    if (loadingProgress < 100 || !stageVisibility) return;
-
-    anime
-      .timeline({
-        easing: "easeInOutCubic",
-        duration: GAME_STAGE_ANIMATION_DURATION_MS,
-      })
-      /* Hides the animation wrapper & the progress bar */
-      .add({
-        targets: ["#animation-wrapper", "#init-progress"],
-        opacity: 0,
-        zIndex: 0,
-      })
-      /* Reveals the game stage */
-      .add({
-        targets: "#game-stage",
-        opacity: 1,
-        zIndex: 50,
-        complete: toggleGame,
-      });
-  }, [loadingProgress, stageVisibility, toggleGame]);
+  }, [
+    gameOptions.gameMode,
+    updateGamePerformance,
+    updateGameStates,
+    updateGameStatus,
+  ]);
 
   return (
-    <GameContext.Provider
-      value={{
-        gameStates,
-        gameSettings,
-        setGameSettings,
-        setStageVisibility,
-        setSettingsVisibility,
-        setPerformanceDetails,
-      }}
-    >
-      <div
-        className="grid h-screen min-w-fit place-items-center bg-gray-800
+    <div
+      className="grid h-screen min-w-fit place-items-center bg-gray-800
           px-5 py-5"
-      >
-        {stageVisibility ? <Stage /> : <StartPrompt />}
-        {settingsVisibility ? <SettingsPrompt /> : null}
-        {controlVisibility ? (
-          <ControlPrompt isOver={isOver.current} toggleGame={toggleGame} />
-        ) : null}
-        {gameSettings.performanceDisplay ? (
-          <div
-            className="text-md absolute bottom-[1%] left-1/2  
+    >
+      {gameStatus === "initializing" ? (
+        <StartPrompt
+          loadingProgress={loadingProgress}
+          loadStage={() => updateGameStatus("ongoing")}
+        />
+      ) : (
+        <Stage startGame={startGame} />
+      )}
+      {(gameStatus === "pausing" || gameStatus === "ending") && (
+        <ControlPrompt startGame={startGame} />
+      )}
+      {gameOptions.performanceDisplay && (
+        <div
+          className="text-md absolute bottom-[1%] left-1/2  
               translate-x-[-50%] translate-y-[-50%] font-medium text-slate-100"
-          >
-            latency: {gameLatency}ms • fps: {performanceDetails.fps} • frame
-            time: {performanceDetails.frameTime}ms
-          </div>
-        ) : null}
-      </div>
-    </GameContext.Provider>
+        >
+          current latency: {gamePerformance.currentLatency} ms • frame rate:{" "}
+          {gamePerformance.frameRate} fps • frame time:{" "}
+          {gamePerformance.frameTime} ms
+        </div>
+      )}
+    </div>
   );
 }

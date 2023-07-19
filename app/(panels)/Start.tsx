@@ -1,94 +1,46 @@
-import { useContext, useEffect } from "react";
-import anime from "animejs/lib/anime.es";
+import { useEffect, useState } from "react";
 
-import { GameContext } from "app/(game)/Misc";
+import OptionsPanel from "./Options";
 
-const START_BUTTON_ANIMATION_DURATION_MS = 250;
-const START_PROMPT_ANIMATION_DURATION_MS = 250;
-
-export default function StartPrompt() {
-  const { setStageVisibility, setSettingsVisibility } = useContext(GameContext);
-
-  if (!setStageVisibility || !setSettingsVisibility) {
-    throw new Error("Set station actions are nullish.");
-  }
+export default function StartPrompt({
+  loadingProgress,
+  loadStage,
+}: {
+  loadingProgress: number;
+  loadStage: () => void;
+}) {
+  const [requestStage, setRequestStage] = useState<boolean>(false);
+  const [requestOptions, setRequestOptions] = useState<boolean>(false);
 
   useEffect(() => {
-    anime
-      .timeline({
-        easing: "easeInOutCubic",
-        duration: START_PROMPT_ANIMATION_DURATION_MS,
-      })
-      /* Reveals the start button first */
-      .add({
-        targets: ["#start-button"],
-        opacity: 1,
-      })
-      /* Reveals the animation wrapper & the setting button */
-      .add({
-        targets: ["#animation-wrapper", "#settings-button"],
-        opacity: 1,
-      });
-  }, []);
+    if (loadingProgress < 100 || !requestStage) return;
+
+    loadStage();
+  }, [loadingProgress, requestStage, loadStage]);
 
   return (
     <div>
-      <div
-        className="absolute left-1/2 top-1/2 z-40 h-[32px] w-[176px]
-          translate-x-[-50%] translate-y-[-50%] rounded border-4
-          border-slate-100 opacity-0"
-        id="animation-wrapper"
+      <button
+        className="button button-light absolute left-1/2 top-1/2 z-[50]
+            h-[32px] w-[176px] translate-x-[-50%] translate-y-[-50%]"
+        id="start-button"
+        onClick={() => setRequestStage(true)}
+        type="button"
       >
-        <button
-          className="button button-light absolute left-1/2 top-1/2 z-[50]
-            h-[32px] w-[176px] translate-x-[-50%] translate-y-[-50%] opacity-0"
-          id="start-button"
-          onClick={() => {
-            anime
-              .timeline({
-                easing: "easeInOutCubic",
-                duration: START_BUTTON_ANIMATION_DURATION_MS,
-              })
-              /* Hides all the buttons */
-              .add({
-                targets: ["#start-button", "#settings-button"],
-                opacity: 0,
-                zIndex: 0,
-              })
-              /* Scales the animation wrapper down to match the progress bar */
-              .add({
-                targets: ["#animation-wrapper"],
-                height: 16,
-              })
-              /* Reveals the progress bar */
-              .add({
-                targets: ["#init-progress"],
-                opacity: 1,
-                zIndex: 50,
-                complete: () => setStageVisibility(true),
-              });
-          }}
-          type="button"
-        >
-          Play
-        </button>
-        <progress
-          className="absolute left-1/2 top-1/2 z-30 translate-x-[-50%]
-            translate-y-[-50%] opacity-0"
-          id="init-progress"
-          value="10"
-          max="100"
-        />
-      </div>
+        Play
+      </button>
       <button
         className="button button-alt absolute left-1/2 top-1/2 z-[50]
-          h-[32px] w-[176px] translate-x-[-50%] translate-y-[70%]  opacity-0"
+          h-[32px] w-[176px] translate-x-[-50%] translate-y-[70%]"
         id="settings-button"
-        onClick={() => setSettingsVisibility(true)}
+        onClick={() => setRequestOptions(true)}
         type="button"
       >
         Settings
       </button>
+      {requestOptions && (
+        <OptionsPanel toggleOptions={() => setRequestOptions(false)} />
+      )}
     </div>
   );
 }

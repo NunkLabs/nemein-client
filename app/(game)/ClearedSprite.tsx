@@ -1,9 +1,9 @@
+import { useMemo, useState, useRef } from "react";
 import { Sprite, useTick } from "@pixi/react";
 import { Texture } from "pixi.js";
-import { useMemo, useState, useRef } from "react";
 
-import { GAME_PANEL, TETROMINO_STYLES, TetrominoType } from "./Misc";
 import { randomFloatInRange } from "libs/Utils";
+import { GAME_PANEL } from "./Misc";
 
 type SpriteProperties = {
   alpha: number;
@@ -38,16 +38,16 @@ const MINORITY_SCALE_CEILING = 0.15;
 const MAJORITY_SCALE_FLOOR = -0.25;
 const MAJORITY_SCALE_CEILING = 0;
 
-export default function ClearedBlock({
-  type,
-  gameOver,
-  initialXDisplacement,
-  initialYDisplacement,
+export default function ClearedSprite({
+  isBlank,
+  tint,
+  x,
+  y,
 }: {
-  type: TetrominoType;
-  gameOver?: boolean;
-  initialXDisplacement: number;
-  initialYDisplacement: number;
+  isBlank?: boolean;
+  tint: number;
+  x: number;
+  y: number;
 }) {
   const time = useRef<number>(0);
   const progress = useRef<number>(0);
@@ -88,7 +88,7 @@ export default function ClearedBlock({
 
   const [spriteProperties, setSpriteProperties] = useState<SpriteProperties>({
     alpha: 1,
-    position: [initialXDisplacement, initialYDisplacement],
+    position: [x, y],
     rotation: 0,
     scale: 1,
   });
@@ -112,7 +112,7 @@ export default function ClearedBlock({
       /* Resets and ensures the sprite is hidden until it's detached */
       setSpriteProperties({
         alpha: 0,
-        position: [initialXDisplacement, initialYDisplacement],
+        position: [x, y],
         rotation: 0,
         scale: 1,
       });
@@ -129,7 +129,7 @@ export default function ClearedBlock({
      * animation progress
      */
     const currentXPosition =
-      initialXDisplacement + baseProperties.xDisplacement * progress.current;
+      x + baseProperties.xDisplacement * progress.current;
 
     /**
      * Calculates the current Y position
@@ -138,7 +138,7 @@ export default function ClearedBlock({
      */
     const currentYDisplacement =
       time.current * velocity + 0.5 * acceleration * Math.pow(time.current, 2);
-    const currentYPosition = initialYDisplacement - currentYDisplacement;
+    const currentYPosition = y - currentYDisplacement;
 
     setSpriteProperties({
       alpha: 1 - progress.current,
@@ -157,14 +157,14 @@ export default function ClearedBlock({
 
   return (
     <Sprite
-      alpha={type === TetrominoType.Blank ? 0 : spriteProperties.alpha}
+      alpha={isBlank ? 0 : spriteProperties.alpha}
       anchor={SPRITE_ANCHOR}
       height={GAME_PANEL.CHILD * spriteProperties.scale}
       width={GAME_PANEL.CHILD * spriteProperties.scale}
       position={spriteProperties.position}
       rotation={spriteProperties.rotation}
       texture={textures.current.blank}
-      tint={TETROMINO_STYLES[TetrominoType[type]]}
+      tint={tint}
     />
   );
 }

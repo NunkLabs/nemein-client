@@ -1,7 +1,6 @@
-import { useContext, useEffect, useRef } from "react";
-import anime from "animejs/lib/anime.es";
+import { useRef } from "react";
 
-import { GameContext } from "app/(game)/Misc";
+import { useGameStore } from "libs/Store";
 
 const POWER_PREFERENCE_OPTIONS = {
   default: "default",
@@ -9,13 +8,7 @@ const POWER_PREFERENCE_OPTIONS = {
   "low-power": "low power",
 };
 
-const BASE_SETTINGS_ANIMATION_PARAMS = {
-  targets: "#settings-prompt",
-  easing: "easeInOutCubic",
-  duration: 500,
-};
-
-function SettingsField({
+function OptionsField({
   buttonLabel,
   fieldLabel,
   onClickAction,
@@ -43,55 +36,47 @@ function SettingsField({
   );
 }
 
-export default function SettingsPrompt() {
-  const { gameSettings, setGameSettings, setSettingsVisibility } =
-    useContext(GameContext);
-
-  if (!setGameSettings || !setSettingsVisibility) {
-    throw new Error("Set state actions are nullish.");
-  }
+export default function SettingsPrompt({
+  toggleOptions,
+}: {
+  toggleOptions: () => void;
+}) {
+  const gameOptions = useGameStore((state) => state.gameOptions);
+  const updateGameOptions = useGameStore((state) => state.updateGameOptions);
+  const updateGameStatus = useGameStore((state) => state.updateGameStatus);
 
   const powerPreferenceIndex = useRef<number>(0);
-
-  useEffect(() => {
-    anime({
-      ...BASE_SETTINGS_ANIMATION_PARAMS,
-      opacity: 1,
-    });
-  }, []);
 
   return (
     <dialog
       className="z-[55] grid h-[360px] w-[480px] place-items-center gap-y-1
-        rounded border-4 border-slate-100 bg-slate-100 text-center opacity-0"
+        rounded border-4 border-slate-100 bg-slate-100 text-center"
       id="settings-prompt"
     >
       <p className="text-3xl font-bold text-slate-800">settings</p>
       <div className="grid grid-rows-5 gap-y-1">
-        <SettingsField
+        <OptionsField
           buttonLabel={"game mode"}
-          fieldLabel={gameSettings.gameMode}
+          fieldLabel={gameOptions.gameMode}
           onClickAction={() =>
-            setGameSettings({
-              ...gameSettings,
+            updateGameOptions({
               gameMode:
-                gameSettings.gameMode === "classic" ? "nemein" : "classic",
+                gameOptions.gameMode === "classic" ? "nemein" : "classic",
             })
           }
         />
-        <SettingsField
+        <OptionsField
           buttonLabel={"antialias"}
-          fieldLabel={gameSettings.antialias ? "on" : "off"}
+          fieldLabel={gameOptions.antialias ? "on" : "off"}
           onClickAction={() =>
-            setGameSettings({
-              ...gameSettings,
-              antialias: !gameSettings.antialias,
+            updateGameOptions({
+              antialias: !gameOptions.antialias,
             })
           }
         />
-        <SettingsField
+        <OptionsField
           buttonLabel={"power preference"}
-          fieldLabel={POWER_PREFERENCE_OPTIONS[gameSettings.powerPreference]}
+          fieldLabel={POWER_PREFERENCE_OPTIONS[gameOptions.powerPreference]}
           onClickAction={() => {
             const powerPreferenceOptions = Object.keys(
               POWER_PREFERENCE_OPTIONS
@@ -102,43 +87,34 @@ export default function SettingsPrompt() {
                 ? powerPreferenceIndex.current + 1
                 : 0;
 
-            setGameSettings({
-              ...gameSettings,
+            updateGameOptions({
               powerPreference:
                 powerPreferenceOptions[powerPreferenceIndex.current],
             });
           }}
         />
-        <SettingsField
+        <OptionsField
           buttonLabel={"performance display"}
-          fieldLabel={gameSettings.performanceDisplay ? "on" : "off"}
+          fieldLabel={gameOptions.performanceDisplay ? "on" : "off"}
           onClickAction={() =>
-            setGameSettings({
-              ...gameSettings,
-              performanceDisplay: !gameSettings.performanceDisplay,
+            updateGameOptions({
+              performanceDisplay: !gameOptions.performanceDisplay,
             })
           }
         />
-        <SettingsField
+        <OptionsField
           buttonLabel={"stage shake"}
-          fieldLabel={gameSettings.stageShake ? "on" : "off"}
+          fieldLabel={gameOptions.stageShake ? "on" : "off"}
           onClickAction={() =>
-            setGameSettings({
-              ...gameSettings,
-              stageShake: !gameSettings.stageShake,
+            updateGameOptions({
+              stageShake: !gameOptions.stageShake,
             })
           }
         />
       </div>
       <button
         className="button button-dark h-[32px] w-[192px]"
-        onClick={() => {
-          anime({
-            ...BASE_SETTINGS_ANIMATION_PARAMS,
-            opacity: 0,
-            complete: () => setSettingsVisibility(false),
-          });
-        }}
+        onClick={toggleOptions}
       >
         confirm
       </button>
