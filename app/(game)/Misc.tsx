@@ -26,34 +26,72 @@ export const QUEUE_PANEL = {
   Y: STAGE_SPACER * 2,
 };
 
+export const BASE_STYLE = {
+  LIGHT: {
+    PRIMARY: 0x030712 /* Tailwind Gray 950 */,
+    SECONDARY: 0xf9fafb /* Tailwind Gray 50 */,
+    ALTERNATE: 0x111827 /* Tailwind Gray 900 */,
+  },
+  DARK: {
+    PRIMARY: 0xf9fafb /* Tailwind Gray 50 */,
+    SECONDARY: 0x030712 /* Tailwind Gray 950 */,
+    ALTERNATE: 0xf3f4f6 /* Tailwind Gray 100 */,
+  },
+};
+
 export const BORDER_STYLE = {
-  WIDTH: 4,
-  COLOR: 0xf1f5f9,
   ALIGNMENT: 1,
+  WIDTH: 4,
 };
 
 export const TETROMINO_STYLES: {
-  [key: string]: number;
+  [key: string]: {
+    [key: string]: number;
+  };
 } = {
-  Blank: 0x1f2937,
-  Square: 0xfef08a,
-  I: 0x93c5fd,
-  T: 0xd8b4fe,
-  J: 0xa5b4fc,
-  L: 0xfdba74,
-  Z: 0xfca5a5,
-  S: 0x86efac,
-  Grey: 0xf1f5f9,
-  Ghost: 0xf1f5f9,
+  LIGHT: {
+    Blank: BASE_STYLE.LIGHT.SECONDARY,
+    Square: 0xfef08a,
+    I: 0x93c5fd,
+    T: 0xd8b4fe,
+    J: 0xa5b4fc,
+    L: 0xfdba74,
+    Z: 0xfca5a5,
+    S: 0x86efac,
+    Grey: BASE_STYLE.LIGHT.ALTERNATE,
+    Ghost: BASE_STYLE.LIGHT.ALTERNATE,
+  },
+  DARK: {
+    Blank: BASE_STYLE.DARK.SECONDARY,
+    Square: 0xfef08a,
+    I: 0x93c5fd,
+    T: 0xd8b4fe,
+    J: 0xa5b4fc,
+    L: 0xfdba74,
+    Z: 0xfca5a5,
+    S: 0x86efac,
+    Grey: BASE_STYLE.DARK.ALTERNATE,
+    Ghost: BASE_STYLE.DARK.ALTERNATE,
+  },
 };
 
 export const DAMAGE_TYPE_STYLES: {
-  [key: string]: number;
+  [key: string]: {
+    [key: string]: number;
+  };
 } = {
-  Physical: 0xcbd5e1,
-  Fire: 0xfca5a5,
-  Cold: 0x93c5fd,
-  Lightning: 0xfef08a,
+  LIGHT: {
+    Physical: BASE_STYLE.LIGHT.PRIMARY,
+    Fire: 0xfca5a5,
+    Cold: 0x93c5fd,
+    Lightning: 0xfef08a,
+  },
+  DARK: {
+    Physical: BASE_STYLE.DARK.PRIMARY,
+    Fire: 0xfca5a5,
+    Cold: 0x93c5fd,
+    Lightning: 0xfef08a,
+  },
 };
 
 /* Tetrominos coords consts */

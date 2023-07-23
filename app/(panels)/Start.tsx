@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 
+import { buttonVariants } from "components/ui/Button";
 import OptionsPanel from "./Options";
 
-export default function StartPrompt({
+export default function StartPanel({
   loadingProgress,
   loadStage,
 }: {
@@ -10,37 +11,26 @@ export default function StartPrompt({
   loadStage: () => void;
 }) {
   const [requestStage, setRequestStage] = useState<boolean>(false);
-  const [requestOptions, setRequestOptions] = useState<boolean>(false);
 
   useEffect(() => {
     if (loadingProgress < 100 || !requestStage) return;
 
     loadStage();
-  }, [loadingProgress, requestStage, loadStage]);
+  }, [loadingProgress, loadStage, requestStage]);
 
   return (
-    <div>
+    <div className="fixed left-1/2 top-1/2 flex translate-x-[-50%] translate-y-[-50%] flex-col place-items-center gap-y-2 text-center">
+      <h1 className="text-5xl">nemein</h1>
       <button
-        className="button button-light absolute left-1/2 top-1/2 z-[50]
-            h-[32px] w-[176px] translate-x-[-50%] translate-y-[-50%]"
-        id="start-button"
+        className={buttonVariants({ variant: "primary" })}
         onClick={() => setRequestStage(true)}
         type="button"
       >
         Play
       </button>
-      <button
-        className="button button-alt absolute left-1/2 top-1/2 z-[50]
-          h-[32px] w-[176px] translate-x-[-50%] translate-y-[70%]"
-        id="settings-button"
-        onClick={() => setRequestOptions(true)}
-        type="button"
-      >
-        Settings
-      </button>
-      {requestOptions && (
-        <OptionsPanel toggleOptions={() => setRequestOptions(false)} />
-      )}
+      <div>
+        <OptionsPanel />
+      </div>
     </div>
   );
 }

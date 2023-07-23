@@ -1,24 +1,30 @@
 import { Graphics, PixiRef } from "@pixi/react";
 
+import { useGameStore } from "libs/Store";
 import {
   STAGE_SIZE,
   STAGE_SPACER,
   HOLD_PANEL,
   GAME_PANEL,
   QUEUE_PANEL,
+  BASE_STYLE,
   BORDER_STYLE,
 } from "./Misc";
 
 export default function BorderGraphics() {
+  const gameTheme = useGameStore((state) => state.gameTheme);
   return (
     <Graphics
       draw={(panelGraphics: PixiRef<typeof Graphics>) => {
         panelGraphics.clear();
 
         panelGraphics.lineStyle({
-          width: BORDER_STYLE.WIDTH,
-          color: BORDER_STYLE.COLOR,
           alignment: BORDER_STYLE.ALIGNMENT,
+          color:
+            gameTheme === "light"
+              ? BASE_STYLE.LIGHT.PRIMARY
+              : BASE_STYLE.DARK.PRIMARY,
+          width: BORDER_STYLE.WIDTH,
         });
 
         panelGraphics.drawRect(

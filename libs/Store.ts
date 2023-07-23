@@ -81,12 +81,16 @@ export type GameStates = {
 /* Game status typings */
 type GameStatus = "initializing" | "ongoing" | "pausing" | "ending";
 
+/* Game theme typings, gives autocomplete while satifies string | undefined */
+type GameTheme = "light" | "dark" | (string & {}) | undefined;
+
 /* Game store typings */
 type GameStoreState = {
   gameOptions: GameOptions;
   gamePerformance: GamePerformance;
   gameStates: GameStates | null;
   gameStatus: GameStatus;
+  gameTheme: GameTheme;
 };
 
 type GameStoreAction = {
@@ -94,6 +98,7 @@ type GameStoreAction = {
   updateGamePerformance: (gamePerformance: Partial<GamePerformance>) => void;
   updateGameStates: (gameStates: GameStates) => void;
   updateGameStatus: (gameStatus: GameStatus) => void;
+  updateGameTheme: (gameTheme: GameTheme) => void;
 };
 
 /* Builds the game store */
@@ -112,6 +117,7 @@ export const useGameStore = create<GameStoreState & GameStoreAction>((set) => ({
   },
   gameStates: null,
   gameStatus: "initializing",
+  gameTheme: "dark",
   updateGameOptions: (gameOptions: Partial<GameOptions>) =>
     set((state) => ({ gameOptions: { ...state.gameOptions, ...gameOptions } })),
   updateGamePerformance: (gamePerformance: Partial<GamePerformance>) =>
@@ -120,4 +126,5 @@ export const useGameStore = create<GameStoreState & GameStoreAction>((set) => ({
     })),
   updateGameStates: (gameStates: GameStates) => set(() => ({ gameStates })),
   updateGameStatus: (gameStatus: GameStatus) => set(() => ({ gameStatus })),
+  updateGameTheme: (gameTheme: GameTheme) => set(() => ({ gameTheme })),
 }));

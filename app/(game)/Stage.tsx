@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTheme } from "next-themes";
 import { Container, Sprite, Stage as PixiStage } from "@pixi/react";
 import { Texture } from "pixi.js";
 
@@ -12,6 +13,7 @@ import {
   STAGE_SPACER,
   TETROMINO_STYLES,
   TETROMINOS_ARR,
+  BASE_STYLE,
 } from "./Misc";
 import BorderGraphics from "./BorderGraphics";
 import ClearedSprite from "./ClearedSprite";
@@ -30,11 +32,16 @@ export default function Stage({ startGame }: { startGame: () => void }) {
   const gameOptions = useGameStore((state) => state.gameOptions);
   const gameStates = useGameStore((state) => state.gameStates);
 
-  const blockStyles = useRef({
+  const { theme } = useTheme();
+
+  const styles = useRef({
+    damageColor:
+      theme === "light" ? DAMAGE_TYPE_STYLES.LIGHT : DAMAGE_TYPE_STYLES.DARK,
+    tetrominoColor:
+      theme === "light" ? TETROMINO_STYLES.LIGHT : TETROMINO_STYLES.DARK,
     texture: {
       blank: Texture.from("/textures/blank.svg"),
     },
-    tint: TETROMINO_STYLES,
   });
   const blocksCleared = useRef<number>(0);
   const linesCleared = useRef<number>(0);
@@ -49,7 +56,7 @@ export default function Stage({ startGame }: { startGame: () => void }) {
       return;
     }
 
-    const { texture, tint } = blockStyles.current;
+    const { damageColor, tetrominoColor, texture } = styles.current;
 
     const sprites: JSX.Element[] = [];
 
@@ -63,7 +70,7 @@ export default function Stage({ startGame }: { startGame: () => void }) {
             gameStates.gameOver ? (
               <ClearedSprite
                 isBlank={tetrominoName === "Blank"}
-                tint={tint[tetrominoName]}
+                tint={tetrominoColor[tetrominoName]}
                 x={GAME_PANEL.X + GAME_PANEL.CHILD * colIndex}
                 y={GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex}
                 key={`game-over-${colIndex}-${rowIndex}`}
@@ -78,7 +85,7 @@ export default function Stage({ startGame }: { startGame: () => void }) {
                   GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex,
                 ]}
                 texture={texture.blank}
-                tint={tint[tetrominoName]}
+                tint={tetrominoColor[tetrominoName]}
                 key={`game-${colIndex}-${rowIndex}`}
               />
             )
@@ -96,7 +103,7 @@ export default function Stage({ startGame }: { startGame: () => void }) {
 
             sprites.push(
               <ClearedSprite
-                tint={tint[TetrominoType[type]]}
+                tint={tetrominoColor[TetrominoType[type]]}
                 x={GAME_PANEL.X + GAME_PANEL.CHILD * colIndex}
                 y={GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex}
                 key={`cleared-block-${blocksCleared.current}`}
@@ -113,7 +120,7 @@ export default function Stage({ startGame }: { startGame: () => void }) {
               dmgDealt={clearRecord.dmgDealt.value.toString()}
               dmgIndex={rowIndex}
               wasCrit={clearRecord.wasCrit}
-              color={DAMAGE_TYPE_STYLES[DmgType[dmgDealt.dominantDmgType]]}
+              color={damageColor[DmgType[dmgDealt.dominantDmgType]]}
               x={GAME_PANEL.X}
               y={GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex}
               key={`damage-number-${linesCleared.current}`}
@@ -150,7 +157,7 @@ export default function Stage({ startGame }: { startGame: () => void }) {
                 GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex,
               ]}
               texture={texture.blank}
-              tint={tint[tetrominoName]}
+              tint={tetrominoColor[tetrominoName]}
               key={`game-${colIndex}-${rowIndex}`}
             />
           );
@@ -175,7 +182,7 @@ export default function Stage({ startGame }: { startGame: () => void }) {
               HOLD_PANEL.Y + HOLD_PANEL.CHILD * rowIndex,
             ]}
             texture={texture.blank}
-            tint={tint[tetrominoName]}
+            tint={tetrominoColor[tetrominoName]}
             key={`hold-${colIndex}-${rowIndex}`}
           />
         );
@@ -202,7 +209,7 @@ export default function Stage({ startGame }: { startGame: () => void }) {
                 queuePanelYCoord + QUEUE_PANEL.CHILD * rowIndex,
               ]}
               texture={texture.blank}
-              tint={tint[tetrominoName]}
+              tint={tetrominoColor[tetrominoName]}
               key={`queue-${spawnedIndex}-${colIndex}-${rowIndex}`}
             />
           );
@@ -222,7 +229,10 @@ export default function Stage({ startGame }: { startGame: () => void }) {
       options={{
         hello: true, // Logs Pixi version & renderer type
         antialias: gameOptions.antialias,
-        backgroundAlpha: 0,
+        backgroundColor:
+          theme === "light"
+            ? BASE_STYLE.LIGHT.SECONDARY
+            : BASE_STYLE.DARK.SECONDARY,
         powerPreference: gameOptions.powerPreference,
       }}
     >

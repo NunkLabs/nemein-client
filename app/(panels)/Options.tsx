@@ -1,123 +1,214 @@
-import { useRef } from "react";
+import { Close } from "@radix-ui/react-dialog";
+import { useTheme } from "next-themes";
 
 import { useGameStore } from "libs/Store";
+import { Button, buttonVariants } from "components/ui/Button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTrigger,
+} from "components/ui/Dialog";
+import { Label } from "components/ui/Label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "components/ui/Select";
+import { Switch } from "components/ui/Switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "components/ui/Tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "components/ui/Tooltip";
+import { useToast } from "components/ui/UseToast";
+import { useEffect } from "react";
 
-const POWER_PREFERENCE_OPTIONS = {
-  default: "default",
-  "high-performance": "high performance",
-  "low-power": "low power",
-};
-
-function OptionsField({
-  buttonLabel,
-  fieldLabel,
-  onClickAction,
-}: {
-  buttonLabel: string;
-  fieldLabel: string;
-  onClickAction: () => void;
-}) {
-  return (
-    <div className="grid grid-cols-2 gap-x-1">
-      <div
-        className="button button-dark h-[32px] w-[192px]"
-        onClick={onClickAction}
-      >
-        {buttonLabel}
-      </div>
-      <div
-        className="inline-block h-[32px] w-[192px] rounded border-4
-          border-gray-800 bg-transparent text-center align-middle text-lg
-          font-medium"
-      >
-        {fieldLabel}
-      </div>
-    </div>
-  );
-}
-
-export default function SettingsPrompt({
-  toggleOptions,
-}: {
-  toggleOptions: () => void;
-}) {
+export default function OptionsPanel() {
   const gameOptions = useGameStore((state) => state.gameOptions);
   const updateGameOptions = useGameStore((state) => state.updateGameOptions);
-  const updateGameStatus = useGameStore((state) => state.updateGameStatus);
+  const updateGameTheme = useGameStore((state) => state.updateGameTheme);
 
-  const powerPreferenceIndex = useRef<number>(0);
+  const { resolvedTheme, setTheme } = useTheme();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    /**
+     * Updates the theme in the game store because the useTheme hook won't work
+     * inside Pixi components
+     */
+    updateGameTheme(resolvedTheme);
+  }, [resolvedTheme, updateGameTheme]);
 
   return (
-    <dialog
-      className="z-[55] grid h-[360px] w-[480px] place-items-center gap-y-1
-        rounded border-4 border-slate-100 bg-slate-100 text-center"
-      id="settings-prompt"
-    >
-      <p className="text-3xl font-bold text-slate-800">settings</p>
-      <div className="grid grid-rows-5 gap-y-1">
-        <OptionsField
-          buttonLabel={"game mode"}
-          fieldLabel={gameOptions.gameMode}
-          onClickAction={() =>
-            updateGameOptions({
-              gameMode:
-                gameOptions.gameMode === "classic" ? "nemein" : "classic",
-            })
-          }
-        />
-        <OptionsField
-          buttonLabel={"antialias"}
-          fieldLabel={gameOptions.antialias ? "on" : "off"}
-          onClickAction={() =>
-            updateGameOptions({
-              antialias: !gameOptions.antialias,
-            })
-          }
-        />
-        <OptionsField
-          buttonLabel={"power preference"}
-          fieldLabel={POWER_PREFERENCE_OPTIONS[gameOptions.powerPreference]}
-          onClickAction={() => {
-            const powerPreferenceOptions = Object.keys(
-              POWER_PREFERENCE_OPTIONS
-            ) as ("default" | "high-performance" | "low-power")[];
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="secondary" type="button">
+          Options
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <Tabs defaultValue="general">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="general">General</TabsTrigger>
+            <TabsTrigger value="graphics">Graphics</TabsTrigger>
+            <TabsTrigger value="accessibility">Accessibility</TabsTrigger>
+          </TabsList>
+          <TabsContent value="general">
+            <div className="flex flex-row items-center justify-between p-3">
+              <div className="space-y-1">
+                <Label className="text-base">Game Mode</Label>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Select the preferred game mode
+                </p>
+              </div>
+              <Select
+                onValueChange={(
+                  gameModeSelection: typeof gameOptions.gameMode
+                ) => {
+                  updateGameOptions({
+                    gameMode: gameModeSelection,
+                  });
 
-            powerPreferenceIndex.current =
-              powerPreferenceIndex.current + 1 < powerPreferenceOptions.length
-                ? powerPreferenceIndex.current + 1
-                : 0;
-
-            updateGameOptions({
-              powerPreference:
-                powerPreferenceOptions[powerPreferenceIndex.current],
-            });
-          }}
-        />
-        <OptionsField
-          buttonLabel={"performance display"}
-          fieldLabel={gameOptions.performanceDisplay ? "on" : "off"}
-          onClickAction={() =>
-            updateGameOptions({
-              performanceDisplay: !gameOptions.performanceDisplay,
-            })
-          }
-        />
-        <OptionsField
-          buttonLabel={"stage shake"}
-          fieldLabel={gameOptions.stageShake ? "on" : "off"}
-          onClickAction={() =>
-            updateGameOptions({
-              stageShake: !gameOptions.stageShake,
-            })
-          }
-        />
-      </div>
-      <button
-        className="button button-dark h-[32px] w-[192px]"
-        onClick={toggleOptions}
-      >
-        confirm
-      </button>
-    </dialog>
+                  toast({
+                    title: "Game mode changed!",
+                    description: `
+                      ${gameModeSelection} will now launch on your next game
+                    `,
+                  });
+                }}
+              >
+                <SelectTrigger className="w-44">
+                  <SelectValue placeholder={gameOptions.gameMode} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="classic">classic</SelectItem>
+                  <SelectItem value="nemein">nemein</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-row items-center justify-between p-3">
+              <div className="space-y-1">
+                <Label className="text-base">Performance Display</Label>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Show latency and frame rate
+                </p>
+              </div>
+              <Switch
+                checked={gameOptions.performanceDisplay}
+                onCheckedChange={(enablePerformanceDisplay: boolean) =>
+                  updateGameOptions({
+                    performanceDisplay: enablePerformanceDisplay,
+                  })
+                }
+              />
+            </div>
+            <div className="flex flex-row items-center justify-between p-3">
+              <div className="space-y-1">
+                <Label className="text-base">Dark Mode</Label>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Embrace the dark
+                </p>
+              </div>
+              <Switch
+                checked={resolvedTheme === "dark"}
+                onCheckedChange={(enableDarkMode: boolean) =>
+                  setTheme(enableDarkMode ? "dark" : "light")
+                }
+              />
+            </div>
+          </TabsContent>
+          <TabsContent value="graphics">
+            <div className="flex flex-row items-center justify-between p-3">
+              <div className="space-y-1">
+                <Label className="text-base">Antialiasing</Label>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Smooth out block edges
+                </p>
+              </div>
+              <Switch
+                checked={gameOptions.antialias}
+                onCheckedChange={(enableAntialias: boolean) =>
+                  updateGameOptions({
+                    antialias: enableAntialias,
+                  })
+                }
+              />
+            </div>
+            <div className="flex flex-row items-center justify-between p-3">
+              <div className="space-y-1">
+                <Label className="text-base">GPU Mode</Label>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Change the WebGL GPU power preference
+                </p>
+              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Select
+                      onValueChange={(
+                        powerPreferenceSelection: typeof gameOptions.powerPreference
+                      ) =>
+                        updateGameOptions({
+                          powerPreference: powerPreferenceSelection,
+                        })
+                      }
+                    >
+                      <SelectTrigger className="w-44">
+                        <SelectValue
+                          placeholder={gameOptions.powerPreference}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="default">default</SelectItem>
+                        <SelectItem value="high-performance">
+                          high performance
+                        </SelectItem>
+                        <SelectItem value="low-power">low power</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      It is recommended to leave this on default. This option is
+                      a hint to help your system pick your preferred GPU
+                      configuration if you have more than 1 GPU available.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          </TabsContent>
+          <TabsContent value="accessibility">
+            <div className="flex flex-row items-center justify-between p-3">
+              <div className="space-y-1">
+                <Label className="text-base">Stage Shake</Label>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Toggle the shake effect on line clear
+                </p>
+              </div>
+              <Switch
+                checked={gameOptions.stageShake}
+                onCheckedChange={(enableStageShake: boolean) =>
+                  updateGameOptions({
+                    ...gameOptions,
+                    stageShake: enableStageShake,
+                  })
+                }
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
+        <DialogFooter>
+          <Close className={buttonVariants({ variant: "primary" })}>
+            Close
+          </Close>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
