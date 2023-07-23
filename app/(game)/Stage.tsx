@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { Container, Sprite, Stage as PixiStage } from "@pixi/react";
 import { Texture } from "pixi.js";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { DmgType, TetrominoType, useGameStore } from "libs/Store";
 import {
@@ -28,7 +29,7 @@ const SCREEN_SHAKE_OFFSETS: [number, number][] = [
   [0, 0],
 ];
 
-export default function Stage({ startGame }: { startGame: () => void }) {
+function Stage() {
   const gameOptions = useGameStore((state) => state.gameOptions);
   const gameStates = useGameStore((state) => state.gameStates);
 
@@ -50,11 +51,7 @@ export default function Stage({ startGame }: { startGame: () => void }) {
   const [gameSprites, setGameSprites] = useState<JSX.Element[]>([]);
 
   useEffect(() => {
-    if (!gameStates) {
-      startGame();
-
-      return;
-    }
+    if (!gameStates) return;
 
     const { damageColor, tetrominoColor, texture } = styles.current;
 
@@ -220,7 +217,7 @@ export default function Stage({ startGame }: { startGame: () => void }) {
     });
 
     setGameSprites(sprites);
-  }, [gameStates, gameOptions, startGame]);
+  }, [gameStates, gameOptions]);
 
   return (
     <PixiStage
@@ -242,5 +239,45 @@ export default function Stage({ startGame }: { startGame: () => void }) {
       </Container>
       {gameOptions.performanceDisplay && <PerformanceTracker />}
     </PixiStage>
+  );
+}
+
+/**
+ * Wraps the stage with the animation div
+ * Pixi requires the Stage component & Pixi children to be returned separately
+ */
+export default function StageWrapper({ startGame }: { startGame: () => void }) {
+  const gameOptions = useGameStore((state) => state.gameOptions);
+  const gamePerformance = useGameStore((state) => state.gamePerformance);
+  const gameStatus = useGameStore((state) => state.gameStatus);
+
+  return (
+    gameStatus !== "initializing" && (
+      <Fragment>
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0, transition: { type: "spring" } }}
+          onAnimationComplete={startGame}
+        >
+          <Stage />
+        </motion.div>
+        <div className="fixed bottom-[1%] left-1/2 translate-x-[-50%] translate-y-[-50%] text-sm">
+          <AnimatePresence onExitComplete={() => null}>
+            {gameOptions.performanceDisplay && gameStatus === "ongoing" && (
+              <motion.p
+                key="performance-panel"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                current latency: {gamePerformance.currentLatency} ms • frame
+                rate: {gamePerformance.frameRate} fps • frame time:
+                {gamePerformance.frameTime} ms
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
+      </Fragment>
+    )
   );
 }

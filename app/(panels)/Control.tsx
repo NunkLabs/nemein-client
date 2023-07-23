@@ -1,3 +1,6 @@
+import { Fragment, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+
 import { useGameStore } from "libs/Store";
 import { buttonVariants } from "components/ui/Button";
 
@@ -10,32 +13,84 @@ export default function ControlPanel({
 }) {
   const gameStatus = useGameStore((state) => state.gameStatus);
 
+  const [presence, setPresence] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (gameStatus !== "pausing" && gameStatus !== "ending") return;
+
+    setPresence(true);
+  }, [gameStatus]);
+
   return (
-    <div className="fixed left-1/2 top-1/2 flex w-44 translate-x-[-50%] translate-y-[-50%] flex-col place-items-center gap-y-2 text-center">
-      <h1
-        className="text-center text-3xl text-gray-900 dark:text-gray-50"
-        key="control-panel-header"
-      >
-        {gameStatus === "ending" ? "Game Over" : "Paused"}
-      </h1>
-      <button
-        className={buttonVariants({ variant: "primary" })}
-        key="control-panel-restart"
-        onClick={startGame}
-        type="button"
-      >
-        Restart
-      </button>
-      {gameStatus === "pausing" && (
-        <button
-          className={buttonVariants({ variant: "primary" })}
-          key="control-panel-toggle"
-          onClick={toggleGame}
-          type="button"
-        >
-          Resume
-        </button>
-      )}
-    </div>
+    presence && (
+      <div className="fixed left-1/2 top-1/2 flex translate-x-[-50%] translate-y-[-50%] flex-col place-items-center gap-y-2 text-center">
+        <AnimatePresence onExitComplete={() => setPresence(false)}>
+          {(gameStatus === "pausing" || gameStatus === "ending") && (
+            /**
+             * The animation sequence here creates an vertical fold/unfold effect
+             * from the top with the initial y offset being -10px. A delay of
+             * 0.05s is added between the component visibility to veil/unveil
+             * them one by one.
+             *
+             * The animate in property also includes a spring easing to make the
+             * motion more lifelike.The exit property skips the vertical
+             * translate and the spring easing because the spring motion at the
+             * end won't be visible anyway.
+             */
+            <Fragment>
+              <motion.h1
+                className="text-3xl"
+                key="control-panel-header"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  transition: { type: "spring" },
+                }}
+                exit={{ opacity: 0, transition: { delay: 0.1 } }}
+              >
+                {gameStatus === "ending" ? "Game Over" : "Paused"}
+              </motion.h1>
+              <motion.button
+                className={buttonVariants({ variant: "primary" })}
+                key="control-panel-restart"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  transition: { delay: 0.05, type: "spring" },
+                }}
+                exit={{ opacity: 0, transition: { delay: 0.05 } }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={startGame}
+                type="button"
+              >
+                Restart
+              </motion.button>
+              {gameStatus === "pausing" && (
+                <motion.button
+                  className={buttonVariants({ variant: "primary" })}
+                  key="control-panel-resume"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    transition: { delay: 0.1, type: "spring" },
+                  }}
+                  exit={{ opacity: 0 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={toggleGame}
+                  type="button"
+                >
+                  Resume
+                </motion.button>
+              )}
+            </Fragment>
+          )}
+        </AnimatePresence>
+      </div>
+    )
   );
 }

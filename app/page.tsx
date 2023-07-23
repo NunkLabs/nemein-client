@@ -6,7 +6,6 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import { Opcodes, GameSocket } from "libs/Socket";
 import { useGameStore } from "libs/Store";
 import ControlPanel from "app/(panels)/Control";
-import PerformancePanel from "./(panels)/Performance";
 import StartPanel from "app/(panels)/Start";
 import Stage from "app/(game)/Stage";
 
@@ -89,7 +88,7 @@ export default function Nemein() {
     ({ key }: { key: string }) => {
       if (!gameSocket.current || gameStatus === "initializing") return;
 
-      if (key === ESCAPE_KEY) {
+      if (gameStatus !== "ending" && key === ESCAPE_KEY) {
         toggleGame();
 
         return;
@@ -183,20 +182,9 @@ export default function Nemein() {
     <div
       className={`${montserrat.className} grid h-screen min-w-fit place-items-center bg-gray-50 dark:bg-gray-950`}
     >
-      {gameStatus === "initializing" ? (
-        <StartPanel
-          loadingProgress={loadingProgress}
-          loadStage={() => updateGameStatus("ongoing")}
-        />
-      ) : (
-        <Stage startGame={startGame} />
-      )}
-      {(gameStatus === "pausing" || gameStatus === "ending") && (
-        <ControlPanel startGame={startGame} toggleGame={toggleGame} />
-      )}
-      {gameStatus === "ongoing" && gameOptions.performanceDisplay && (
-        <PerformancePanel />
-      )}
+      <StartPanel loadingProgress={loadingProgress} />
+      <ControlPanel startGame={startGame} toggleGame={toggleGame} />
+      <Stage startGame={startGame} />
     </div>
   );
 }

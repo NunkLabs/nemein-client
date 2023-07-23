@@ -1,8 +1,10 @@
 import { Close } from "@radix-ui/react-dialog";
+import { useEffect } from "react";
 import { useTheme } from "next-themes";
+import { motion } from "framer-motion";
 
 import { useGameStore } from "libs/Store";
-import { Button, buttonVariants } from "components/ui/Button";
+import { buttonVariants } from "components/ui/Button";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +28,6 @@ import {
   TooltipTrigger,
 } from "components/ui/Tooltip";
 import { useToast } from "components/ui/UseToast";
-import { useEffect } from "react";
 
 export default function OptionsPanel() {
   const gameOptions = useGameStore((state) => state.gameOptions);
@@ -47,9 +48,14 @@ export default function OptionsPanel() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="secondary" type="button">
+        <motion.button
+          className={buttonVariants({ variant: "secondary" })}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          type="button"
+        >
           Options
-        </Button>
+        </motion.button>
       </DialogTrigger>
       <DialogContent>
         <Tabs defaultValue="general">
