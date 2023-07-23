@@ -1,6 +1,6 @@
 const ContentSecurityPolicy = `
   default-src 'self';
-  connect-src 'self' ws: tetribass.com *.tetribass.com ;
+  connect-src 'self' ws: nemein.io *.nemein.io ;
   img-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval'
 `;
@@ -24,7 +24,7 @@ module.exports = {
           },
           {
             key: "Server",
-            value: "tetribass",
+            value: "nemein",
           },
           {
             key: "Referrer-Policy",

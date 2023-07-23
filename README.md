@@ -1,4 +1,4 @@
-# TetriBASS Client
+# Nemein Client
 
 ## Getting started
 
