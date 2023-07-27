@@ -1,5 +1,14 @@
 import { create } from "zustand";
 
+/* Load states typing */
+type GameLoadStates = {
+  initialLoad: boolean;
+  featureBundle: boolean;
+  gameRequest: boolean;
+  gameStage: boolean;
+  gameSocket: boolean;
+};
+
 /* Game options typings */
 type GameOptions = {
   gameMode: "classic" | "nemein";
@@ -86,6 +95,7 @@ type GameTheme = "light" | "dark" | (string & {}) | undefined;
 
 /* Game store typings */
 type GameStoreState = {
+  gameLoadStates: GameLoadStates;
   gameOptions: GameOptions;
   gamePerformance: GamePerformance;
   gameStates: GameStates | null;
@@ -94,6 +104,7 @@ type GameStoreState = {
 };
 
 type GameStoreAction = {
+  updateGameLoadStates: (gameLoadStates: Partial<GameLoadStates>) => void;
   updateGameOptions: (gameOptions: Partial<GameOptions>) => void;
   updateGamePerformance: (gamePerformance: Partial<GamePerformance>) => void;
   updateGameStates: (gameStates: GameStates) => void;
@@ -103,6 +114,13 @@ type GameStoreAction = {
 
 /* Builds the game store */
 export const useGameStore = create<GameStoreState & GameStoreAction>((set) => ({
+  gameLoadStates: {
+    initialLoad: true,
+    featureBundle: false,
+    gameRequest: false,
+    gameStage: false,
+    gameSocket: false,
+  },
   gameOptions: {
     gameMode: "nemein",
     antialias: true,
@@ -118,6 +136,13 @@ export const useGameStore = create<GameStoreState & GameStoreAction>((set) => ({
   gameStates: null,
   gameStatus: "initializing",
   gameTheme: "dark",
+  updateGameLoadStates: (gameLoadStates: Partial<GameLoadStates>) =>
+    set((state) => ({
+      gameLoadStates: {
+        ...state.gameLoadStates,
+        ...gameLoadStates,
+      },
+    })),
   updateGameOptions: (gameOptions: Partial<GameOptions>) =>
     set((state) => ({ gameOptions: { ...state.gameOptions, ...gameOptions } })),
   updateGamePerformance: (gamePerformance: Partial<GamePerformance>) =>

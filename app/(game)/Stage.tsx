@@ -2,7 +2,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { Container, Sprite, Stage as PixiStage } from "@pixi/react";
 import { Texture } from "pixi.js";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 
 import { DmgType, TetrominoType, useGameStore } from "libs/Store";
 import {
@@ -85,7 +85,7 @@ function Stage() {
                 tint={tetrominoColor[tetrominoName]}
                 key={`game-${colIndex}-${rowIndex}`}
               />
-            )
+            ),
           );
         });
       });
@@ -104,7 +104,7 @@ function Stage() {
                 x={GAME_PANEL.X + GAME_PANEL.CHILD * colIndex}
                 y={GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex}
                 key={`cleared-block-${blocksCleared.current}`}
-              />
+              />,
             );
           });
 
@@ -121,7 +121,7 @@ function Stage() {
               x={GAME_PANEL.X}
               y={GAME_PANEL.Y + GAME_PANEL.CHILD * rowIndex}
               key={`damage-number-${linesCleared.current}`}
-            />
+            />,
           );
         });
 
@@ -156,7 +156,7 @@ function Stage() {
               texture={texture.blank}
               tint={tetrominoColor[tetrominoName]}
               key={`game-${colIndex}-${rowIndex}`}
-            />
+            />,
           );
         });
       });
@@ -181,7 +181,7 @@ function Stage() {
             texture={texture.blank}
             tint={tetrominoColor[tetrominoName]}
             key={`hold-${colIndex}-${rowIndex}`}
-          />
+          />,
         );
       });
     });
@@ -208,7 +208,7 @@ function Stage() {
               texture={texture.blank}
               tint={tetrominoColor[tetrominoName]}
               key={`queue-${spawnedIndex}-${colIndex}-${rowIndex}`}
-            />
+            />,
           );
         });
       });
@@ -246,25 +246,30 @@ function Stage() {
  * Wraps the stage with the animation div
  * Pixi requires the Stage component & Pixi children to be returned separately
  */
-export default function StageWrapper({ startGame }: { startGame: () => void }) {
+export default function StageWrapper() {
   const gameOptions = useGameStore((state) => state.gameOptions);
   const gamePerformance = useGameStore((state) => state.gamePerformance);
   const gameStatus = useGameStore((state) => state.gameStatus);
+  const gameLoadStates = useGameStore((state) => state.gameLoadStates);
+  const updateGameLoadStates = useGameStore(
+    (state) => state.updateGameLoadStates,
+  );
 
   return (
-    gameStatus !== "initializing" && (
+    gameLoadStates.gameRequest &&
+    gameLoadStates.gameSocket && (
       <Fragment>
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0, transition: { type: "spring" } }}
-          onAnimationComplete={startGame}
+          onAnimationComplete={() => updateGameLoadStates({ gameStage: true })}
         >
           <Stage />
-        </motion.div>
+        </m.div>
         <div className="fixed bottom-[1%] left-1/2 translate-x-[-50%] translate-y-[-50%] text-sm">
           <AnimatePresence onExitComplete={() => null}>
             {gameOptions.performanceDisplay && gameStatus === "ongoing" && (
-              <motion.p
+              <m.p
                 key="performance-panel"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -273,7 +278,7 @@ export default function StageWrapper({ startGame }: { startGame: () => void }) {
                 current latency: {gamePerformance.currentLatency} ms • frame
                 rate: {gamePerformance.frameRate} fps • frame time:
                 {gamePerformance.frameTime} ms
-              </motion.p>
+              </m.p>
             )}
           </AnimatePresence>
         </div>

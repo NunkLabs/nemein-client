@@ -1,13 +1,21 @@
 "use client";
 
 import { Montserrat } from "next/font/google";
-import { useCallback, useEffect, useState, useRef } from "react";
+import { Fragment, useCallback, useEffect, useState, useRef } from "react";
+import { FeatureBundle, LazyMotion } from "framer-motion";
+import dynamic from "next/dynamic";
 
 import { Opcodes, GameSocket } from "libs/Socket";
 import { useGameStore } from "libs/Store";
-import ControlPanel from "app/(panels)/Control";
-import StartPanel from "app/(panels)/Start";
-import Stage from "app/(game)/Stage";
+
+/* Loads the game components dynamically */
+const ControlPanel = dynamic(() => import("app/(panels)/Control"), {
+  ssr: false,
+});
+const StartPanel = dynamic(() => import("app/(panels)/Start"), {
+  ssr: false,
+});
+const Stage = dynamic(() => import("app/(game)/Stage"), { ssr: false });
 
 const ESCAPE_KEY = "Escape";
 const VALID_KEYS = [
@@ -51,10 +59,14 @@ const montserrat = Montserrat({
 });
 
 export default function Nemein() {
+  const gameLoadStates = useGameStore((state) => state.gameLoadStates);
   const gameOptions = useGameStore((state) => state.gameOptions);
   const gameStatus = useGameStore((state) => state.gameStatus);
+  const updateGameLoadStates = useGameStore(
+    (state) => state.updateGameLoadStates,
+  );
   const updateGamePerformance = useGameStore(
-    (state) => state.updateGamePerformance
+    (state) => state.updateGamePerformance,
   );
   const updateGameStates = useGameStore((state) => state.updateGameStates);
   const updateGameStatus = useGameStore((state) => state.updateGameStatus);
@@ -62,7 +74,9 @@ export default function Nemein() {
   const gameSocket = useRef<GameSocket | null>(null);
   const isActive = useRef<boolean>(false);
 
-  const [loadingProgress, setLoadingProgress] = useState<number>(0);
+  const [featureBundle, setFeatureBundle] = useState<FeatureBundle | null>(
+    null,
+  );
 
   const startGame = useCallback(() => {
     if (!gameSocket.current) return;
@@ -71,7 +85,9 @@ export default function Nemein() {
       op: Opcodes.SOCKET_READY,
       data: gameOptions.gameMode,
     });
-  }, [gameOptions.gameMode]);
+
+    updateGameStatus("ongoing");
+  }, [gameOptions.gameMode, updateGameStatus]);
 
   const toggleGame = useCallback(() => {
     if (!gameSocket.current) return;
@@ -101,7 +117,7 @@ export default function Nemein() {
         data: key,
       });
     },
-    [gameStatus, toggleGame]
+    [gameStatus, toggleGame],
   );
 
   useEffect(() => {
@@ -115,64 +131,83 @@ export default function Nemein() {
   }, [handleKeydown]);
 
   useEffect(() => {
-    gameSocket.current = new GameSocket();
+    /* Imports and loads the feature bundle for Framer Motion */
+    if (!gameLoadStates.featureBundle) {
+      import("libs/Animation").then((res) => {
+        setFeatureBundle(res.default);
 
-    gameSocket.current
-      .on("progress", ({ percent }) => setLoadingProgress(percent))
-      .on("data", ({ op, data }) => {
-        switch (op) {
-          case Opcodes.SOCKET_READY: {
-            if (data !== gameOptions.gameMode) {
-              throw new Error("Game mode mismatched!");
-            }
-
-            isActive.current = true;
-
-            updateGameStatus("ongoing");
-
-            break;
-          }
-
-          case Opcodes.SOCKET_HEARTBEAT: {
-            updateGamePerformance({
-              currentLatency: Date.now() - data,
-            });
-
-            break;
-          }
-
-          case Opcodes.GAME_STATES: {
-            updateGameStates(data);
-
-            if (data.gameOver) {
-              isActive.current = false;
-
-              updateGameStatus("ending");
-            }
-
-            break;
-          }
-
-          case Opcodes.GAME_TOGGLE: {
-            updateGameStatus(isActive.current ? "ongoing" : "pausing");
-
-            break;
-          }
-
-          default:
-        }
+        updateGameLoadStates({ featureBundle: true });
       });
+    }
 
-    const currentSocket = gameSocket.current;
+    /* Initializes and listens for socket events */
+    if (!gameLoadStates.gameSocket) {
+      gameSocket.current = new GameSocket();
+
+      gameSocket.current
+        .on("progress", ({ percent }) => {
+          if (percent < 100) return;
+
+          updateGameLoadStates({ gameSocket: true });
+        })
+        .on("data", ({ op, data }) => {
+          switch (op) {
+            case Opcodes.SOCKET_READY: {
+              if (data !== gameOptions.gameMode) {
+                throw new Error("Game mode mismatched!");
+              }
+
+              isActive.current = true;
+
+              updateGameStatus("ongoing");
+
+              break;
+            }
+
+            case Opcodes.SOCKET_HEARTBEAT: {
+              updateGamePerformance({
+                currentLatency: Date.now() - data,
+              });
+
+              break;
+            }
+
+            case Opcodes.GAME_STATES: {
+              updateGameStates(data);
+
+              if (data.gameOver) {
+                isActive.current = false;
+
+                updateGameStatus("ending");
+              }
+
+              break;
+            }
+
+            case Opcodes.GAME_TOGGLE: {
+              updateGameStatus(isActive.current ? "ongoing" : "pausing");
+
+              break;
+            }
+
+            default:
+          }
+        });
+    }
 
     return () => {
       /* Cleans up socket on component unmount */
-      currentSocket.removeAllListeners();
+      if (!gameSocket.current) return;
 
-      currentSocket.destroy();
+      gameSocket.current.removeAllListeners();
+
+      gameSocket.current.destroy();
     };
   }, [
+    gameLoadStates.featureBundle,
+    gameLoadStates.gameSocket,
     gameOptions.gameMode,
+    updateGameLoadStates,
     updateGamePerformance,
     updateGameStates,
     updateGameStatus,
@@ -182,9 +217,27 @@ export default function Nemein() {
     <div
       className={`${montserrat.className} grid h-screen min-w-fit place-items-center bg-gray-50 dark:bg-gray-950`}
     >
-      <StartPanel loadingProgress={loadingProgress} />
-      <ControlPanel startGame={startGame} toggleGame={toggleGame} />
-      <Stage startGame={startGame} />
+      {gameLoadStates.initialLoad && (
+        /* Acts as a placeholder while waiting for the start panel */
+        <div
+          className="fixed left-1/2 top-1/2 h-32 translate-x-[-50%] translate-y-[-50%] animate-pulse text-center text-5xl"
+          id="start-panel-initial-header"
+        >
+          nemein
+        </div>
+      )}
+      {featureBundle && (
+        /* Lazy-loads in the feature bundle */
+        <LazyMotion features={featureBundle} strict>
+          {gameLoadStates.featureBundle && (
+            <Fragment>
+              <Stage />
+              <StartPanel startGame={startGame} />
+              <ControlPanel startGame={startGame} toggleGame={toggleGame} />
+            </Fragment>
+          )}
+        </LazyMotion>
+      )}
     </div>
   );
 }

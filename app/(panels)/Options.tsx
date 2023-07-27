@@ -1,7 +1,7 @@
 import { Close } from "@radix-ui/react-dialog";
 import { useEffect } from "react";
 import { useTheme } from "next-themes";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 import { useGameStore } from "libs/Store";
 import { buttonVariants } from "components/ui/Button";
@@ -48,14 +48,14 @@ export default function OptionsPanel() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <motion.button
+        <m.button
           className={buttonVariants({ variant: "secondary" })}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           type="button"
         >
           Options
-        </motion.button>
+        </m.button>
       </DialogTrigger>
       <DialogContent>
         <Tabs defaultValue="general">
@@ -74,7 +74,7 @@ export default function OptionsPanel() {
               </div>
               <Select
                 onValueChange={(
-                  gameModeSelection: typeof gameOptions.gameMode
+                  gameModeSelection: typeof gameOptions.gameMode,
                 ) => {
                   updateGameOptions({
                     gameMode: gameModeSelection,
@@ -157,7 +157,7 @@ export default function OptionsPanel() {
                   <TooltipTrigger>
                     <Select
                       onValueChange={(
-                        powerPreferenceSelection: typeof gameOptions.powerPreference
+                        powerPreferenceSelection: typeof gameOptions.powerPreference,
                       ) =>
                         updateGameOptions({
                           powerPreference: powerPreferenceSelection,

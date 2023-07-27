@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 
 import { useGameStore } from "libs/Store";
 import { buttonVariants } from "components/ui/Button";
@@ -38,7 +38,7 @@ export default function ControlPanel({
              * end won't be visible anyway.
              */
             <Fragment>
-              <motion.h1
+              <m.h1
                 className="text-3xl"
                 key="control-panel-header"
                 initial={{ opacity: 0, y: -10 }}
@@ -50,8 +50,8 @@ export default function ControlPanel({
                 exit={{ opacity: 0, transition: { delay: 0.1 } }}
               >
                 {gameStatus === "ending" ? "Game Over" : "Paused"}
-              </motion.h1>
-              <motion.button
+              </m.h1>
+              <m.button
                 className={buttonVariants({ variant: "primary" })}
                 key="control-panel-restart"
                 initial={{ opacity: 0, y: -10 }}
@@ -67,9 +67,9 @@ export default function ControlPanel({
                 type="button"
               >
                 Restart
-              </motion.button>
+              </m.button>
               {gameStatus === "pausing" && (
-                <motion.button
+                <m.button
                   className={buttonVariants({ variant: "primary" })}
                   key="control-panel-resume"
                   initial={{ opacity: 0, y: -10 }}
@@ -85,7 +85,7 @@ export default function ControlPanel({
                   type="button"
                 >
                   Resume
-                </motion.button>
+                </m.button>
               )}
             </Fragment>
           )}
