@@ -127,7 +127,7 @@ export class GameSocket extends EventEmitter {
                     JSON.stringify({
                       op: Opcodes.SOCKET_PING,
                       timestamp: Date.now(),
-                    })
+                    }),
                   );
                 }, PING_INTERVAL_MS);
 
@@ -142,7 +142,7 @@ export class GameSocket extends EventEmitter {
                 currentServer.averageLatency =
                   currentServer.latencies.reduce(
                     (sum: number, value: number) => sum + value,
-                    0
+                    0,
                   ) / currentServer.latencies.length;
 
                 break;
@@ -153,7 +153,7 @@ export class GameSocket extends EventEmitter {
             }
           };
         });
-      })
+      }),
     );
 
     this.emit("progress", { percent: 60 });
