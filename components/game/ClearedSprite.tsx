@@ -65,13 +65,13 @@ export default function ClearedSprite({
         GAME_PANEL.CHILD *
         randomFloatInRange(
           HORIZONTAL_DISPLACEMENT_FLOOR,
-          HORIZONTAL_DISPLACEMENT_CEILING
+          HORIZONTAL_DISPLACEMENT_CEILING,
         ),
       yDisplacement:
         GAME_PANEL.CHILD *
         randomFloatInRange(
           VERTICAL_DISPLACEMENT_FLOOR,
-          VERTICAL_DISPLACEMENT_CEILING
+          VERTICAL_DISPLACEMENT_CEILING,
         ),
       rotation: randomFloatInRange(RADIAN_ROTATION_FLOOR, RADIAN_ROTATION_CEIL),
       /**
@@ -83,7 +83,7 @@ export default function ClearedSprite({
           ? randomFloatInRange(MINORITY_SCALE_FLOOR, MINORITY_SCALE_CEILING)
           : randomFloatInRange(MAJORITY_SCALE_FLOOR, MAJORITY_SCALE_CEILING),
     }),
-    []
+    [],
   );
 
   const [spriteProperties, setSpriteProperties] = useState<SpriteProperties>({

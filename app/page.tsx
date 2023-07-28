@@ -9,13 +9,13 @@ import { Opcodes, GameSocket } from "libs/Socket";
 import { useGameStore } from "libs/Store";
 
 /* Loads the game components dynamically */
-const ControlPanel = dynamic(() => import("app/(panels)/Control"), {
+const ControlPanel = dynamic(() => import("components/panels/Control"), {
   ssr: false,
 });
-const StartPanel = dynamic(() => import("app/(panels)/Start"), {
+const StartPanel = dynamic(() => import("components/panels/Start"), {
   ssr: false,
 });
-const Stage = dynamic(() => import("app/(game)/Stage"), { ssr: false });
+const Stage = dynamic(() => import("components/game/Stage"), { ssr: false });
 
 const ESCAPE_KEY = "Escape";
 const VALID_KEYS = [
@@ -141,59 +141,57 @@ export default function Nemein() {
     }
 
     /* Initializes and listens for socket events */
-    if (!gameLoadStates.gameSocket) {
-      gameSocket.current = new GameSocket();
+    gameSocket.current = new GameSocket();
 
-      gameSocket.current
-        .on("progress", ({ percent }) => {
-          if (percent < 100) return;
+    gameSocket.current
+      .on("progress", ({ percent }) => {
+        if (percent < 100) return;
 
-          updateGameLoadStates({ gameSocket: true });
-        })
-        .on("data", ({ op, data }) => {
-          switch (op) {
-            case Opcodes.SOCKET_READY: {
-              if (data !== gameOptions.gameMode) {
-                throw new Error("Game mode mismatched!");
-              }
-
-              isActive.current = true;
-
-              updateGameStatus("ongoing");
-
-              break;
+        updateGameLoadStates({ gameSocket: true });
+      })
+      .on("data", ({ op, data }) => {
+        switch (op) {
+          case Opcodes.SOCKET_READY: {
+            if (data !== gameOptions.gameMode) {
+              throw new Error("Game mode mismatched!");
             }
 
-            case Opcodes.SOCKET_HEARTBEAT: {
-              updateGamePerformance({
-                currentLatency: Date.now() - data,
-              });
+            isActive.current = true;
 
-              break;
-            }
+            updateGameStatus("ongoing");
 
-            case Opcodes.GAME_STATES: {
-              updateGameStates(data);
-
-              if (data.gameOver) {
-                isActive.current = false;
-
-                updateGameStatus("ending");
-              }
-
-              break;
-            }
-
-            case Opcodes.GAME_TOGGLE: {
-              updateGameStatus(isActive.current ? "ongoing" : "pausing");
-
-              break;
-            }
-
-            default:
+            break;
           }
-        });
-    }
+
+          case Opcodes.SOCKET_HEARTBEAT: {
+            updateGamePerformance({
+              currentLatency: Date.now() - data,
+            });
+
+            break;
+          }
+
+          case Opcodes.GAME_STATES: {
+            updateGameStates(data);
+
+            if (data.gameOver) {
+              isActive.current = false;
+
+              updateGameStatus("ending");
+            }
+
+            break;
+          }
+
+          case Opcodes.GAME_TOGGLE: {
+            updateGameStatus(isActive.current ? "ongoing" : "pausing");
+
+            break;
+          }
+
+          default:
+        }
+      });
 
     return () => {
       /* Cleans up socket on component unmount */

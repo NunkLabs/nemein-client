@@ -53,7 +53,7 @@ export default function DamageSprite({
       x: DAMAGE_NUMBER_X_OFFSET + x,
       y: DAMAGE_NUMBER_Y_OFFSET + y,
     }),
-    [dmgIndex, wasCrit, x, y]
+    [dmgIndex, wasCrit, x, y],
   );
 
   const [textProperties, setTextProperties] = useState<TextProperties>({

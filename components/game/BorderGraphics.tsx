@@ -31,14 +31,14 @@ export default function BorderGraphics() {
           HOLD_PANEL.X,
           HOLD_PANEL.Y,
           HOLD_PANEL.WIDTH,
-          HOLD_PANEL.HEIGHT
+          HOLD_PANEL.HEIGHT,
         );
 
         panelGraphics.drawRect(
           GAME_PANEL.X,
           GAME_PANEL.Y,
           GAME_PANEL.WIDTH,
-          GAME_PANEL.HEIGHT
+          GAME_PANEL.HEIGHT,
         );
 
         for (
@@ -50,7 +50,7 @@ export default function BorderGraphics() {
             QUEUE_PANEL.X,
             queuePanelYCoord,
             QUEUE_PANEL.WIDTH,
-            QUEUE_PANEL.HEIGHT
+            QUEUE_PANEL.HEIGHT,
           );
         }
       }}

@@ -4,7 +4,7 @@ import { useGameStore } from "libs/Store";
 
 export default function PerformanceTracker() {
   const updateGamePerformance = useGameStore(
-    (state) => state.updateGamePerformance
+    (state) => state.updateGamePerformance,
   );
 
   useTick((delta, ticker) => {
