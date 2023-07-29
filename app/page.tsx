@@ -132,14 +132,16 @@ export default function Nemein() {
 
   useEffect(() => {
     /* Imports and loads the feature bundle for Framer Motion */
-    if (!gameLoadStates.featureBundle) {
-      import("libs/Animation").then((res) => {
-        setFeatureBundle(res.default);
+    if (gameLoadStates.featureBundle) return;
 
-        updateGameLoadStates({ featureBundle: true });
-      });
-    }
+    import("libs/Animation").then((res) => {
+      setFeatureBundle(res.default);
 
+      updateGameLoadStates({ featureBundle: true });
+    });
+  }, [gameLoadStates.featureBundle, updateGameLoadStates]);
+
+  useEffect(() => {
     /* Initializes and listens for socket events */
     gameSocket.current = new GameSocket();
 
@@ -202,8 +204,6 @@ export default function Nemein() {
       gameSocket.current.destroy();
     };
   }, [
-    gameLoadStates.featureBundle,
-    gameLoadStates.gameSocket,
     gameOptions.gameMode,
     updateGameLoadStates,
     updateGamePerformance,
